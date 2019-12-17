@@ -1,0 +1,7 @@
+izzy.classification.GenericModel
+================================
+
+.. currentmodule:: izzy.classification
+
+.. autoclass:: GenericModel
+   :members:

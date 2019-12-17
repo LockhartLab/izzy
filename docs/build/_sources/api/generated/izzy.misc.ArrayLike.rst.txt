@@ -1,0 +1,7 @@
+izzy.misc.ArrayLike
+===================
+
+.. currentmodule:: izzy.misc
+
+.. autoclass:: ArrayLike
+   :members:

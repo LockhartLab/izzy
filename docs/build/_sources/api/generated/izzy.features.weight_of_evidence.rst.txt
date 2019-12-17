@@ -1,0 +1,6 @@
+izzy.features.weight\_of\_evidence
+==================================
+
+.. currentmodule:: izzy.features
+
+.. autofunction:: weight_of_evidence

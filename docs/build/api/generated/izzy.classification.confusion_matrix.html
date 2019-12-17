@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>izzy.classification.confusion_matrix &#8212; izzy 0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="izzy.classification.f1" href="izzy.classification.f1.html" />
+    <link rel="prev" title="izzy.classification.bic" href="izzy.classification.bic.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="izzy.classification.f1.html" title="izzy.classification.f1"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="izzy.classification.bic.html" title="izzy.classification.bic"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../classification.html" accesskey="U">izzy.classification</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="izzy-classification-confusion-matrix">
+<h1>izzy.classification.confusion_matrix<a class="headerlink" href="#izzy-classification-confusion-matrix" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="izzy.classification.confusion_matrix">
+<code class="sig-prename descclassname">izzy.classification.</code><code class="sig-name descname">confusion_matrix</code><span class="sig-paren">(</span><em class="sig-param">y_true</em>, <em class="sig-param">y_pred</em>, <em class="sig-param">sample_weights=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/metrics.html#confusion_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.confusion_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the confusion matrix</p>
+<p>The confusion matrix is a 2D matrix that shows actual outcomes (as rows) and predicted outcomes (as columns). The
+matrix displays the counts of observations that fall into each bucket. From this, we can compute false negatives,
+false positives, true negatives, true positives, and other metrics derived from these.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<a class="reference internal" href="izzy.misc.ArrayLike.html#izzy.misc.ArrayLike" title="izzy.misc.ArrayLike"><em>ArrayLike</em></a>) – True outcomes</p></li>
+<li><p><strong>y_pred</strong> (<a class="reference internal" href="izzy.misc.ArrayLike.html#izzy.misc.ArrayLike" title="izzy.misc.ArrayLike"><em>ArrayLike</em></a>) – Predicted outcomes, must already be classified</p></li>
+<li><p><strong>sample_weights</strong> (<a class="reference internal" href="izzy.misc.ArrayLike.html#izzy.misc.ArrayLike" title="izzy.misc.ArrayLike"><em>ArrayLike</em></a>) – Weights associated with individual observations</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Confusion matrix with classes as row and column labels</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.25.3)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="izzy.classification.bic.html"
+                        title="previous chapter">izzy.classification.bic</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="izzy.classification.f1.html"
+                        title="next chapter">izzy.classification.f1</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/api/generated/izzy.classification.confusion_matrix.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="izzy.classification.f1.html" title="izzy.classification.f1"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="izzy.classification.bic.html" title="izzy.classification.bic"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../classification.html" >izzy.classification</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, izzy developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
+    </div>
+  </body>
+</html>

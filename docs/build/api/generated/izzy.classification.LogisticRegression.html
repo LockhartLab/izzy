@@ -1,0 +1,245 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>izzy.classification.LogisticRegression &#8212; izzy 0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="izzy.classification.RandomForest" href="izzy.classification.RandomForest.html" />
+    <link rel="prev" title="izzy.classification.GenericModel" href="izzy.classification.GenericModel.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="izzy.classification.RandomForest.html" title="izzy.classification.RandomForest"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="izzy.classification.GenericModel.html" title="izzy.classification.GenericModel"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../classification.html" accesskey="U">izzy.classification</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="izzy-classification-logisticregression">
+<h1>izzy.classification.LogisticRegression<a class="headerlink" href="#izzy-classification-logisticregression" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="izzy.classification.LogisticRegression">
+<em class="property">class </em><code class="sig-prename descclassname">izzy.classification.</code><code class="sig-name descname">LogisticRegression</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class <code class="docutils literal notranslate"><span class="pre">LogisticRegression</span></code> fits a logistic regression model</p>
+<p>The general scope is to provide independent variables <cite>x</cite> with labels <cite>y</cite>, which will be used to fit the model.</p>
+<p>Then, <cite>predict_proba</cite> can be used to solve using the fitted coefficients for new samples.</p>
+<dl class="method">
+<dt id="izzy.classification.LogisticRegression.degrees_of_freedom">
+<code class="sig-name descname">degrees_of_freedom</code><span class="sig-paren">(</span><em class="sig-param">sample_weights=None</em>, <em class="sig-param">axis=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression.degrees_of_freedom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression.degrees_of_freedom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the degrees of freedom</p>
+<p>If axis = 0, this is the degrees of freedom <span class="math notranslate nohighlight">\(D\)</span> of the samples.</p>
+<div class="math notranslate nohighlight">
+\[D = N_{obs,weight &gt; 0} - N_{features + intercept}\]</div>
+<p>If axis = 1, <span class="math notranslate nohighlight">\(D\)</span> is computed   in feature space.</p>
+<div class="math notranslate nohighlight">
+\[D = N_{features + intercept,coefficient&gt;0}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_weights</strong> (<a class="reference internal" href="izzy.misc.ArrayLike.html#izzy.misc.ArrayLike" title="izzy.misc.ArrayLike"><em>ArrayLike</em></a>) – Weights for each observation</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – If 0, observations; if 1, features + intercept</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>degrees of freedom</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="izzy.classification.LogisticRegression.feature_importance">
+<code class="sig-name descname">feature_importance</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression.feature_importance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression.feature_importance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outputs coefficients of the model, their standard errors, and significance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<a class="reference internal" href="izzy.misc.ArrayLike.html#izzy.misc.ArrayLike" title="izzy.misc.ArrayLike"><em>ArrayLike</em></a>) – Independent variable(s)</p></li>
+<li><p><strong>y</strong> (<a class="reference internal" href="izzy.misc.ArrayLike.html#izzy.misc.ArrayLike" title="izzy.misc.ArrayLike"><em>ArrayLike</em></a>) – Dependent variable(s)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>feature importance report</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.25.3)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="izzy.classification.LogisticRegression.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit the model according to the given training data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Training vector, where n_samples is the number of samples and
+n_features is the number of features.</p></li>
+<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – Target vector relative to X.</p></li>
+<li><p><strong>sample_weight</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>) </em><em>optional</em>) – <p>Array of weights that are assigned to individual samples.
+If not provided, then each sample is given unit weight.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.17: </span><em>sample_weight</em> support to LogisticRegression.</p>
+</div>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)">object</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The SAGA solver supports both float64 and float32 bit arrays.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="izzy.classification.LogisticRegression.hessian">
+<code class="sig-name descname">hessian</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression.hessian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the Hessian matrix.</p>
+<p>The Hessian is the second-order derivative of the loss function evaluated at the maximum likelihood estimate.</p>
+<p>Let’s take this generally from the position of a loss function <span class="math notranslate nohighlight">\(L\)</span>, which is the negative log likelihood
+(i.e., joint probability distribution of classes predicted by the model.</p>
+<div class="math notranslate nohighlight">
+\[L = p^y(1-p)^{1-y}\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(p\)</span> is the outcome from solving the logistic function, and <span class="math notranslate nohighlight">\(y\)</span> is the true outcome. We can
+also compute the log loss,</p>
+<div class="math notranslate nohighlight">
+\[log(L) = ylog(p) + (1-y)log(1-p)\]</div>
+<p>Computing the derivative of <span class="math notranslate nohighlight">\(log(L)\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\frac{\delta log(L)}{\delta p} = \frac{y}{p}\delta p - \frac{1-y}{1-p}\delta p\]</div>
+<p>Remember that <span class="math notranslate nohighlight">\(p(\beta |x) = \frac{1}{1+e^{-\beta^Tx}\)</span>. The derivative of <span class="math notranslate nohighlight">\(p(\beta |x)\)</span> is,</p>
+<div class="math notranslate nohighlight">
+\[\frac{\delta p}{\delta \beta} = \frac{\delta}{\delta w} (\frac{1}{1+e^{-\beta x}})\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\delta p}{\delta \beta} = -(1+e^{-\beta x})^{-2}  (-xe^{-\beta x})\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\delta p}{\delta \beta} = xp(1-p)\]</div>
+<p>Going back to the derivative of <span class="math notranslate nohighlight">\(log(L)\)</span>, we can now fill in <span class="math notranslate nohighlight">\(delta p\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\frac{\delta log(L)}{\delta \beta^T} = \frac{y}{p}xp(1-p) - \frac{1-y}{1-p}xp(1-p)\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\delta log(L)}{\delta \beta^T} = xy(1-p) - x(1-y)p  = xy - xyp - x + xyp = x(y-1)\]</div>
+<div class="math notranslate nohighlight">
+\[\frac{\delta log(L)}{\delta \beta^T} = x(p-y)\]</div>
+<p>In this equation, <span class="math notranslate nohighlight">\(\hat{y}\)</span> is the true outcome, where <span class="math notranslate nohighlight">\(y(w|x) = \frac{1}{1+e^{-w^Tx}}\)</span> is the
+logistic function. Then, we can compute the first derivative of <span class="math notranslate nohighlight">\(J\)</span>. We take the derivative with respect
+to parameters <span class="math notranslate nohighlight">\(w^T\)</span>, leaving the observations <span class="math notranslate nohighlight">\(x\)</span> as constants.</p>
+<div class="math notranslate nohighlight">
+\[\frac{\delta J(w)}{\delta w^T} = xy(w|x)(\hat{y} - y(w|x))(1-y(w|x))\]</div>
+<dl class="simple">
+<dt>dy = (1+e^{-wx})^-1 = -1(1+e^{-wx})^{-1}*(1+e^{-wx})^{-1}*-xe^{wx}</dt><dd><p>= x*y*(1-y)</p>
+</dd>
+</dl>
+<p>dp = p(1-p)</p>
+<p>dJ = (y-p) * dy = (y-p) * (p) * (1-p) = (yp - p^2) * (1-p) = (yp - p^2 - yp^2 + p^3)
+ddJ = p - 2p - 2yp + 2p^2</p>
+<p><a class="reference external" href="https://stats.stackexchange.com/questions/68391/hessian-of-logistic-function">https://stats.stackexchange.com/questions/68391/hessian-of-logistic-function</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<a class="reference internal" href="izzy.misc.ArrayLike.html#izzy.misc.ArrayLike" title="izzy.misc.ArrayLike"><em>ArrayLike</em></a>) – Independent variable(s)</p></li>
+<li><p><strong>y</strong> (<a class="reference internal" href="izzy.misc.ArrayLike.html#izzy.misc.ArrayLike" title="izzy.misc.ArrayLike"><em>ArrayLike</em></a>) – Dependent variable(s)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Hessian matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="izzy.classification.GenericModel.html"
+                        title="previous chapter">izzy.classification.GenericModel</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="izzy.classification.RandomForest.html"
+                        title="next chapter">izzy.classification.RandomForest</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/api/generated/izzy.classification.LogisticRegression.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="izzy.classification.RandomForest.html" title="izzy.classification.RandomForest"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="izzy.classification.GenericModel.html" title="izzy.classification.GenericModel"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../classification.html" >izzy.classification</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, izzy developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
+    </div>
+  </body>
+</html>

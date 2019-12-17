@@ -1,0 +1,6 @@
+izzy.datasets.random\_dataset
+=============================
+
+.. currentmodule:: izzy.datasets
+
+.. autofunction:: random_dataset

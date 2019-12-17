@@ -1,0 +1,6 @@
+izzy.classification.true\_positives
+===================================
+
+.. currentmodule:: izzy.classification
+
+.. autofunction:: true_positives

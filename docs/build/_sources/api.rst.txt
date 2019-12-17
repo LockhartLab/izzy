@@ -1,0 +1,11 @@
+
+API Reference
+=============
+
+.. toctree::
+   :maxdepth: 1
+
+   api/classification
+   api/datasets
+   api/features
+   api/misc
