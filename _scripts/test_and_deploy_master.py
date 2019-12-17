@@ -41,8 +41,12 @@ class Git:
     def push(self, remote='origin', branch='master'):
         self._execute('git push {0} {1}'.format(remote, branch))
 
+    def tag(self, tag):
+        self._execute('git tag {}'.format(tag))
+
     def which(self):
         self._execute('where git')
+
 
 # Helper function to increment the package version
 def increment_version():
@@ -75,10 +79,11 @@ test()
 version = increment_version()
 print(version + '\n')
 
-# TODO Update git tag
-
 # Connect to git repository
 git = Git()
+
+# Tag
+git.tag('v' + version)
 
 # Add our files to the repository
 git.add('-A')
