@@ -1,0 +1,32 @@
+
+Classification
+==============
+
+.. currentmodule:: izzy.classification
+
+.. rubric:: Functions
+
+.. autosummary::
+   :toctree: functions
+
+   accuracy
+   auroc
+   confusion_matrix
+   create_engine_from_string
+   f1
+   gini
+   is_model_instance
+   ks
+   LogisticRegression
+   performance
+   precision
+   recall
+
+.. rubric:: Classes
+
+.. autosummary::
+   :toctree: functions
+
+   GenericModel
+   LogisticRegression
+

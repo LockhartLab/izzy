@@ -1,0 +1,7 @@
+izzy.classification.LogisticRegression
+======================================
+
+.. currentmodule:: izzy.classification
+
+.. autoclass:: LogisticRegression
+   :members:

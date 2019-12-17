@@ -1,0 +1,664 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>izzy.classification.generic &#8212; izzy 0.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for izzy.classification.generic</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">generic.py</span>
+<span class="sd">==========</span>
+<span class="sd">written in Python3</span>
+
+<span class="sd">author: C. Lockhart &lt;chris@lockhartlab.org&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">performance_report</span>
+<span class="kn">from</span> <span class="nn">._utilities</span> <span class="kn">import</span> <span class="n">_coerce_y_prob</span>
+
+<span class="kn">from</span> <span class="nn">izzy.misc</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
+
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">lapack</span>
+
+
+<span class="c1"># Contents</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;classify&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;format_x&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;GenericModel&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;is_model_instance&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="c1"># GenericModel class</span>
+<div class="viewcode-block" id="GenericModel"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel">[docs]</a><span class="k">class</span> <span class="nc">GenericModel</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    GenericModel class. Note that this is an abstract class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Initialize instance of class</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize instance of the GenericModel class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Identifier that tells us this in an izzy package</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_package</span> <span class="o">=</span> <span class="s1">&#39;izzy&#39;</span>
+
+        <span class="c1"># Number of observations / features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_obs</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Class information</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Compute the log-likelihood from y_true and y_pred</span>
+    <span class="k">def</span> <span class="nf">_log_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the log likelihood from true and predicted outcomes</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y_true : ArrayLike</span>
+<span class="sd">            True outcomes</span>
+<span class="sd">        y_pred : ArrayLike</span>
+<span class="sd">            Predicted outcomes</span>
+<span class="sd">        normalize : bool</span>
+<span class="sd">            Should we compute the average log likelihood per sample? (Default: True)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            log-likelihood</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Sanity checking</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y_true</span><span class="p">))</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span> <span class="o">==</span> <span class="n">y_pred</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Transform y_true into an expanded form</span>
+        <span class="n">y_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">y_true</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+
+        <span class="c1"># Return log likelihood</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y_true</span> <span class="o">*</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span>
+
+    <span class="c1"># Compute the log-loss from y_true and y_pred</span>
+    <span class="k">def</span> <span class="nf">_log_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the log loss from true and predicted outcomes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        y_true : ArrayLike</span>
+<span class="sd">            True outcomes</span>
+<span class="sd">        y_pred : ArrayLike</span>
+<span class="sd">            Predicted outcomes</span>
+<span class="sd">        normalize : bool</span>
+<span class="sd">            Should we normalize by the number of samples? (Default: True)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            log loss</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_likelihood</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">)</span>
+
+    <span class="c1"># Classify</span>
+<div class="viewcode-block" id="GenericModel.classify"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.classify">[docs]</a>    <span class="k">def</span> <span class="nf">classify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluate at ``x`` and then classify</span>
+
+<span class="sd">        If the problem is binomial, ``threshold`` is used to perform classification. Otherwise, the class with greatest</span>
+<span class="sd">        probability is chosen.</span>
+
+<span class="sd">        See :func:`classify`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ArrayLike</span>
+<span class="sd">            Independent variables</span>
+<span class="sd">        classes : ArrayLike</span>
+<span class="sd">            Class labels (Default: numbers from `0` to `number classes - 1`)</span>
+<span class="sd">        threshold : float</span>
+<span class="sd">            Decision boundary cutoff (Default: 0.5)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Predicted classes of each observation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Evaluate model at x</span>
+        <span class="n">y_prob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Return classifications</span>
+        <span class="k">return</span> <span class="n">classify</span><span class="p">(</span><span class="n">y_prob</span><span class="p">,</span> <span class="n">classes</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span></div>
+
+    <span class="c1"># Confusion matrix</span>
+<div class="viewcode-block" id="GenericModel.confusion_matrix"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.confusion_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">confusion_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the confusion matrix for the model instance</span>
+
+<span class="sd">        See :func:`izzy.classification.confusion_matrix`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ArrayLike</span>
+<span class="sd">            Independent variable(s)</span>
+<span class="sd">        y : ArrayLike</span>
+<span class="sd">            Dependent variable(s)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            confusion matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Format x</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">format_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Return</span>
+        <span class="k">return</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+    <span class="c1"># Evaluate the model</span>
+    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="c1"># Fit the model (NotImplemented)</span>
+<div class="viewcode-block" id="GenericModel.fit"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implemented in children classes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="c1"># DOF (alias to degrees_of_freedom)</span>
+<div class="viewcode-block" id="GenericModel.dof"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.dof">[docs]</a>    <span class="k">def</span> <span class="nf">dof</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alias to :func:`~degrees_of_freedom`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ArrayLike</span>
+<span class="sd">            Independent variable(s)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            degrees of freedom</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">degrees_of_freedom</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+    <span class="c1"># Degrees of freedom (NotImplemented)</span>
+<div class="viewcode-block" id="GenericModel.degrees_of_freedom"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.degrees_of_freedom">[docs]</a>    <span class="k">def</span> <span class="nf">degrees_of_freedom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implemented in children classes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="c1"># FIM</span>
+<div class="viewcode-block" id="GenericModel.fim"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.fim">[docs]</a>    <span class="k">def</span> <span class="nf">fim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alias of :func:`~fisher_information_matrix`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ArrayLike</span>
+<span class="sd">            Independent variable(s)</span>
+<span class="sd">        y : ArrayLike</span>
+<span class="sd">            Dependent variable(s)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Fisher information matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_information_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+    <span class="c1"># Fisher</span>
+<div class="viewcode-block" id="GenericModel.fisher"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.fisher">[docs]</a>    <span class="k">def</span> <span class="nf">fisher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alias of :func:`~fisher_information_matrix`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ArrayLike</span>
+<span class="sd">            Independent variable(s)</span>
+<span class="sd">        y : ArrayLike</span>
+<span class="sd">            Dependent variable(s)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Fisher information matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_information_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+    <span class="c1"># Fisher information matrix</span>
+<div class="viewcode-block" id="GenericModel.fisher_information_matrix"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.fisher_information_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">fisher_information_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the Fisher information matrix (FIM)</span>
+
+<span class="sd">        FIM is the negative Hessian</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ArrayLike</span>
+<span class="sd">            Independent variable(s)</span>
+<span class="sd">        y : ArrayLike</span>
+<span class="sd">            Dependent variable(s)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Fisher information matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+    <span class="c1"># Compute the Hessian (NotImplemented)</span>
+<div class="viewcode-block" id="GenericModel.hessian"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implemented in children classes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="c1"># Information (alias of fisher_information_matrix)</span>
+<div class="viewcode-block" id="GenericModel.information"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.information">[docs]</a>    <span class="k">def</span> <span class="nf">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Alias of :func:`~fisher_information_matrix`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ArrayLike</span>
+<span class="sd">            Independent variable(s)</span>
+<span class="sd">        y : ArrayLike</span>
+<span class="sd">            Dependent variable(s)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Fisher information matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_information_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+    <span class="c1"># Log likelihood</span>
+<div class="viewcode-block" id="GenericModel.log_likelihood"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.log_likelihood">[docs]</a>    <span class="k">def</span> <span class="nf">log_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the log-likelihood</span>
+
+<span class="sd">        Mathematically, for a sample :math:`i`, we compute the likelihood :math:`L_i = p_i^{y_i} (1-p_i)^{1-y_i}.` Here,</span>
+<span class="sd">        we compute :math:`p` as the predicted probability and :math:`y` as the true outcome.</span>
+
+<span class="sd">        We can choose to `normalize` by the number of samples to get the average log likelihood per sample.</span>
+
+<span class="sd">        The procedure is to use `x` to get the predicted probabilities, and then compute :math:`L_i` above.</span>
+
+<span class="sd">        Note that the log likelihood depends on the specific variables in the model, i.e., cross-comparison of models is</span>
+<span class="sd">        with different features is technically incorrect.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ArrayLike</span>
+<span class="sd">            Independent variable(s)</span>
+<span class="sd">        y : ArrayLike</span>
+<span class="sd">            Dependent variable(s)</span>
+<span class="sd">        normalize : bool</span>
+<span class="sd">            Should we normalize by the number of samples? (Default: True)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            log likelihood</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_likelihood</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">)</span></div>
+
+    <span class="c1"># Log loss</span>
+<div class="viewcode-block" id="GenericModel.log_loss"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.log_loss">[docs]</a>    <span class="k">def</span> <span class="nf">log_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the log loss. This is the negative log likelihood. See :func:`~log_likelihood`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ArrayLike</span>
+<span class="sd">            Independent variable(s)</span>
+<span class="sd">        y : ArrayLike</span>
+<span class="sd">            Dependent variable(s)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            log loss</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_loss</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+    <span class="c1"># Generate performance report</span>
+<div class="viewcode-block" id="GenericModel.performance_report"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.performance_report">[docs]</a>    <span class="k">def</span> <span class="nf">performance_report</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a performance report for the model</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ArrayLike</span>
+<span class="sd">            Independent variable(s)</span>
+<span class="sd">        y : ArrayLike</span>
+<span class="sd">            Dependent variable(s)</span>
+<span class="sd">        threshold : float</span>
+<span class="sd">            Decision threshold (Default: 0.5)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            performance report</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get predicted y values from model</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Get the log-likelihood and degrees of freedom</span>
+        <span class="n">log_likelihood</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_likelihood</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+        <span class="n">degrees_of_freedom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">degrees_of_freedom</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Return performance report</span>
+        <span class="k">return</span> <span class="n">performance_report</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">log_likelihood</span><span class="p">,</span> <span class="n">degrees_of_freedom</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span></div>
+
+    <span class="c1"># Predict outcome probability (NotImplemented)</span>
+<div class="viewcode-block" id="GenericModel.predict_proba"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.predict_proba">[docs]</a>    <span class="k">def</span> <span class="nf">predict_proba</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implemented in children classes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="c1"># Standard errors of parameters</span>
+    <span class="c1"># TODO validate standard errors for multiclass?</span>
+<div class="viewcode-block" id="GenericModel.standard_errors"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.standard_errors">[docs]</a>    <span class="k">def</span> <span class="nf">standard_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the standard errors of parameters</span>
+
+<span class="sd">        .. math:: standard errors = \sqrt{diag(covariance matrix)}</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ArrayLike</span>
+<span class="sd">            Independent variable(s)</span>
+<span class="sd">        y : ArrayLike</span>
+<span class="sd">            Dependent variable(s)</span>
+<span class="sd">        mode : str</span>
+<span class="sd">            See `mode` in :func:`~variance_covariance_matrix`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            standard errors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variance_covariance_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)))</span></div>
+
+    <span class="c1"># Compute the variance-covariance matrix</span>
+    <span class="c1"># TODO exclude variables with coefficient = 0</span>
+<div class="viewcode-block" id="GenericModel.variance_covariance_matrix"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.variance_covariance_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">variance_covariance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the variance-covariance matrix</span>
+
+<span class="sd">        The covariance matrix can be calculated in two ways.</span>
+<span class="sd">            1. `statsmodels` method, which calculates the inverse of the Fisher information matrix (FIM). Note that FIM</span>
+<span class="sd">               is the negative Hessian, which is equal to the second derivative of the loss function evaluated at the</span>
+<span class="sd">               maximum likelihood estimate.</span>
+<span class="sd">            2. `R` method, which calculates the QR decomposition of :math:`x\sqrt{d}`. Here, :math:`d` indicates</span>
+<span class="sd">               :math:`y_{pred} (1 - y_{pred})`. If there are :math:`n` features, then the Householder reflector</span>
+<span class="sd">               :math:`h` from QR provides the Cholesky matrix :math:`h[:n, :n]`. The inverse of this matrix gives us the</span>
+<span class="sd">               covariance. This method, which relies on LAPACK, is *significantly* more efficient than (1).</span>
+
+<span class="sd">        https://stats.stackexchange.com/questions/68080/basic-question-about-fisher-information-matrix-and-relationship-to-hessian-and-s</span>
+<span class="sd">        https://stats.stackexchange.com/questions/224302/how-does-r-function-summary-glm-calculate-the-covariance-matrix-for-glm-model/407734#407734</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ArrayLike</span>
+<span class="sd">            Independent variable(s)</span>
+<span class="sd">        y : ArrayLike</span>
+<span class="sd">            Dependent variable(s)</span>
+<span class="sd">        mode : str</span>
+<span class="sd">            &#39;statsmodels&#39; for covariance computed from the Hessian or &#39;R&#39; for the Cholesky method (Default: &#39;R&#39;)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            variance-covariance matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Right now, we only know how to solve this in the binomial case</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;can only solve if binomial&#39;</span><span class="p">)</span>
+
+        <span class="c1"># If mode = &#39;statsmodels&#39;</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;statsmodels&#39;</span><span class="p">:</span>
+            <span class="c1"># Compute Fisher information matrix (FIM)</span>
+            <span class="n">fim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_information_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+            <span class="c1"># Compute covariance as the inverse of FIM</span>
+            <span class="n">cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">fim</span><span class="p">)</span>
+
+        <span class="c1"># Elif mode = &#39;R&#39;</span>
+        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;R&#39;</span><span class="p">:</span>
+            <span class="c1"># Compute y_prime = p * (1 - p)</span>
+            <span class="n">y_prime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># Compute QR decomposition (&#39;raw&#39; gets us Householder reflector)</span>
+            <span class="c1"># TODO we need to add 1 to x here</span>
+            <span class="n">q</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">y_prime</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;raw&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Compute covariance from inverse Cholesky (from LAPACK&#39;s dpotri function)</span>
+            <span class="c1"># TODO &quot;4&quot; here is actually the number of columns in x</span>
+            <span class="n">cov</span> <span class="o">=</span> <span class="n">lapack</span><span class="o">.</span><span class="n">dpotri</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">T</span><span class="p">[:</span><span class="mi">4</span><span class="p">,</span> <span class="p">:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># If we get here, we have a problem</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;unknown mode&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Return covariance</span>
+        <span class="k">return</span> <span class="n">cov</span></div></div>
+
+
+<span class="c1"># Format weight</span>
+<span class="k">def</span> <span class="nf">_format_weight</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># If weight and n are None, we have a problem</span>
+    <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span>
+
+    <span class="c1"># If weight is None, fill with 1s</span>
+    <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="c1"># Make sure that weight is of length n</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span> <span class="o">==</span> <span class="n">n</span>
+
+    <span class="c1"># Return</span>
+    <span class="k">return</span> <span class="n">weight</span>
+
+
+<span class="c1"># Classify</span>
+<span class="k">def</span> <span class="nf">classify</span><span class="p">(</span><span class="n">y_prob</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Classifies predicted probabilistic outcomes</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_prob : ArrayLike</span>
+<span class="sd">        Predicted outcomes expressed as probabilities. We call this ``y_prob`` instead of ``y_pred`` here to</span>
+<span class="sd">        emphasize this point</span>
+<span class="sd">    classes : ArrayLike</span>
+<span class="sd">        Names of classes (Default: integers from 1 to `n` classes)</span>
+<span class="sd">    threshold : float</span>
+<span class="sd">        Decision cutoff, only applied if the number of classes = 2; otherwise, the most likely class is chosen</span>
+<span class="sd">        (Default: 0.5)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        classified outcomes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Coerce y_prob into correct form</span>
+    <span class="n">y_prob</span> <span class="o">=</span> <span class="n">_coerce_y_prob</span><span class="p">(</span><span class="n">y_prob</span><span class="p">)</span>
+
+    <span class="c1"># Now that&#39;s done, compute the number of classes</span>
+    <span class="n">n_classes</span> <span class="o">=</span> <span class="n">y_prob</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># If classes is not set, set to sequence</span>
+    <span class="k">if</span> <span class="n">classes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_classes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Otherwise, run sanity check AND ensure classes is numpy array</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n_classes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;number of elements in classes (</span><span class="si">{0}</span><span class="s1">) does not match y_pred shape (</span><span class="si">{1}</span><span class="s1">)&#39;</span>
+                                 <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">),</span> <span class="n">n_classes</span><span class="p">))</span>
+        <span class="n">classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+
+    <span class="c1"># If binomial, use the threshold</span>
+    <span class="k">if</span> <span class="n">n_classes</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="c1"># If threshold isn&#39;t supplied, set to 0.5</span>
+        <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+        <span class="c1"># Classify</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_prob</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Otherwise, the class is the one with the maximum probability</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># If threshold is not None, send a Warning to make sure user is making good choices</span>
+        <span class="k">if</span> <span class="n">threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="s1">&#39;threshold is only used with binomial classifiers&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Classify</span>
+        <span class="n">y_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_prob</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Return class labels</span>
+    <span class="k">return</span> <span class="n">classes</span><span class="p">[</span><span class="n">y_pred</span><span class="p">]</span>
+
+
+<span class="c1"># Format x</span>
+<span class="c1"># TODO why is this a public function?</span>
+<span class="k">def</span> <span class="nf">format_x</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="c1"># If list or tuple, convert to numpy array</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="c1"># If Series, convert to DataFrame</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="c1"># If ndim = 1, convert to 2D array</span>
+    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># We should now have either a pandas DataFrame or numpy array</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span>
+
+    <span class="c1"># ndim should also be 2</span>
+    <span class="k">assert</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span>
+
+    <span class="c1"># Return</span>
+    <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="c1"># Determines if `engine` is an instance of an izzy model instance</span>
+<span class="k">def</span> <span class="nf">is_model_instance</span><span class="p">(</span><span class="n">engine</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines if `engine` is an instance of an izzy model instance.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    engine : object</span>
+<span class="sd">        An izzy model instance.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        True or False if engine is an izzy instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Result True if engine is an object that is linked to izzy package</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="nb">object</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="s1">&#39;_package&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;izzy&#39;</span><span class="p">)</span>
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, izzy developers.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
+    </div>
+  </body>
+</html>

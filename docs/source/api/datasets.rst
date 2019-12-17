@@ -1,0 +1,12 @@
+izzy.datasets
+=============
+
+.. currentmodule:: izzy.datasets
+
+Functions
+~~~~~~~~~
+
+.. autosummary::
+   :toctree: generated
+
+   random_dataset

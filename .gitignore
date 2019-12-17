@@ -1,0 +1,9 @@
+/build/
+/dist/
+.hypothesis/
+.hypothesis/*
+/.idea/
+/izzy.egg-info/
+__pycache__/
+__pycache__/*
+/_scripts/pypi.sh
