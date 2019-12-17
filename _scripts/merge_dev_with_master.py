@@ -1,22 +1,30 @@
 """
-deploy_to_master.py
+merge_dev_with_master.py
 written in Python3
 author: C. Lockhart <chris@lockhartlab.org>
 """
 
-from .increment_version import *
+from _scripts.increment_version import *
 from izzy.io import Git
 
+# Connect to git repository
+git = Git()
+
+# We must be on dev branch
+branch = git.get_branch()
+assert branch == 'dev', branch
 
 # Increment version; print out string
 version = increment_version()
 print('package version: {}\n'.format(version))
 
-# Connect to git repository, tag, add files, commit, push
-git = Git()
-git.tag('v' + version)
+# Commit any uncommitted changes
 git.add('-A')
 git.commit(input('Commit message: '))
+
+# Checkout master, merge, tag, and push
+git.checkout('master')
+git.merge('dev')
+git.tag('v' + version)
 git.push(remote='origin', branch='master', options='--tags')
 
-# TODO this merge broke the ability to run pypi deployment on travis-ci

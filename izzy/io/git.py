@@ -6,13 +6,14 @@ author: C. Lockhart <chris@lockhartlab.org>
 
 import subprocess
 
-
 # Contents
 __all__ = [
     'Git'
 ]
 
+
 # Class to help with git version control
+# TODO clean up this method
 class Git:
     """
     This class allows one to upload and retrieve files from a git repository
@@ -32,7 +33,7 @@ class Git:
         self.cwd = cwd
 
     # Helper function to execute git commands
-    def _execute(self, cmd, verbose=True):
+    def _execute(self, cmd, verbose=True, output=False):
         """
         Execute git commands
 
@@ -53,7 +54,12 @@ class Git:
             print(cmd)
 
         # Run the command and wait for it to finish
-        subprocess.Popen(cmd, cwd=self.cwd, shell=True).wait()
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, cwd=self.cwd, shell=True)
+        process.wait()
+
+        # Output?
+        if output:
+            return process.communicate()[0].strip().decode('UTF-8')
 
     # Add files to the repository
     def add(self, filename='', options=''):
@@ -107,7 +113,7 @@ class Git:
             Name of current branch
         """
 
-        self._execute('git rev-parse --abbrev-ref HEAD')
+        return self._execute('git rev-parse --abbrev-ref HEAD', output=True)
 
     # Merge branch to the current one
     def merge(self, branch):
