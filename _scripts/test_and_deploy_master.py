@@ -38,8 +38,8 @@ class Git:
     def commit(self, message=''):
         self._execute('git commit -m "{}"'.format(message))
 
-    def push(self, remote='origin', branch='master'):
-        self._execute('git push {0} {1}'.format(remote, branch))
+    def push(self, remote='origin', branch='master', options=''):
+        self._execute('git push {0} {1} {2}'.format(options, remote, branch))
 
     def tag(self, tag):
         self._execute('git tag {}'.format(tag))
@@ -75,22 +75,13 @@ def increment_version():
 # Run tests; (script will stop if test fails)
 test()
 
-# Print out version string
+# Increment version and print out string
 version = increment_version()
 print(version + '\n')
 
-# Connect to git repository
+# Connect to git repository, tag, add files, commit, push
 git = Git()
-
-# Tag
 git.tag('v' + version)
-
-# Add our files to the repository
 git.add('-A')
-
-# Commit
 git.commit(input('Commit message: '))
-
-# Push
-print(git.which())
-git.push('origin', 'master')
+git.push(remote='origin', branch='master', options='--tags')
