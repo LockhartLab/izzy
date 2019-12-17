@@ -1,51 +1,8 @@
 
+from izzy.io import Git
 from izzy.tests import test
 
-import subprocess
 import yaml
-
-
-# Class to help with git version control
-class Git:
-    # Initialize version of Git class
-    def __init__(self, cwd='.'):
-        """
-        
-        Parameters
-        ----------
-        cwd
-        """
-        self.cwd = cwd
-
-    def _execute(self, cmd):
-        print(cmd)
-        subprocess.Popen(cmd, cwd=self.cwd, shell=True).wait()
-
-    def add(self, filename):
-        """
-
-
-        Parameters
-        ----------
-        filename
-
-        Returns
-        -------
-
-        """
-        self._execute('git add {}'.format(filename))
-
-    def commit(self, message=''):
-        self._execute('git commit -m "{}"'.format(message))
-
-    def push(self, remote='origin', branch='master', options=''):
-        self._execute('git push {0} {1} {2}'.format(options, remote, branch))
-
-    def tag(self, tag):
-        self._execute('git tag {}'.format(tag))
-
-    def which(self):
-        self._execute('where git')
 
 
 # Helper function to increment the package version
@@ -75,9 +32,9 @@ def increment_version():
 # Run tests; (script will stop if test fails)
 test()
 
-# Increment version and print out string
+# Increment version; print out string
 version = increment_version()
-print(version + '\n')
+print('package version: {}\n'.format(version))
 
 # Connect to git repository, tag, add files, commit, push
 git = Git()

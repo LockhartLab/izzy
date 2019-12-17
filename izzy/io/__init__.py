@@ -1,8 +1,10 @@
 
+from . import git
+from . import google
+
+from .git import *
 from .google import *
 
-__all__ = [
-    'authenticate',
-    'BigQuery',
-    'GSheet',
-]
+# Contents
+__all__ = git.__all__
+__all__ += google.__all__
