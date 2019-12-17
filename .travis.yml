@@ -10,8 +10,8 @@ script:
 
 # after a successful test, update build with new version number
 after_success:
-  - bash _scripts/build_docs.sh
-  - bash _scripts/update_build.sh
+#  - bash _scripts/build_docs.sh
+#  - bash _scripts/update_build.sh
   - bash <(curl -s https://codecov.io/bash)
 
 # deploy to pypi

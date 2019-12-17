@@ -1,40 +1,3 @@
-<<<<<<< HEAD
-#!/bin/bash
-
-# Run tests
-python -m izzy/tests/test.py || exit
-
-
-
-# current commit
-commit=$(git log --format="%H" -n 1)
-echo "current commit=${commit}"
-
-# checkout git master
-#git checkout -qf master
-git checkout new
-git merge -s ours "$commit"
-
-# configure git
-git config --global user.name "travis"
-git config --global user.email "travis"
-
-# increment version
-version=$(python _scripts/increment_version.py)
-
-# update git tag
-
-
-# upload to git without triggering TravisCI again
-cat version.yml
-git add version.yml
-git add izzy/_version.py
-git add docs/build/*
-git add docs/source/api/generated/*
-git commit -m "updating docs and version [ci skip]"
-git merge master
-git push -fq https://doclockh:"${GIT_API_KEY}"@github.com/"${TRAVIS_REPO_SLUG}".git master
-=======
 
 from izzy.tests import test
 
@@ -103,11 +66,11 @@ def increment_version():
 
 
 # Run tests; (script will stop if test fails)
-# test()
+test()
 
 # Print out version string
-# version = increment_version()
-# print(version + '\n')
+version = increment_version()
+print(version + '\n')
 
 # TODO Update git tag
 
@@ -121,12 +84,12 @@ files = [
     'docs/build/*',
     'docs/source/api/generated/*'
 ]
-for file in files:
-    git.add(file)
+# for file in files:
+#     git.add(file)
+git.add('-A')
 
 # Commit
 git.commit(input('Commit message: '))
 
 # Push
 git.push('origin', 'master')
->>>>>>> 7ad5a27... test
