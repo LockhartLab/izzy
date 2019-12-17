@@ -1,3 +1,22 @@
 package version: 0.3.8
 
 git checkout master
+error: Your local changes to the following files would be overwritten by checkout:
+	_logs/deploy_to_master.log
+Please commit your changes or stash them before you switch branches.
+Aborting
+git tag v0.3.8
+git merge dev
+Already up to date.
+git add  -A
+warning: LF will be replaced by CRLF in _logs/build_documentation.log.
+The file will have its original line endings in your working directory
+warning: LF will be replaced by CRLF in _logs/deploy_to_master.log.
+The file will have its original line endings in your working directory
+Commit message: git commit -m "Testing out merge with dev"
+[dev ce00255] Testing out merge with dev
+ 6 files changed, 35 insertions(+), 194 deletions(-)
+ rewrite _logs/deploy_to_master.log (99%)
+git push --tags origin master
+To https://github.com/LockhartLab/izzy.git
+ * [new tag]         v0.3.8 -> v0.3.8

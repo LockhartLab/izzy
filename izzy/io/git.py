@@ -96,6 +96,19 @@ class Git:
 
         self._execute('git commit -m "{}"'.format(message))
 
+    # Get the current branch
+    def get_branch(self):
+        """
+        Return the name of the current branch
+
+        Returns
+        -------
+        str
+            Name of current branch
+        """
+
+        self._execute('git rev-parse --abbrev-ref HEAD')
+
     # Merge branch to the current one
     def merge(self, branch):
         """
