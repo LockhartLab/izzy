@@ -39,9 +39,11 @@ def increment_version():
 version = increment_version()
 print('package version: {}\n'.format(version))
 
-# Connect to git repository, tag, add files, commit, push
+# Connect to git repository, tag, merge (if necessary), add files, commit, push
 git = Git()
+git.checkout('master')
 git.tag('v' + version)
+git.merge('dev')
 git.add('-A')
 git.commit(input('Commit message: '))
 git.push(remote='origin', branch='master', options='--tags')

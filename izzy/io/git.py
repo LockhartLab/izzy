@@ -70,6 +70,19 @@ class Git:
 
         self._execute('git add {0} {1}'.format(options, filename))
 
+    # Checkout branch
+    def checkout(self, branch):
+        """
+        Checkout a branch
+
+        Parameters
+        ----------
+        branch : str
+            Branch to checkout
+        """
+
+        self._execute('git checkout {}'.format(branch))
+
     # Commit files
     def commit(self, message=''):
         """
@@ -82,6 +95,19 @@ class Git:
         """
 
         self._execute('git commit -m "{}"'.format(message))
+
+    # Merge branch to the current one
+    def merge(self, branch):
+        """
+        Merge `branch` to current
+
+        Parameters
+        ----------
+        branch : str
+            Branch to merge
+        """
+
+        self._execute('git merge {}'.format(branch))
 
     # Push branch to remote
     def push(self, remote='origin', branch='master', options=''):
