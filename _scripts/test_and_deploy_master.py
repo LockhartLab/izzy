@@ -18,6 +18,7 @@ class Git:
         self.cwd = cwd
 
     def _execute(self, cmd):
+        print(cmd)
         subprocess.Popen(cmd, cwd=self.cwd, shell=True).wait()
 
     def add(self, filename):
@@ -40,6 +41,8 @@ class Git:
     def push(self, remote='origin', branch='master'):
         self._execute('git push {0} {1}'.format(remote, branch))
 
+    def which(self):
+        self._execute('where git')
 
 # Helper function to increment the package version
 def increment_version():
@@ -78,18 +81,11 @@ print(version + '\n')
 git = Git()
 
 # Add our files to the repository
-files = [
-    'version.yml',
-    'izzy/_version.py',
-    'docs/build/*',
-    'docs/source/api/generated/*'
-]
-# for file in files:
-#     git.add(file)
 git.add('-A')
 
 # Commit
 git.commit(input('Commit message: '))
 
 # Push
+print(git.which())
 git.push('origin', 'master')
