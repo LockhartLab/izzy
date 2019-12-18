@@ -7,6 +7,7 @@ author: C. Lockhart <chris@lockhartlab.org>
 
 from izzy.tests import TestGeneric, TestMetrics
 
+from hypothesis import settings
 import sys
 import unittest
 
@@ -16,6 +17,10 @@ test_cases = [
     TestGeneric,
     TestMetrics
 ]
+
+# Hypothesis settings
+settings.register_profile('lenient', deadline=None)
+settings.load_profile('lenient')
 
 
 # Function to run tests
