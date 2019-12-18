@@ -8,7 +8,7 @@ from .io import *
 from .misc import *
 from .regression import *
 from .tests import *
-from ._version import __version__
+from .version import __version__
 from .viz import *
 
 __all__ = [
