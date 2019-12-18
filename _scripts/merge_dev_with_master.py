@@ -18,9 +18,10 @@ assert branch == 'dev', branch
 version = increment_version()
 print('package version: {}\n'.format(version))
 
-# Commit any uncommitted changes
+# Add, commit, and push any uncommitted changes
 git.add('-A')
 git.commit(input('Commit message: '))
+git.push(remote='origin', branch='dev')
 
 # Checkout master, merge, tag, and push
 git.checkout('master')
