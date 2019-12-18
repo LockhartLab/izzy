@@ -4,20 +4,20 @@ written in Python3
 author: C. Lockhart <chris@lockhartlab.org>
 """
 
-import numpy as np
 from setuptools import setup
-import yaml
 
 
 # Read version
 with open('version.yml', 'r') as f:
-    version_data = yaml.safe_load(f.read())
+    data = f.read().splitlines()
+version_dict = dict([element.split(': ') for element in data])
 
 # Convert the version_data to a string
-version = '.'.join([str(version_data[key]) for key in ['major', 'minor', 'patch']])
+version = '.'.join([str(version_dict[key]) for key in ['major', 'minor', 'patch']])
 
 # Read in requirements.txt
-requirements = np.loadtxt('requirements.txt', dtype='str').tolist()
+with open('requirements.txt', 'r') as f:
+    requirements = f.read().splitlines()
 
 # Setup
 setup(
