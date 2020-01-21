@@ -1,11 +1,11 @@
 """
 deploy_to_dev.py
 written in Python3
-author: C. Lockhart
+author: C. Lockhart <chris@lockhartlab.org>
 """
 
 
-from izzy.io import Git
+from gitpipe import Git
 
 
 # Connect to repository

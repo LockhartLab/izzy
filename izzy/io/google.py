@@ -36,7 +36,7 @@ class BigQuery:
 
         # Save information
         self.project_id = project_id
-        self.credentials = self.credentials
+        self.credentials = credentials
         self.client = None
 
     # Connection check

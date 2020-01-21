@@ -11,6 +11,8 @@ from .tests import *
 from .version import __version__
 from .viz import *
 
+# TODO pandas.modin for speedup? Make this an option
+
 __all__ = [
     'classification',
     'datasets',

@@ -399,6 +399,14 @@ def aic(log_likelihood, degrees_of_freedom):
     return -2. * log_likelihood + 2 * degrees_of_freedom
 
 
+# Banana plot
+# TODO give banana plot a better name
+# TODO Sorted score vs recall is the official plot
+# TODO you can generalize this and apply it to precision, f1, etc.
+def banana_plot():
+    pass
+
+
 # BIC
 def bic(log_likelihood, degrees_of_freedom, num_samples):
     """
@@ -587,6 +595,7 @@ def gini(y_true, y_prob, sample_weights=None):
 
 
 # KS statistic
+# TODO add weights : https://stackoverflow.com/questions/40044375/how-to-calculate-the-kolmogorov-smirnov-statistic-between-two-weighted-samplesp
 def ks(y_true, y_prob, sample_weights=None):
     """
     Compute the Kolmogorov-Smirnov (KS) test statistic to evaluate model performance
@@ -621,7 +630,7 @@ def ks(y_true, y_prob, sample_weights=None):
     y_prob = _coerce_y_prob(y_prob, assert_binomial=True)[:, 1]
 
     # Compute KS statistic
-    statistic, p_value = ks_2samp(y_prob[y_true == classes[0]], y_prob[y_true == classes[1]])
+    statistic, p_value = ks_2samp(y_prob[y_true == classes[0]], y_prob[y_true == classes[1]], alternative='two-sided')
 
     # Return KS statistic
     return statistic

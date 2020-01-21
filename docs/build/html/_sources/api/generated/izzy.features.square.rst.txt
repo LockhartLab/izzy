@@ -1,6 +1,0 @@
-izzy.features.square
-====================
-
-.. currentmodule:: izzy.features
-
-.. autofunction:: square

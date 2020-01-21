@@ -434,6 +434,14 @@
     <span class="k">return</span> <span class="o">-</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">log_likelihood</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">degrees_of_freedom</span></div>
 
 
+<span class="c1"># Banana plot</span>
+<span class="c1"># TODO give banana plot a better name</span>
+<span class="c1"># TODO Sorted score vs recall is the official plot</span>
+<span class="c1"># TODO you can generalize this and apply it to precision, f1, etc.</span>
+<span class="k">def</span> <span class="nf">banana_plot</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+
 <span class="c1"># BIC</span>
 <div class="viewcode-block" id="bic"><a class="viewcode-back" href="../../../api/generated/izzy.classification.bic.html#izzy.classification.bic">[docs]</a><span class="k">def</span> <span class="nf">bic</span><span class="p">(</span><span class="n">log_likelihood</span><span class="p">,</span> <span class="n">degrees_of_freedom</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -622,6 +630,7 @@
 
 
 <span class="c1"># KS statistic</span>
+<span class="c1"># TODO add weights : https://stackoverflow.com/questions/40044375/how-to-calculate-the-kolmogorov-smirnov-statistic-between-two-weighted-samplesp</span>
 <div class="viewcode-block" id="ks"><a class="viewcode-back" href="../../../api/generated/izzy.classification.ks.html#izzy.classification.ks">[docs]</a><span class="k">def</span> <span class="nf">ks</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">,</span> <span class="n">sample_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the Kolmogorov-Smirnov (KS) test statistic to evaluate model performance</span>
@@ -656,7 +665,7 @@
     <span class="n">y_prob</span> <span class="o">=</span> <span class="n">_coerce_y_prob</span><span class="p">(</span><span class="n">y_prob</span><span class="p">,</span> <span class="n">assert_binomial</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">]</span>
 
     <span class="c1"># Compute KS statistic</span>
-    <span class="n">statistic</span><span class="p">,</span> <span class="n">p_value</span> <span class="o">=</span> <span class="n">ks_2samp</span><span class="p">(</span><span class="n">y_prob</span><span class="p">[</span><span class="n">y_true</span> <span class="o">==</span> <span class="n">classes</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">y_prob</span><span class="p">[</span><span class="n">y_true</span> <span class="o">==</span> <span class="n">classes</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="n">statistic</span><span class="p">,</span> <span class="n">p_value</span> <span class="o">=</span> <span class="n">ks_2samp</span><span class="p">(</span><span class="n">y_prob</span><span class="p">[</span><span class="n">y_true</span> <span class="o">==</span> <span class="n">classes</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">y_prob</span><span class="p">[</span><span class="n">y_true</span> <span class="o">==</span> <span class="n">classes</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">alternative</span><span class="o">=</span><span class="s1">&#39;two-sided&#39;</span><span class="p">)</span>
 
     <span class="c1"># Return KS statistic</span>
     <span class="k">return</span> <span class="n">statistic</span></div>
