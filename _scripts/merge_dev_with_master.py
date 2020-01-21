@@ -5,7 +5,7 @@ author: C. Lockhart <chris@lockhartlab.org>
 """
 
 from _scripts.increment_version import *
-from izzy.io import Git
+from gitpipe import Git
 
 # Connect to git repository
 git = Git()
