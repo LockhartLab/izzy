@@ -13,4 +13,3 @@ pyyaml
 scikit-learn
 scipy
 six
-sphinx

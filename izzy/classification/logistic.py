@@ -24,6 +24,7 @@ __all__ = [
 
 # LogisticRegression class
 # TODO understand OVR vs. multiclass
+# TODO devise LogisticRegression that does not penalize the intercept
 class LogisticRegression(_LogisticRegression, GenericModel):
     """
     The class ``LogisticRegression`` fits a logistic regression model

@@ -1,9 +1,11 @@
 """
-io.py
-=====
+google.py
+written in Python3
+author: C. Lockhart <chris@lockhartlab.org>
 """
 
 from hashlib import md5
+from glob import iglob
 from googleapiclient.discovery import build
 from google.cloud import bigquery
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -12,14 +14,7 @@ import numpy as np
 import os.path
 import pandas as pd
 import pickle
-import tempfile
-
-
-# Contents
-__all__ = [
-    'BigQuery',
-    'GSheet'
-]
+from tempfile import gettempdir
 
 
 # Allows data extract from BigQuery database
@@ -108,7 +103,7 @@ class BigQuery:
 
 
 # Class for reading & writing to Google Sheets
-class GSheet:
+class GoogleSheet:
     """
     Read and write to Google sheets.
     """
@@ -235,17 +230,29 @@ class GSheet:
 # Authenticate:
 def authenticate(endpoint, credentials='credentials.json'):
     """
+    Authenticate Google
 
     Parameters
     ----------
     endpoint : str
+        Google scope to authenticate
     credentials : str
+        Google credentials
 
     Returns
     -------
+    google.oauth2.credentials.Credentials
+        Authenticated credentials
     """
+
+    # Type check
+    if not isinstance(endpoint, str):
+        raise AttributeError('endpoint must be a string')
+    if not isinstance(credentials, str):
+        raise AttributeError('credentials must be a string')
+
     # Name our authentication token and place it in tempdir
-    token_name = os.path.join(tempfile.gettempdir(), md5(endpoint.encode()).hexdigest() + '.pickle')
+    token_name = os.path.join(gettempdir(), 'google_' + md5(endpoint.encode()).hexdigest() + '.pickle')
 
     # Dummy for authenticated credentials
     _credentials = None
@@ -263,7 +270,8 @@ def authenticate(endpoint, credentials='credentials.json'):
 
         # Otherwise, generate
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(credentials, endpoint)
+            # BUGFIX: #1 (https://github.com/LockhartLab/izzy/issues/1)
+            flow = InstalledAppFlow.from_client_secrets_file(credentials, [endpoint])
             _credentials = flow.run_local_server()
 
         # Save the new authenticated credentials
@@ -273,3 +281,8 @@ def authenticate(endpoint, credentials='credentials.json'):
     # Return the authenticated credentials
     return _credentials
 
+
+# Clean stored credentials
+def clean_stored_credentials():
+    for file in iglob(os.path.join(gettempdir(), 'google_*.pickle')):
+        os.remove(file)

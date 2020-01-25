@@ -25,7 +25,7 @@ git.push(remote='origin', branch='dev')
 
 # Checkout master, merge, tag, and push
 git.checkout('master')
-git.merge('dev')
+git.merge(branch='dev', options='--no-edit')
 git.tag('v' + version)
 git.push(remote='origin', branch='master', options='--tags')
 
