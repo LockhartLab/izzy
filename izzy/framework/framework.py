@@ -11,6 +11,10 @@ fs.transform()
 import pandas as pd
 
 
+# TODO https://docs.scipy.org/doc/numpy/user/basics.rec.html
+# TODO sort_values by magnitude
+
+
 # Features is an annotated pandas DataFrame
 class Features:
     """

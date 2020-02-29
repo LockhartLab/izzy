@@ -781,6 +781,7 @@ def roc(y_true, y_prob, sample_weights=None):
 
 
 # Area under ROC curve
+# TODO make sure that sample_weights doesn't include class weights
 def roc_auc(y_true, y_prob, sample_weights=None):
     """
     Compute the area under the receiver operating characteristic (ROC) curve

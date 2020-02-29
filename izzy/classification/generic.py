@@ -25,6 +25,8 @@ __all__ = [
     'is_model_instance',
 ]
 
+# TODO model preparation workflow? For instance, if regularized, check that variables are standardized (https://www.quora.com/Why-do-we-normalize-the-data?share=1)
+
 
 # GenericModel class
 class GenericModel(ABC):

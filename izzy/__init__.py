@@ -11,18 +11,9 @@ from .tests import *
 from .version import __version__
 from .viz import *
 
-# TODO pandas.modin for speedup? Make this an option
+from . import datasets
 
-__all__ = [
-    'classification',
-    'datasets',
-    'eda',
-    'features',
-    'io',
-    'misc',
-    'regression',
-    'set_theme',  # from defaults
-    'tests',
-    '__version__',
-    'viz',
-]
+
+# TODO pandas.modin for speedup? Make this an option
+__all__ = []
+__all__.extend(datasets.__all__)

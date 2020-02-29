@@ -8,6 +8,7 @@ from izzy.features import granulate
 from izzy.misc import flag_numeric, Refunction, get_name, pivot
 from izzy.classification import create_engine_from_string, is_model_instance
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -335,9 +336,19 @@ def fviz2d(**kwargs):
 
 
 # To be deprecated, alias of fviz1d
-def risk1d(**kwargs):
-    return fviz1d(**kwargs)
-
+# TODO specify arguments
+# def risk1d(**kwargs):
+    # return fviz1d(**kwargs)
+def risk1d(x, y, bins=10):
+    # TODO is granulate a dumb name? This could just be called bin or bucket
+    df = pd.DataFrame({
+        'x': granulate(x, bins=bins, mode='equal'),
+        'y': y
+    })
+    xy = df.pivot_table(index='x', values='y', aggfunc='mean')
+    plt.figure()
+    plt.plot(xy.index.values, xy['y'].values)
+    plt.show()
 
 # To be deprecated, alias of fviz2d
 def risk2d(**kwargs):

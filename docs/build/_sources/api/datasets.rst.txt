@@ -3,6 +3,14 @@ izzy.datasets
 
 .. currentmodule:: izzy.datasets
 
+Classes
+~~~~~~~
+
+.. autosummary::
+   :toctree: generated
+
+   RandomModelingDataset
+
 Functions
 ~~~~~~~~~
 
@@ -10,3 +18,4 @@ Functions
    :toctree: generated
 
    random_dataset
+   random_modeling_dataset
