@@ -9,13 +9,17 @@ author: C. Lockhart <chris@lockhartlab.org>
 from izzy.classification import LogisticRegression
 from izzy.classification.metrics import *
 
-from hypothesis import given
+from hypothesis import given, settings
 import hypothesis.strategies as st
 import numpy as np
 import pandas as pd
 from sklearn.datasets import load_breast_cancer
 import sklearn.metrics as sk_m
 import unittest
+
+# Hypothesis settings
+settings.register_profile('lenient', deadline=None)
+settings.load_profile('lenient')
 
 
 # Test metrics

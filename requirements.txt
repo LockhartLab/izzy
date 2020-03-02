@@ -1,10 +1,11 @@
 codecov
 coverage
-hypothesis
+gitpipe
 google-api-python-client
 google-cloud-bigquery==1.22.0
 google_auth
 google_auth_oauthlib
+hypothesis
 matplotlib
 numpy
 openpyxl
@@ -12,4 +13,5 @@ pandas
 pyyaml
 scikit-learn
 scipy
+sphinx
 six

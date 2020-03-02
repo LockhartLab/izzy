@@ -28,9 +28,12 @@ plot_defaults = {
 
 # Allow users to set theme
 def set_theme(theme='light', font_size=18):
+    # Convert theme to lowercase
+    theme = theme.lower()
+
     # Translate theme
     _theme = 'seaborn'
-    if theme == 'dark':
+    if theme in ('dark', 'darcula'):
         _theme = 'dark_background'
 
     # Style defaults
@@ -46,6 +49,13 @@ def set_theme(theme='light', font_size=18):
         'xtick.labelsize': font_size,
         'ytick.labelsize': font_size
     })
+
+    # If darcula, change some extra parameters
+    if theme == 'darcula':
+        plt.rcParams.update({
+            'figure.facecolor': '#2b2b2b',
+            'axes.facecolor': '#2b2b2b'
+        })
 
 
 # By default, set the theme to light

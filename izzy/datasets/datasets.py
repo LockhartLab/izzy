@@ -8,6 +8,7 @@ Datasets for testing / analysis.
 
 import numpy as np
 import pandas as pd
+from privatize import privatize
 
 
 # Random dataset
@@ -50,10 +51,17 @@ def random_dataset(n_rows=100000, n_columns=2, null_proportion=0.25):
     return df
 
 
+# noinspection PyDunderSlots,PyUnresolvedReferences
 class RandomModelingDataset:
     """
     Create a random dataset with a binary outcome for modeling tests
     """
+
+    __slots__ = '_class_balance', '_data', '_n_observations', '_n_predictors'
+
+    n_observations = privatize('_n_observations', dtype='int')
+    n_predictors = privatize('_n_predictors', dtype='int')
+    class_balance = privatize('_class_balance', dtype='float')
 
     # Initialize class instance
     def __init__(self, n_observations=100000, n_predictors=5, class_balance=0.5):
@@ -73,7 +81,7 @@ class RandomModelingDataset:
 
         # Save parameters
         self.n_observations = n_observations
-        self.n_predictors = None
+        self.n_predictors = 0
         self.class_balance = class_balance
 
         # Define outcome
@@ -120,10 +128,8 @@ class RandomModelingDataset:
         result[condition] = np.random.choice(a=values_1, size=np.sum(condition))
 
         # Save
-        if self.n_predictors is None:
-            self.n_predictors = -1
         self.n_predictors += 1
-        self._data['feature' + str(self.n_predictors)] = result
+        self._data['feature' + str(self.n_predictors - 1)] = result
 
 
 # Wrapper function for RandomModelingDataset

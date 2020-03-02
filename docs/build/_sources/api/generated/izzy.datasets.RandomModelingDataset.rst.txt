@@ -5,3 +5,7 @@ izzy.datasets.RandomModelingDataset
 
 .. autoclass:: RandomModelingDataset
    :members:
+   :no-undoc-members:
+
+   .. rubric:: Methods:
+   .. automethod:: __init__

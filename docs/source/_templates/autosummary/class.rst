@@ -4,4 +4,7 @@
 
 .. autoclass:: {{ objname }}
    :members:
+   :no-undoc-members:
 
+   .. rubric:: Methods:
+   .. automethod:: __init__

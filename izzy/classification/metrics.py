@@ -8,6 +8,7 @@ author: C. Lockhart <chris@lockhartlab.org>
 
 from ._utilities import _coerce_sample_weights, _coerce_y_prob
 
+from functools import partial
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -371,6 +372,26 @@ def accuracy(y_true, y_pred, sample_weights=None):
     """
 
     return dict(zip(np.unique(y_true), _accuracy(confusion_matrix(y_true, y_pred, sample_weights).values)))
+
+
+# Accuracy plot
+def accuracy_plot(y_true, y_pred, class_weight=None):
+    """
+    Plot the accuracy vs the threshold
+
+    Parameters
+    ----------
+    y_true
+    y_pred
+    class_weight
+
+    Returns
+    -------
+
+    """
+
+    thresholds = np.linspace(0, 1, 0.1)
+    accuracies = np.vectorize(accuracy(y))
 
 
 # AIC
