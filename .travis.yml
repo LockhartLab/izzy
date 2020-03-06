@@ -5,7 +5,8 @@ python: 3.7
 # run all izzy tests
 script:
   - cp izzy/tests/test.py .
-  - python -m coverage run test.py
+#  - python -m coverage run test.py
+  - coverage run -m unittest test.py
   - rm test.py
 
 # after a successful test, upload to codecov.io
