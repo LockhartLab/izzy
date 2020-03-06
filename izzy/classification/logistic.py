@@ -16,14 +16,8 @@ from scipy.stats import norm
 from sklearn.linear_model import LogisticRegression as _LogisticRegression
 
 
-# Contents
-__all__ = [
-    'LogisticRegression'
-]
-
-
 # LogisticRegression class
-# TODO understand OVR vs. multiclass
+# TODO OVR vs. multiclass
 # TODO devise LogisticRegression that does not penalize the intercept
 class LogisticRegression(_LogisticRegression, GenericModel):
     """
@@ -35,25 +29,18 @@ class LogisticRegression(_LogisticRegression, GenericModel):
     """
 
     # Initialize class instance
-    def __init__(self, **kwargs):
+    def __init__(self, solver='lbfgs', **kwargs):
         """
         Initialize an instance of LogisticRegression
-
-        Calls parent class from sklearn.linear_model.LogisiticRegression
         """
 
-        # Add solver?
-        if 'solver' not in kwargs:
-            kwargs['solver'] = 'lbfgs'
+        # Call parent class
+        _LogisticRegression.__init__(self, solver=solver, **kwargs)
 
         # If solver is izzy, we need to trick sklearn
         # TODO at some point in time, we can do a more elegant solution. This way, we still initialize class from ext
-        if kwargs['solver'] == 'izzy':
+        if solver == 'izzy':
             self.solver = 'izzy'
-            kwargs['solver'] = 'lbfgs'
-
-        # Call parent class
-        _LogisticRegression.__init__(self, **kwargs)
 
         # Class variables
         self.coefficients = None

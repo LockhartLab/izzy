@@ -15,7 +15,7 @@ Metrics
 
 These are metrics for assessing the performance of classification algorithms.
 
-.. currentmodule:: izzy.classification.metrics
+.. currentmodule:: izzy.classification
 
 .. autosummary::
 

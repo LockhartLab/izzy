@@ -1,8 +1,6 @@
 """
 generic.py
-==========
 written in Python3
-
 author: C. Lockhart <chris@lockhartlab.org>
 """
 
@@ -16,14 +14,6 @@ import numpy as np
 import pandas as pd
 from scipy.linalg import lapack
 
-
-# Contents
-__all__ = [
-    'classify',
-    'format_x',
-    'GenericModel',
-    'is_model_instance',
-]
 
 # TODO model preparation workflow? For instance, if regularized, check that variables are standardized (https://www.quora.com/Why-do-we-normalize-the-data?share=1)
 
@@ -43,9 +33,9 @@ class GenericModel(ABC):
         # Identifier that tells us this in an izzy package
         self._package = 'izzy'
 
-        # Number of observations / features
-        self.n_obs = None
-        self.n_features = None
+        # Number of observations and predictors
+        self.n_observations = None
+        self.n_predictors = None
 
         # Class information
         self.classes = None

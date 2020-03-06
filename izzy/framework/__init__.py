@@ -1,6 +1,7 @@
 
-from .framework import Features
+from .framework import *
 
 __all__ = [
     'Features',
+    'sanitize_dataframe'
 ]

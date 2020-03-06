@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>izzy.classification.metrics &#8212; izzy 0.3.23 documentation</title>
+    <title>izzy.classification.metrics &#8212; izzy 0.3.24 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -22,7 +22,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.23 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.24 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -50,31 +50,6 @@
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">coo_matrix</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">ks_2samp</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
-
-
-<span class="c1"># Contents</span>
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;accuracy&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;aic&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;bic&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;confusion_matrix&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;f1&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;false_negatives&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;false_positives&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;gini&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ks&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;performance_report&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;precision&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;recall&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;roc&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;roc_auc&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;roc_plot&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;sensitivity&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;specificity&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;true_negatives&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;true_positives&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;weight_of_evidence&#39;</span>
-<span class="p">]</span>
 
 
 <span class="c1"># Accuracy computed from confusion matrix</span>
@@ -400,10 +375,11 @@
 <span class="sd">    dict</span>
 <span class="sd">        Accuracy for each class</span>
 
-<span class="sd">    Unit Tests</span>
-<span class="sd">    ----------</span>
-<span class="sd">    :func:`izzy.tests.classification.TestMetrics.test_accuracy`</span>
-<span class="sd">    :func:`izzy.tests.classification.TestMetrics.test_accuracy_random`</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Related unit tests:</span>
+<span class="sd">    1. :meth:`izzy.tests.classification.TestMetrics.test_accuracy`</span>
+<span class="sd">    2. :meth:`izzy.tests.classification.TestMetrics.test_accuracy_random`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y_true</span><span class="p">),</span> <span class="n">_accuracy</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">sample_weights</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">)))</span></div>
@@ -539,7 +515,8 @@
     <span class="n">cm</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">cm_values</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">classes</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
 
     <span class="c1"># Ensure that the order of index and columns matches</span>
-    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">cm</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span> <span class="s1">&#39;confusion matrix order of index and columns must match&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">cm</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;confusion matrix order of index and columns must match&#39;</span><span class="p">)</span>
 
     <span class="c1"># Return</span>
     <span class="k">return</span> <span class="n">cm</span></div>
@@ -1008,7 +985,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.23 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.24 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

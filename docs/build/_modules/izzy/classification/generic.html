@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>izzy.classification.generic &#8212; izzy 0.3.23 documentation</title>
+    <title>izzy.classification.generic &#8212; izzy 0.3.24 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -22,7 +22,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.23 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.24 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -35,9 +35,7 @@
   <h1>Source code for izzy.classification.generic</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">generic.py</span>
-<span class="sd">==========</span>
 <span class="sd">written in Python3</span>
-
 <span class="sd">author: C. Lockhart &lt;chris@lockhartlab.org&gt;</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
@@ -51,14 +49,6 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">lapack</span>
 
-
-<span class="c1"># Contents</span>
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;classify&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;format_x&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;GenericModel&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;is_model_instance&#39;</span><span class="p">,</span>
-<span class="p">]</span>
 
 <span class="c1"># TODO model preparation workflow? For instance, if regularized, check that variables are standardized (https://www.quora.com/Why-do-we-normalize-the-data?share=1)</span>
 
@@ -78,9 +68,9 @@
         <span class="c1"># Identifier that tells us this in an izzy package</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_package</span> <span class="o">=</span> <span class="s1">&#39;izzy&#39;</span>
 
-        <span class="c1"># Number of observations / features</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_obs</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Number of observations and predictors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_observations</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_predictors</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># Class information</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="kc">None</span>
@@ -654,7 +644,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.23 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.24 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

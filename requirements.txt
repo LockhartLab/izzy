@@ -1,11 +1,8 @@
 codecov
 coverage
 gitpipe
-google-api-python-client
-google-cloud-bigquery==1.22.0
-google_auth
-google_auth_oauthlib
 hypothesis
+iox
 matplotlib
 numpy
 openpyxl
@@ -16,3 +13,4 @@ scikit-learn
 scipy
 sphinx
 six
+typelike>=0.0.31

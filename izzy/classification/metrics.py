@@ -17,31 +17,6 @@ from scipy.stats import ks_2samp
 from sklearn.metrics import roc_auc_score
 
 
-# Contents
-__all__ = [
-    'accuracy',
-    'aic',
-    'bic',
-    'confusion_matrix',
-    'f1',
-    'false_negatives',
-    'false_positives',
-    'gini',
-    'ks',
-    'performance_report',
-    'precision',
-    'recall',
-    'roc',
-    'roc_auc',
-    'roc_plot',
-    'sensitivity',
-    'specificity',
-    'true_negatives',
-    'true_positives',
-    'weight_of_evidence'
-]
-
-
 # Accuracy computed from confusion matrix
 def _accuracy(cm):
     """
@@ -365,10 +340,11 @@ def accuracy(y_true, y_pred, sample_weights=None):
     dict
         Accuracy for each class
 
-    Unit Tests
-    ----------
-    :func:`izzy.tests.classification.TestMetrics.test_accuracy`
-    :func:`izzy.tests.classification.TestMetrics.test_accuracy_random`
+    Notes
+    -----
+    Related unit tests:
+    1. :meth:`izzy.tests.classification.TestMetrics.test_accuracy`
+    2. :meth:`izzy.tests.classification.TestMetrics.test_accuracy_random`
     """
 
     return dict(zip(np.unique(y_true), _accuracy(confusion_matrix(y_true, y_pred, sample_weights).values)))
@@ -504,7 +480,8 @@ def confusion_matrix(y_true, y_pred, sample_weights=None):
     cm = pd.DataFrame(cm_values, index=classes, columns=classes)
 
     # Ensure that the order of index and columns matches
-    assert all(cm.index.values == cm.columns), 'confusion matrix order of index and columns must match'
+    if not all(cm.index.values == cm.columns):
+        raise ValueError('confusion matrix order of index and columns must match')
 
     # Return
     return cm

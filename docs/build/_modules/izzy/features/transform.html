@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>izzy.features.transform &#8212; izzy 0.3.23 documentation</title>
+    <title>izzy.features.transform &#8212; izzy 0.3.24 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -22,7 +22,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.23 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.24 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -40,11 +40,74 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">izzy.misc</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
 <span class="kn">from</span> <span class="nn">izzy.regression</span> <span class="kn">import</span> <span class="n">sigmoid_fit</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">typelike</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
+
+
+<span class="c1"># Bucket</span>
+<span class="k">def</span> <span class="nf">bucket</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;equal&#39;</span><span class="p">,</span> <span class="n">retbins</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transforms `x` into coarse bins</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : ArrayLike</span>
+<span class="sd">       Array to granulate</span>
+<span class="sd">    bins : int or ArrayLike</span>
+<span class="sd">        If int, produce that many bins according to `mode`; otherwise, use bins</span>
+<span class="sd">    mode : str</span>
+<span class="sd">        Options include &#39;quantile&#39;, &#39;equal&#39;, &#39;left-equal&#39;, &#39;right-equal&#39;, &#39;binary&#39;, or &#39;distinct&#39;. Note that &#39;equal&#39;</span>
+<span class="sd">        and &#39;left-equal&#39; are synonyms. If mode = &#39;distinct&#39;, no transformation is performed. The mode = &#39;binary&#39; is the</span>
+<span class="sd">        same as &#39;distinct&#39;, except that we check that there are only two types of observations.</span>
+<span class="sd">    retbins : bool</span>
+<span class="sd">        Should the bins be returned?</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ArrayLike or (ArrayLike, ArrayLike)</span>
+<span class="sd">        Granulated array and (optional) bins</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Alias mode = &#39;equal&#39; to &#39;left-equal&#39;</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;equal&#39;</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s1">&#39;left-equal&#39;</span>
+
+    <span class="c1"># Minimum and maximum of array</span>
+    <span class="n">array_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">array_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="c1"># Assign labels for equal bin sizes using numpy.digitize</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;left-equal&#39;</span><span class="p">,</span> <span class="s1">&#39;right-equal&#39;</span><span class="p">):</span>
+        <span class="c1"># Is bins an integer? If so, we need to generate</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">):</span>
+            <span class="c1"># Create bins</span>
+            <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">array_min</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">array_max</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">bins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># If left-equal, set last bin to infinity. If right-equal, set first bin to -infinity.</span>
+            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;left-equal&#39;</span><span class="p">:</span>
+                <span class="n">bins</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+            <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;right-equal&#39;</span><span class="p">:</span>
+                <span class="n">bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+        <span class="c1"># Are these bins right-aligned?</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;left-equal&#39;</span> <span class="k">else</span> <span class="kc">True</span>
+
+        <span class="c1"># Transform array</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">right</span><span class="p">)</span>
+
+    <span class="c1"># Assign labels for quantiles</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;quantile&#39;</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">qcut</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">retbins</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">duplicates</span><span class="o">=</span><span class="s1">&#39;drop&#39;</span><span class="p">)</span>
+
+    <span class="c1"># If binary, check that there are only two types of observations</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;binary&#39;</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;expecting only two types of observations&#39;</span>
+
+    <span class="c1"># Return</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">retbins</span> <span class="k">else</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">bins</span><span class="p">)</span>
 
 
 <span class="c1"># Clip</span>
@@ -167,7 +230,7 @@
         <span class="n">right</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;left-equal&#39;</span> <span class="k">else</span> <span class="kc">True</span>
 
         <span class="c1"># Transform array</span>
-        <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">right</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">right</span><span class="p">)</span>
 
     <span class="c1"># Assign labels for quantiles</span>
     <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;quantile&#39;</span><span class="p">:</span>
@@ -347,7 +410,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.23 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.24 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

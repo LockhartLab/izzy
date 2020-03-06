@@ -11,6 +11,7 @@ from izzy.classification import create_engine_from_string, is_model_instance
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from typelike import ListLike
 
 
 # FeatureAnalyzer class
@@ -27,11 +28,11 @@ class FeatureAnalyzer:
 
         Parameters
         ----------
-        x : array-like
+        x : ListLike
             An independent variable to analyze
-        y : array-like
+        y : ListLike
             The outcome to analyze against
-        z : array-like
+        z : ListLike
             (Optional) A secondary feature for interaction analysis
         clean : bool
             Automatically clean the data by removing nulls and non-numeric values. (Default: True)
@@ -77,7 +78,7 @@ class FeatureAnalyzer:
             engine = create_engine_from_string(engine)
 
         # Verify that engine has all the appropriate methods
-        assert is_model_instance(engine), 'must be instance of izzy model engine'
+        # assert is_model_instance(engine), 'must be instance of izzy model engine (instance of %s)' % type(engine)
 
         # Set the engine
         self.engine = engine

@@ -1,20 +1,35 @@
 
-from . import generic
-from . import logistic
-from . import metrics
-from . import tree
-
 from .generic import *
 from .logistic import *
 from .metrics import *
 from .tree import *
 
 # Module contents
-__all__ = ['create_engine_from_string']
-__all__ += generic.__all__
-__all__ += logistic.__all__
-__all__ += metrics.__all__
-__all__ += tree.__all__
+__all__ = [
+    'accuracy',  # has unit tests
+    'aic',  # has unit tests
+    'bic',  # has unit tests
+    'confusion_matrix',  # has unit tests
+    'create_engine_from_string',
+    'f1',  # has unit tests
+    'false_negatives',  # has unit tests
+    'false_positives',  # has unit tests
+    'GenericModel',
+    'gini',  # has unit tests
+    'ks',  # has unit tests
+    'LogisticRegression',
+    'performance_report',
+    'precision',
+    'recall',
+    'roc',  # has unit tests
+    'roc_auc',  # has unit tests
+    'roc_plot',
+    'sensitivity',
+    'specificity',
+    'true_negatives',  # has unit tests
+    'true_positives',  # has unit tests
+    'weight_of_evidence'
+]
 
 
 # Create machine learning model engine from string

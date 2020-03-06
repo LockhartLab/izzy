@@ -13,6 +13,7 @@ from hypothesis import given, settings
 import hypothesis.strategies as st
 import numpy as np
 import pandas as pd
+from scipy.stats import ks_2samp
 from sklearn.datasets import load_breast_cancer
 import sklearn.metrics as sk_m
 import unittest
@@ -25,13 +26,14 @@ settings.load_profile('lenient')
 # Test metrics
 class TestMetrics(unittest.TestCase):
     # Test accuracy using simple model
+    @settings(deadline=None)
     @given(st.floats(min_value=0.2, max_value=0.8))
     def test_accuracy(self, threshold):
         # Compute y_pred
         y_true, y_pred = _get_model_data(threshold)
 
         # Compute accuracy simply
-        fn, fp, tn, tp = _get_fn_fp_tn_tn(y_true, y_pred, 2)
+        fn, fp, tn, tp = _get_fn_fp_tn_tp(y_true, y_pred, 2)
         acc1 = (tp + tn) / (tp + tn + fp + fn)
 
         # Compute accuracy using izzy function
@@ -41,13 +43,14 @@ class TestMetrics(unittest.TestCase):
         np.testing.assert_equal(acc1, acc2)
 
     # Test accuracy using random data
+    @settings(deadline=None)
     @given(st.integers(min_value=2, max_value=10), st.integers(min_value=100, max_value=100000))
     def test_accuracy_random(self, n_classes, n_samples):
         # Generate data
         y_true, y_pred = _get_random_data(n_classes, n_samples)
 
         # Compute accuracy simply
-        fn, fp, tn, tp = _get_fn_fp_tn_tn(y_true, y_pred, n_classes)
+        fn, fp, tn, tp = _get_fn_fp_tn_tp(y_true, y_pred, n_classes)
         acc1 = (tp + tn) / (tp + tn + fp + fn)
 
         # Compute accuracy using izzy function
@@ -57,6 +60,7 @@ class TestMetrics(unittest.TestCase):
         np.testing.assert_equal(acc1, acc2)
 
     # Test that we know how to compute AIC
+    @settings(deadline=None)
     @given(st.floats(allow_nan=False), st.integers())
     def test_aic(self, log_likelihood, degrees_of_freedom):
         # We can compute this here and from the function
@@ -67,6 +71,7 @@ class TestMetrics(unittest.TestCase):
         self.assertEqual(value1, value2)
 
     # Test that we know how to compute BIC
+    @settings(deadline=None)
     @given(st.floats(allow_nan=False), st.integers(), st.integers(min_value=1, max_value=1000000))
     def test_bic(self, log_likelihood, degrees_of_freedom, num_samples):
         # We can compute this here and from the function
@@ -76,57 +81,120 @@ class TestMetrics(unittest.TestCase):
         # These must be equal
         self.assertEqual(value1, value2)
 
+    # Test that we know how to compute confusion matrix
+    @settings(deadline=None)
+    @given(st.floats(min_value=0.2, max_value=0.8))
+    def test_confusion_matrix(self, threshold):
+        # Compute y_pred
+        y_true, y_pred = _get_model_data(threshold)
+
+        # Compute confusion_matrix
+        fn1, fp1, tn1, tp1 = _get_fn_fp_tn_tp(y_true, y_pred, 2)
+        cm = confusion_matrix(y_true, y_pred).values
+        fn2, fp2, tn2, tp2 = cm[1, 0], cm[0, 1], cm[0, 0], cm[1, 1]
+
+        # Assert equal
+        np.testing.assert_equal(fn1[1], fn2)
+        np.testing.assert_equal(fp1[1], fp2)
+        np.testing.assert_equal(tp1[1], tp2)
+        np.testing.assert_equal(tn1[1], tn2)
+
+    # Test f1 score
+    @settings(deadline=None)
+    @given(st.floats(min_value=0.2, max_value=0.8))
+    def test_f1(self, threshold):
+        # Compute y_pred
+        y_true, y_pred = _get_model_data(threshold)
+
+        # Compute f1
+        fn, fp, tn, tp = _get_fn_fp_tn_tp(y_true, y_pred, 2)
+        a = 2. * tp / (2. * tp + fp + fn)
+        b = list(f1(y_true, y_pred).values())
+
+        # Assert equal
+        np.testing.assert_equal(a, b)
+
     # Test that we can compute false negatives using a simple model
+    @settings(deadline=None)
     @given(st.floats(min_value=0.2, max_value=0.8))
     def test_false_negatives(self, threshold):
         # Compute y_pred
         y_true, y_pred = _get_model_data(threshold)
 
         # Compute false negatives
-        fn1, _, _, _ = _get_fn_fp_tn_tn(y_true, y_pred, 2)
+        fn1, _, _, _ = _get_fn_fp_tn_tp(y_true, y_pred, 2)
         fn2 = list(false_negatives(y_true, y_pred).values())
 
         # Assert equal
         np.testing.assert_equal(fn1, fn2)
 
     # Test that we can compute false negatives using random data
+    @settings(deadline=None)
     @given(st.integers(min_value=2, max_value=10), st.integers(min_value=100, max_value=100000))
     def test_false_negatives_random(self, n_classes, n_samples):
         # Generate data
         y_true, y_pred = _get_random_data(n_classes, n_samples)
 
         # Compute false negatives
-        fn1, _, _, _ = _get_fn_fp_tn_tn(y_true, y_pred, n_classes)
+        fn1, _, _, _ = _get_fn_fp_tn_tp(y_true, y_pred, n_classes)
         fn2 = list(false_negatives(y_true, y_pred).values())
 
         # Assert equal
         np.testing.assert_equal(fn1, fn2)
 
     # Test that we can compute false positives using a simple model
+    @settings(deadline=None)
     @given(st.floats(min_value=0.2, max_value=0.8))
     def test_false_positives(self, threshold):
         # Compute y_pred
         y_true, y_pred = _get_model_data(threshold)
 
         # Compute false positives
-        _, fp1, _, _ = _get_fn_fp_tn_tn(y_true, y_pred, 2)
+        _, fp1, _, _ = _get_fn_fp_tn_tp(y_true, y_pred, 2)
         fp2 = list(false_positives(y_true, y_pred).values())
 
         # Assert equal
         np.testing.assert_equal(fp1, fp2)
 
     # Test that we can compute false positives
+    @settings(deadline=None)
     @given(st.integers(min_value=2, max_value=10), st.integers(min_value=100, max_value=100000))
     def test_false_positives_random(self, n_classes, n_samples):
         # Generate data
         y_true, y_pred = _get_random_data(n_classes, n_samples)
 
         # Compute false positives
-        _, fp1, _, _ = _get_fn_fp_tn_tn(y_true, y_pred, n_classes)
+        _, fp1, _, _ = _get_fn_fp_tn_tp(y_true, y_pred, n_classes)
         fp2 = list(false_positives(y_true, y_pred).values())
 
         # Assert equal
         np.testing.assert_equal(fp1, fp2)
+
+    # Test GINI
+    def test_gini(self):
+        # Generate data
+        y_true, y_prob = _get_model_data()
+        y_prob = y_prob[:, 1]
+
+        # We can also test the AUC as a separate test
+        gini0 = sk_m.roc_auc_score(y_true, y_prob) * 2. - 1.
+        gini1 = gini(y_true, y_prob)
+
+        # Assert equal
+        np.testing.assert_almost_equal(gini0, gini1, decimal=2)
+
+    # Test KS
+    def test_ks(self):
+        # Generate data
+        y_true, y_prob = _get_model_data()
+        y_prob = y_prob[:, 1]
+
+        # We can also test the AUC as a separate test
+        ks0, _ = ks_2samp(y_prob[y_true == 0], y_prob[y_true == 1], alternative='two-sided')
+        ks1 = ks(y_true, y_prob)
+
+        # Assert equal
+        np.testing.assert_almost_equal(ks0, ks1, decimal=2)
 
     # Test that we can compute ROC using a simple model
     def test_roc(self):
@@ -137,6 +205,7 @@ class TestMetrics(unittest.TestCase):
         _test_roc(y_true, y_prob[:, 1])
 
     # Test that we can compute ROC using random data
+    @settings(deadline=None)
     @given(st.integers(min_value=100, max_value=100000))
     def test_roc_random(self, n_samples):
         # Generate data
@@ -155,6 +224,7 @@ class TestMetrics(unittest.TestCase):
         _test_roc_auc(y_true, y_prob[:, 1])
 
     # Test that we can compute AUROC using random data
+    @settings(deadline=None)
     @given(st.integers(min_value=100, max_value=100000))
     def test_roc_auc_random(self, n_samples):
         # Generate data
@@ -165,52 +235,56 @@ class TestMetrics(unittest.TestCase):
         _test_roc_auc(y_true, y_prob)
 
     # Test that we can compute true negatives using a simple model
+    @settings(deadline=None)
     @given(st.floats(min_value=0.2, max_value=0.8))
     def test_false_negatives(self, threshold):
         # Compute y_pred
         y_true, y_pred = _get_model_data(threshold)
 
         # Compute false negatives
-        _, _, tn1, _ = _get_fn_fp_tn_tn(y_true, y_pred, 2)
+        _, _, tn1, _ = _get_fn_fp_tn_tp(y_true, y_pred, 2)
         tn2 = list(true_negatives(y_true, y_pred).values())
 
         # Assert equal
         np.testing.assert_equal(tn1, tn2)
 
     # Test that we can compute true negatives with random data
+    @settings(deadline=None)
     @given(st.integers(min_value=2, max_value=10), st.integers(min_value=100, max_value=100000))
     def test_true_negatives_random(self, n_classes, n_samples):
         # Generate data
         y_true, y_pred = _get_random_data(n_classes, n_samples)
 
         # Compute true negatives
-        _, _, tn1, _ = _get_fn_fp_tn_tn(y_true, y_pred, n_classes)
+        _, _, tn1, _ = _get_fn_fp_tn_tp(y_true, y_pred, n_classes)
         tn2 = list(true_negatives(y_true, y_pred).values())
 
         # Assert equal
         np.testing.assert_equal(tn1, tn2)
 
     # Test that we can compute true positives using a simple model
+    @settings(deadline=None)
     @given(st.floats(min_value=0.2, max_value=0.8))
     def test_true_positives(self, threshold):
         # Compute y_pred
         y_true, y_pred = _get_model_data(threshold)
 
         # Compute false negatives
-        _, _, _, tp1 = _get_fn_fp_tn_tn(y_true, y_pred, 2)
+        _, _, _, tp1 = _get_fn_fp_tn_tp(y_true, y_pred, 2)
         tp2 = list(true_positives(y_true, y_pred).values())
 
         # Assert equal
         np.testing.assert_equal(tp1, tp2)
 
     # Test that we can compute true positives with random data
+    @settings(deadline=None)
     @given(st.integers(min_value=2, max_value=10), st.integers(min_value=100, max_value=100000))
     def test_true_positives_random(self, n_classes, n_samples):
         # Generate data
         y_true, y_pred = _get_random_data(n_classes, n_samples)
 
         # Compute true positives
-        _, _, _, tp1 = _get_fn_fp_tn_tn(y_true, y_pred, n_classes)
+        _, _, _, tp1 = _get_fn_fp_tn_tp(y_true, y_pred, n_classes)
         tp2 = list(true_positives(y_true, y_pred).values())
 
         # Assert equal
@@ -243,7 +317,7 @@ def _get_model_data(threshold=None):
 
 
 # Helper function to compute FN, FP, TN, TP
-def _get_fn_fp_tn_tn(y_true, y_pred, n_classes):
+def _get_fn_fp_tn_tp(y_true, y_pred, n_classes):
     # Zero out arrays to store results
     fp = np.zeros(n_classes)
     fn = np.zeros(n_classes)

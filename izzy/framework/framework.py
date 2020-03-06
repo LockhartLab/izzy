@@ -9,6 +9,7 @@ fs.transform()
 """
 
 import pandas as pd
+import re
 
 
 # TODO https://docs.scipy.org/doc/numpy/user/basics.rec.html
@@ -59,4 +60,11 @@ class Features:
         """
 
         return self.data[0 if raw else 1]
+
+
+# Sanitize pandas DataFrame
+def sanitize_dataframe(df):
+    df.columns = [re.sub(' +', '_', column).lower() for column in df.columns]
+
+    return df
 

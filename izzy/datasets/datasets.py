@@ -5,10 +5,30 @@ datasets.py
 Datasets for testing / analysis.
 """
 
+from izzy.framework import sanitize_dataframe
 
 import numpy as np
 import pandas as pd
 from privatize import privatize
+from sklearn.datasets import load_breast_cancer
+
+
+# Breast cancer dataset
+def breast_cancer_dataset():
+    """
+    Load breast cancer dataset from Sci-kit Learn
+
+    Returns
+    -------
+    pandas.DataFrame
+        Breast cancer dataset
+    """
+
+    data = load_breast_cancer()
+    df = pd.DataFrame(data.data, columns=data.feature_names)
+    df['target'] = data['target']
+
+    return sanitize_dataframe(df)
 
 
 # Random dataset

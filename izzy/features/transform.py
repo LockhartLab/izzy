@@ -5,11 +5,74 @@ transform.py
 
 """
 
-from izzy.misc import ArrayLike
 from izzy.regression import sigmoid_fit
 
 import numpy as np
 import pandas as pd
+from typelike import ArrayLike
+
+
+# Bucket
+def bucket(x, bins=10, mode='equal', retbins=False):
+    """
+    Transforms `x` into coarse bins
+
+    Parameters
+    ----------
+    x : ArrayLike
+       Array to granulate
+    bins : int or ArrayLike
+        If int, produce that many bins according to `mode`; otherwise, use bins
+    mode : str
+        Options include 'quantile', 'equal', 'left-equal', 'right-equal', 'binary', or 'distinct'. Note that 'equal'
+        and 'left-equal' are synonyms. If mode = 'distinct', no transformation is performed. The mode = 'binary' is the
+        same as 'distinct', except that we check that there are only two types of observations.
+    retbins : bool
+        Should the bins be returned?
+
+    Returns
+    -------
+    ArrayLike or (ArrayLike, ArrayLike)
+        Granulated array and (optional) bins
+    """
+
+    # Alias mode = 'equal' to 'left-equal'
+    if mode == 'equal':
+        mode = 'left-equal'
+
+    # Minimum and maximum of array
+    array_min = np.min(x)
+    array_max = np.max(x)
+
+    # Assign labels for equal bin sizes using numpy.digitize
+    if mode in ('left-equal', 'right-equal'):
+        # Is bins an integer? If so, we need to generate
+        if isinstance(bins, np.int):
+            # Create bins
+            bins = np.linspace(start=array_min, stop=array_max, num=bins + 1)
+
+            # If left-equal, set last bin to infinity. If right-equal, set first bin to -infinity.
+            if mode == 'left-equal':
+                bins[-1] = np.inf
+            elif mode == 'right-equal':
+                bins[0] = -np.inf
+
+        # Are these bins right-aligned?
+        right = False if mode == 'left-equal' else True
+
+        # Transform array
+        x = np.digitize(x, bins=bins, right=right)
+
+    # Assign labels for quantiles
+    elif mode == 'quantile':
+        x, _ = pd.qcut(x=x, q=bins, labels=False, retbins=True, duplicates='drop')
+
+    # If binary, check that there are only two types of observations
+    elif mode == 'binary':
+        assert len(np.unique(x)) == 2, 'expecting only two types of observations'
+
+    # Return
+    return x if not retbins else (x, bins)
 
 
 # Clip
@@ -132,7 +195,7 @@ def granulate(x, bins=None, mode=None, retbins=False):
         right = False if mode == 'left-equal' else True
 
         # Transform array
-        array = np.digitize(x, bins=bins, right=right)
+        x = np.digitize(x, bins=bins, right=right)
 
     # Assign labels for quantiles
     elif mode == 'quantile':
