@@ -699,6 +699,8 @@ def precision(y_true, y_pred, sample_weights=None):
     """
     Compute the precision of the model
 
+    .. math:: precision = /frac{TP}{TP + FP}
+
     Parameters
     ----------
     y_true : ArrayLike
