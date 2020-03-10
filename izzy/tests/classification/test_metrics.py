@@ -38,9 +38,7 @@ class TestMetrics(unittest.TestCase):
         fn2, fp2, tn2, tp2 = cm[1, 0], cm[0, 1], cm[0, 0], cm[1, 1]
 
         # Accuracy
-        a = (tp1 + tn1) / (tp1 + tn1 + fp1 + fn1)
-        b = list(accuracy(y_true, y_pred).values())
-        np.testing.assert_equal(a, b)
+        np.testing.assert_equal((tp1 + tn1) / (tp1 + tn1 + fp1 + fn1), list(accuracy(y_true, y_pred).values()))
 
         # Confusion matrix
         np.testing.assert_equal(fn1[1], fn2)
@@ -49,39 +47,28 @@ class TestMetrics(unittest.TestCase):
         np.testing.assert_equal(tn1[1], tn2)
 
         # f1 score
-        a = 2. * tp1 / (2. * tp1 + fp1 + fn1)
-        b = list(f1(y_true, y_pred).values())
-        np.testing.assert_equal(a, b)
+        np.testing.assert_equal(2. * tp1 / (2. * tp1 + fp1 + fn1), list(f1(y_true, y_pred).values()))
 
         # False negatives
-        a = fn1
-        b = list(false_negatives(y_true, y_pred).values())
-        np.testing.assert_equal(a, b)
+        np.testing.assert_equal(fn1, list(false_negatives(y_true, y_pred).values()))
 
         # False positives
-        a = fp1
-        b = list(false_positives(y_true, y_pred).values())
-        np.testing.assert_equal(a, b)
+        np.testing.assert_equal(fp1, list(false_positives(y_true, y_pred).values()))
 
         # Precision
-        a = tp1 / (tp1 + fp1)
-        b = list(precision(y_true, y_pred).values())
-        np.testing.assert_equal(a, b)
+        np.testing.assert_equal(tp1 / (tp1 + fp1), list(precision(y_true, y_pred).values()))
 
         # Recall
-        a = tp1 / (tp1 + fn1)
-        b = list(recall(y_true, y_pred).values())
-        np.testing.assert_equal(a, b)
+        np.testing.assert_equal(tp1 / (tp1 + fn1), list(recall(y_true, y_pred).values()))
+
+        # Specificity
+        np.testing.assert_equal(tn1 / (tn1 + fp1), list(specificity(y_true, y_pred).values()))
 
         # True negatives
-        a = tn1
-        b = list(true_negatives(y_true, y_pred).values())
-        np.testing.assert_equal(a, b)
+        np.testing.assert_equal(tn1, list(true_negatives(y_true, y_pred).values()))
 
         # True positives
-        a = tp1
-        b = list(true_positives(y_true, y_pred).values())
-        np.testing.assert_equal(a, b)
+        np.testing.assert_equal(tp1, list(true_positives(y_true, y_pred).values()))
 
     # Test confusion matrix metrics using random data
     @settings(deadline=None)
