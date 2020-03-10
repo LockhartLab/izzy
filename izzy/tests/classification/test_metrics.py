@@ -58,8 +58,9 @@ class TestMetrics(unittest.TestCase):
         # Precision
         np.testing.assert_equal(tp1 / (tp1 + fp1), list(precision(y_true, y_pred).values()))
 
-        # Recall
+        # Recall / sensitivity
         np.testing.assert_equal(tp1 / (tp1 + fn1), list(recall(y_true, y_pred).values()))
+        np.testing.assert_equal(tp1 / (tp1 + fn1), list(sensitivity(y_true, y_pred).values()))
 
         # Specificity
         np.testing.assert_equal(tn1 / (tn1 + fp1), list(specificity(y_true, y_pred).values()))

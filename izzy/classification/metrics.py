@@ -1,8 +1,6 @@
 """
 metrics.py
-==========
 written in Python3
-
 author: C. Lockhart <chris@lockhartlab.org>
 """
 
@@ -843,7 +841,7 @@ def sensitivity(*args, **kwargs):
 
     Returns
     -------
-    numpy.ndarray
+    dict
         Sensitivity for each class
     """
 
