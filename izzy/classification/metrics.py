@@ -720,7 +720,7 @@ def precision(y_true, y_pred, sample_weights=None):
 # Compute the recall
 def recall(y_true, y_pred, sample_weights=None):
     """
-    Compute the recall
+    Compute the recall (synonyms: sensitivity, hit rate, true positive rate)
 
     Parameters
     ----------
@@ -843,7 +843,7 @@ def roc_plot(y_true, y_prob, sample_weights=None):
 # Compute the specificity
 def specificity(y_true, y_pred, sample_weights=None):
     """
-    Compute the specificity
+    Compute the specificity (synonyms: selectivity, true negative rate)
 
     Parameters
     ----------
@@ -862,6 +862,11 @@ def specificity(y_true, y_pred, sample_weights=None):
 
     # Return as dictionary
     return dict(zip(np.unique(y_true), _specificity(confusion_matrix(y_true, y_pred, sample_weights).values)))
+
+
+# Specificity synonyms
+selectivity = specificity
+true_negative_rate = specificity
 
 
 # Compute true negatives

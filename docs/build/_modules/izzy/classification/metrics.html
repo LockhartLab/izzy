@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>izzy.classification.metrics &#8212; izzy 0.3.31 documentation</title>
+    <title>izzy.classification.metrics &#8212; izzy 0.3.32 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -22,7 +22,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.31 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.32 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -755,7 +755,7 @@
 <span class="c1"># Compute the recall</span>
 <div class="viewcode-block" id="recall"><a class="viewcode-back" href="../../../api/generated/izzy.classification.recall.html#izzy.classification.recall">[docs]</a><span class="k">def</span> <span class="nf">recall</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">sample_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute the recall</span>
+<span class="sd">    Compute the recall (synonyms: sensitivity, hit rate, true positive rate)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -878,7 +878,7 @@
 <span class="c1"># Compute the specificity</span>
 <div class="viewcode-block" id="specificity"><a class="viewcode-back" href="../../../api/generated/izzy.classification.specificity.html#izzy.classification.specificity">[docs]</a><span class="k">def</span> <span class="nf">specificity</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">sample_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute the specificity</span>
+<span class="sd">    Compute the specificity (synonyms: selectivity, true negative rate)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -897,6 +897,11 @@
 
     <span class="c1"># Return as dictionary</span>
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y_true</span><span class="p">),</span> <span class="n">_specificity</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">sample_weights</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">)))</span></div>
+
+
+<span class="c1"># Specificity synonyms</span>
+<span class="n">selectivity</span> <span class="o">=</span> <span class="n">specificity</span>
+<span class="n">true_negative_rate</span> <span class="o">=</span> <span class="n">specificity</span>
 
 
 <span class="c1"># Compute true negatives</span>
@@ -977,7 +982,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.31 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.32 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

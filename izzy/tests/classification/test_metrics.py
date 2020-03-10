@@ -66,6 +66,8 @@ class TestMetrics(unittest.TestCase):
 
         # Specificity
         np.testing.assert_equal(tn1 / (tn1 + fp1), list(specificity(y_true, y_pred).values()))
+        np.testing.assert_equal(tn1 / (tn1 + fp1), list(selectivity(y_true, y_pred).values()))
+        np.testing.assert_equal(tn1 / (tn1 + fp1), list(true_negative_rate(y_true, y_pred).values()))
 
         # True negatives
         np.testing.assert_equal(tn1, list(true_negatives(y_true, y_pred).values()))
