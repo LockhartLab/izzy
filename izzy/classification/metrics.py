@@ -740,6 +740,12 @@ def recall(y_true, y_pred, sample_weights=None):
     return dict(zip(np.unique(y_true), _recall(confusion_matrix(y_true, y_pred, sample_weights).values)))
 
 
+# Recall synonyms
+sensitivity = recall
+hit_rate = recall
+true_positive_rate = recall
+
+
 # Compute the receiver operating characteristic
 def roc(y_true, y_prob, sample_weights=None):
     """
@@ -832,20 +838,6 @@ def roc_plot(y_true, y_prob, sample_weights=None):
     plt.title('Receiver operating characteristic')
     plt.legend()
     plt.show()
-
-
-# Compute the sensitivity (see recall)
-def sensitivity(*args, **kwargs):
-    """
-    Compute the sensitivity, i.e., :func:`~recall`
-
-    Returns
-    -------
-    dict
-        Sensitivity for each class
-    """
-
-    return recall(*args, **kwargs)
 
 
 # Compute the specificity
