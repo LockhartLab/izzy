@@ -6,28 +6,33 @@ from .tree import *
 
 # Module contents
 __all__ = [
-    'accuracy',  # has unit tests
-    'aic',  # has unit tests
-    'bic',  # has unit tests
-    'confusion_matrix',  # has unit tests
+    'accuracy',
+    'aic',
+    'bic',
+    'confusion_matrix',
     'create_engine_from_string',
-    'f1',  # has unit tests
-    'false_negatives',  # has unit tests
-    'false_positives',  # has unit tests
+    'f1',
+    'false_negatives',
+    'false_positives',
     'GenericModel',
-    'gini',  # has unit tests
-    'ks',  # has unit tests
+    'gini',
+    'hit_rate',
+    'ks',
     'LogisticRegression',
     'performance_report',
+    'positive_predictive_value',
     'precision',
     'recall',
-    'roc',  # has unit tests
-    'roc_auc',  # has unit tests
+    'roc',
+    'roc_auc',
     'roc_plot',
+    'selectivity',
     'sensitivity',
     'specificity',
-    'true_negatives',  # has unit tests
-    'true_positives',  # has unit tests
+    'true_negatives',
+    'true_negative_rate',
+    'true_positives',
+    'true_positive_rate',
     'weight_of_evidence'
 ]
 

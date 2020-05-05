@@ -4,7 +4,7 @@ written in Python3
 author: C. Lockhart <chris@lockhartlab.org>
 """
 
-from ._utilities import _coerce_sample_weights, _coerce_y_prob
+from ._utilities import _coerce_sample_weights, _coerce_y_prob, classify
 
 from functools import partial
 import matplotlib.pyplot as plt
@@ -12,7 +12,6 @@ import numpy as np
 import pandas as pd
 from scipy.sparse import coo_matrix
 from scipy.stats import ks_2samp
-from sklearn.metrics import roc_auc_score
 
 
 # Accuracy computed from confusion matrix
@@ -142,84 +141,6 @@ def _false_positives(cm):
     return np.sum(cm, axis=0) - _true_positives(cm)
 
 
-# Compute true negatives from the confusion matrix
-def _true_negatives(cm):
-    """
-    Extract true negatives from the confusion matrix
-
-    As an example, consider the table below.
-
-    +--------+---+-----------+
-    |        |   | Predicted |
-    +--------+---+---+---+---+
-    |        |   | A | B | C |
-    +--------+---+---+---+---+
-    | Actual | A | 1 | 2 | 3 |
-    |        +---+---+---+---+
-    |        | B | 4 | 5 | 6 |
-    |        +---+---+---+---+
-    |        | C | 7 | 8 | 9 |
-    +--------+---+---+---+---+
-
-    True negatives for class A are those where we predicted class B or C and the actual class was B or C. We can
-    computing the sum of the diagonal and subtracting the true positive for A, i.e., 1 + 5 + 9 - 1 = 14. Similarly,
-    for B we get 1 + 5 + 9 - 5 = 10, and for C we get 1 + 5 + 9 - 9 = 6.
-
-    Parameters
-    ----------
-    cm : numpy.ndarray
-        Confusion matrix values
-
-    Returns
-    -------
-    numpy.ndarray
-        Number of true negatives for each class
-    """
-
-    # Components
-    tp = _true_positives(cm)
-
-    # The number of true negatives is equal to true positives of other classes, i.e., sum(tp) - tp
-    return np.sum(tp) - tp
-
-
-# Compute true positives from the confusion matrix
-def _true_positives(cm):
-    """
-    Extract true positives from the confusion matrix
-
-    As an example, consider the table below.
-
-    +--------+---+-----------+
-    |        |   | Predicted |
-    +--------+---+---+---+---+
-    |        |   | A | B | C |
-    +--------+---+---+---+---+
-    | Actual | A | 1 | 2 | 3 |
-    |        +---+---+---+---+
-    |        | B | 4 | 5 | 6 |
-    |        +---+---+---+---+
-    |        | C | 7 | 8 | 9 |
-    +--------+---+---+---+---+
-
-    True positives are those were we predict A and the actual class is A. We can compute this by simply looking at
-    the diagonal of the confusion matrix. For A, this is 1. For B and C, this is 5 and 9, respectively.
-
-    Parameters
-    ----------
-    cm : numpy.ndarray
-        Confusion matrix values
-
-    Returns
-    -------
-    numpy.ndarray
-        Number of true positives for each class
-    """
-
-    # numpy.diag computes the # of true matches for individual classes
-    return np.diag(cm)
-
-
 # Helper function to compute the precision from the confusion matrix
 def _precision(cm):
     """
@@ -313,6 +234,85 @@ def _specificity(cm):
     return tn / (tn + fp)
 
 
+# Compute true negatives from the confusion matrix
+def _true_negatives(cm):
+    """
+    Extract true negatives from the confusion matrix
+
+    As an example, consider the table below.
+
+    +--------+---+-----------+
+    |        |   | Predicted |
+    +--------+---+---+---+---+
+    |        |   | A | B | C |
+    +--------+---+---+---+---+
+    | Actual | A | 1 | 2 | 3 |
+    |        +---+---+---+---+
+    |        | B | 4 | 5 | 6 |
+    |        +---+---+---+---+
+    |        | C | 7 | 8 | 9 |
+    +--------+---+---+---+---+
+
+    True negatives for class A are those where we predicted class B or C and the actual class was B or C. We can
+    computing the sum of the diagonal and subtracting the true positive for A, i.e., 1 + 5 + 9 - 1 = 14. Similarly,
+    for B we get 1 + 5 + 9 - 5 = 10, and for C we get 1 + 5 + 9 - 9 = 6.
+
+    Parameters
+    ----------
+    cm : numpy.ndarray
+        Confusion matrix values
+
+    Returns
+    -------
+    numpy.ndarray
+        Number of true negatives for each class
+    """
+
+    # Components
+    tp = _true_positives(cm)
+
+    # The number of true negatives is equal to true positives of other classes, i.e., sum(tp) - tp
+    return np.sum(tp) - tp
+
+
+# Compute true positives from the confusion matrix
+def _true_positives(cm):
+    """
+    Extract true positives from the confusion matrix
+
+    As an example, consider the table below.
+
+    +--------+---+-----------+
+    |        |   | Predicted |
+    +--------+---+---+---+---+
+    |        |   | A | B | C |
+    +--------+---+---+---+---+
+    | Actual | A | 1 | 2 | 3 |
+    |        +---+---+---+---+
+    |        | B | 4 | 5 | 6 |
+    |        +---+---+---+---+
+    |        | C | 7 | 8 | 9 |
+    +--------+---+---+---+---+
+
+    True positives are those were we predict A and the actual class is A. We can compute this by simply looking at
+    the diagonal of the confusion matrix. For A, this is 1. For B and C, this is 5 and 9, respectively.
+
+    Parameters
+    ----------
+    cm : numpy.ndarray
+        Confusion matrix values
+
+    Returns
+    -------
+    numpy.ndarray
+        Number of true positives for each class
+    """
+
+    # numpy.diag computes the # of true matches for individual classes
+    return np.diag(cm)
+
+
+
 # Accuracy
 # TODO allow this to be conmputed for multiclass too
 def accuracy(y_true, y_pred, sample_weights=None):
@@ -364,8 +364,9 @@ def accuracy_plot(y_true, y_pred, class_weight=None):
 
     """
 
-    thresholds = np.linspace(0, 1, 0.1)
-    accuracies = np.vectorize(accuracy(y))
+    # thresholds = np.linspace(0, 1, 0.1)
+    # accuracies = np.vectorize(accuracy(y__true, y_pred))
+    pass
 
 
 # AIC
@@ -632,10 +633,54 @@ def ks(y_true, y_prob, sample_weights=None):
     return statistic
 
 
+# Compute the log-likelihood from y_true and y_prob
+def log_likelihood(y_true, y_prob, normalize=True):
+    """
+    Compute the log likelihood from true and predicted outcomes
+
+    Mathematically, for a sample :math:`i`, we compute the likelihood :math:`L_i = p_i^{y_i} (1-p_i)^{1-y_i}.` Here,
+    we compute :math:`p` as the predicted probability and :math:`y` as the true outcome.
+
+    We can choose to `normalize` by the number of samples to get the average log likelihood per sample.
+
+    The procedure is to use `x` to get the predicted probabilities, and then compute :math:`L_i` above.
+
+    Note that the log likelihood depends on the specific variables in the model, i.e., cross-comparison of models is
+    with different features is technically incorrect.
+
+
+    Parameters
+    ----------
+    y_true : ArrayLike
+        True outcomes
+    y_prob : ArrayLike
+        Probabilistic outcomes
+    normalize : bool
+        Should we compute the average log likelihood per sample? (Default: True)
+
+    Returns
+    -------
+    float
+        log-likelihood
+    """
+
+    # Sanity checking
+    n_classes = len(np.unique(y_true))
+    if n_classes != y_prob.shape[1]:
+        raise AttributeError('n_classes must match shape of y_prob')
+
+    # Transform y_true into an expanded form
+    y_true = np.eye(n_classes)[np.array([y_true], dtype='int').reshape(-1)]
+
+    # Return log likelihood
+    f = np.mean if normalize else np.sum
+    return f(np.log(np.sum(y_true * y_prob, axis=1)))
+
+
 # Generate model performance report
 # Note: this is a function (not GenericModel method) for external use
 # TODO maybe sent x as argument, so log likelihood and degrees of freedom can be computed in function?
-def performance_report(y_true, y_pred, log_likelihood=None, degrees_of_freedom=None, threshold=0.5, sample_weights=None):
+def performance_report(y_true, y_prob, degrees_of_freedom=None, threshold=0.5, sample_weights=None):
     """
     A performance report for a model.
 
@@ -643,10 +688,8 @@ def performance_report(y_true, y_pred, log_likelihood=None, degrees_of_freedom=N
     ----------
     y_true : ArrayLike
         True outcomes
-    y_pred : ArrayLike
-        Predicted outcomes (probabilities)
-    log_likelihood : float
-        (Optional) The log-likelihood of the model
+    y_prob : ArrayLike
+        Probabilistic outcomes
     degrees_of_freedom : float
         (Optional) The number degrees of freedom
     threshold : float
@@ -663,6 +706,9 @@ def performance_report(y_true, y_pred, log_likelihood=None, degrees_of_freedom=N
     # Empty report container
     report = pd.Series()
 
+    # Create y_pred
+    y_pred = classify(y_prob, threshold=threshold)
+
     # Accuracy, precision, recall, f1
     cm = confusion_matrix(y_true, y_pred, sample_weights=sample_weights).values
     report['accuracy'] = _accuracy(cm)
@@ -672,17 +718,18 @@ def performance_report(y_true, y_pred, log_likelihood=None, degrees_of_freedom=N
 
     # Log-likelihood?
     if log_likelihood is not None and degrees_of_freedom is not None:
-        report['log-likelihood'] = log_likelihood
-        report['AIC'] = aic(log_likelihood, degrees_of_freedom)
-        report['BIC'] = bic(log_likelihood, degrees_of_freedom, len(y_true))
+        log_likelihood_ = log_likelihood(y_true, y_prob)
+        report['log-likelihood'] = log_likelihood_
+        report['AIC'] = aic(log_likelihood_, degrees_of_freedom)
+        report['BIC'] = bic(log_likelihood_, degrees_of_freedom, len(y_true))
 
     # KS statistic (only if n_classes = 2)
     if len(np.unique(y_true)) == 2:
-        report['KS'] = ks(y_true, y_pred[:, 1])
+        report['KS'] = ks(y_true, y_pred)
 
     # AUROC / GINI
-    report['AUROC'] = auroc(y_true, y_pred)
-    report['GINI'] = gini(y_true, y_pred)
+    report['AUROC'] = roc_auc(y_true, y_pred, sample_weights=sample_weights)
+    report['GINI'] = gini(y_true, y_pred, sample_weights=sample_weights)
 
     # TODO slope
 
@@ -695,7 +742,7 @@ def performance_report(y_true, y_pred, log_likelihood=None, degrees_of_freedom=N
 # Compute the precision
 def precision(y_true, y_pred, sample_weights=None):
     """
-    Compute the precision of the model
+    Compute the precision (synonym: positive predictive value)
 
     .. math:: precision = /frac{TP}{TP + FP}
 
@@ -715,6 +762,10 @@ def precision(y_true, y_pred, sample_weights=None):
     """
 
     return dict(zip(np.unique(y_true), _precision(confusion_matrix(y_true, y_pred, sample_weights).values)))
+
+
+# Precision synonyms
+positive_predictive_value = precision
 
 
 # Compute the recall

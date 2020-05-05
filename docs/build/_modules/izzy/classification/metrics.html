@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>izzy.classification.metrics &#8212; izzy 0.3.32 documentation</title>
+    <title>izzy.classification.metrics &#8212; izzy 0.3.33 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -22,7 +22,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.32 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.33 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -39,7 +39,7 @@
 <span class="sd">author: C. Lockhart &lt;chris@lockhartlab.org&gt;</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">._utilities</span> <span class="kn">import</span> <span class="n">_coerce_sample_weights</span><span class="p">,</span> <span class="n">_coerce_y_prob</span>
+<span class="kn">from</span> <span class="nn">._utilities</span> <span class="kn">import</span> <span class="n">_coerce_sample_weights</span><span class="p">,</span> <span class="n">_coerce_y_prob</span><span class="p">,</span> <span class="n">classify</span>
 
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -47,7 +47,6 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">coo_matrix</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">ks_2samp</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
 
 
 <span class="c1"># Accuracy computed from confusion matrix</span>
@@ -177,84 +176,6 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cm</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">_true_positives</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
 
 
-<span class="c1"># Compute true negatives from the confusion matrix</span>
-<span class="k">def</span> <span class="nf">_true_negatives</span><span class="p">(</span><span class="n">cm</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Extract true negatives from the confusion matrix</span>
-
-<span class="sd">    As an example, consider the table below.</span>
-
-<span class="sd">    +--------+---+-----------+</span>
-<span class="sd">    |        |   | Predicted |</span>
-<span class="sd">    +--------+---+---+---+---+</span>
-<span class="sd">    |        |   | A | B | C |</span>
-<span class="sd">    +--------+---+---+---+---+</span>
-<span class="sd">    | Actual | A | 1 | 2 | 3 |</span>
-<span class="sd">    |        +---+---+---+---+</span>
-<span class="sd">    |        | B | 4 | 5 | 6 |</span>
-<span class="sd">    |        +---+---+---+---+</span>
-<span class="sd">    |        | C | 7 | 8 | 9 |</span>
-<span class="sd">    +--------+---+---+---+---+</span>
-
-<span class="sd">    True negatives for class A are those where we predicted class B or C and the actual class was B or C. We can</span>
-<span class="sd">    computing the sum of the diagonal and subtracting the true positive for A, i.e., 1 + 5 + 9 - 1 = 14. Similarly,</span>
-<span class="sd">    for B we get 1 + 5 + 9 - 5 = 10, and for C we get 1 + 5 + 9 - 9 = 6.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    cm : numpy.ndarray</span>
-<span class="sd">        Confusion matrix values</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    numpy.ndarray</span>
-<span class="sd">        Number of true negatives for each class</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># Components</span>
-    <span class="n">tp</span> <span class="o">=</span> <span class="n">_true_positives</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
-
-    <span class="c1"># The number of true negatives is equal to true positives of other classes, i.e., sum(tp) - tp</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">tp</span><span class="p">)</span> <span class="o">-</span> <span class="n">tp</span>
-
-
-<span class="c1"># Compute true positives from the confusion matrix</span>
-<span class="k">def</span> <span class="nf">_true_positives</span><span class="p">(</span><span class="n">cm</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Extract true positives from the confusion matrix</span>
-
-<span class="sd">    As an example, consider the table below.</span>
-
-<span class="sd">    +--------+---+-----------+</span>
-<span class="sd">    |        |   | Predicted |</span>
-<span class="sd">    +--------+---+---+---+---+</span>
-<span class="sd">    |        |   | A | B | C |</span>
-<span class="sd">    +--------+---+---+---+---+</span>
-<span class="sd">    | Actual | A | 1 | 2 | 3 |</span>
-<span class="sd">    |        +---+---+---+---+</span>
-<span class="sd">    |        | B | 4 | 5 | 6 |</span>
-<span class="sd">    |        +---+---+---+---+</span>
-<span class="sd">    |        | C | 7 | 8 | 9 |</span>
-<span class="sd">    +--------+---+---+---+---+</span>
-
-<span class="sd">    True positives are those were we predict A and the actual class is A. We can compute this by simply looking at</span>
-<span class="sd">    the diagonal of the confusion matrix. For A, this is 1. For B and C, this is 5 and 9, respectively.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    cm : numpy.ndarray</span>
-<span class="sd">        Confusion matrix values</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    numpy.ndarray</span>
-<span class="sd">        Number of true positives for each class</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># numpy.diag computes the # of true matches for individual classes</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
-
-
 <span class="c1"># Helper function to compute the precision from the confusion matrix</span>
 <span class="k">def</span> <span class="nf">_precision</span><span class="p">(</span><span class="n">cm</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -348,6 +269,85 @@
     <span class="k">return</span> <span class="n">tn</span> <span class="o">/</span> <span class="p">(</span><span class="n">tn</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span>
 
 
+<span class="c1"># Compute true negatives from the confusion matrix</span>
+<span class="k">def</span> <span class="nf">_true_negatives</span><span class="p">(</span><span class="n">cm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract true negatives from the confusion matrix</span>
+
+<span class="sd">    As an example, consider the table below.</span>
+
+<span class="sd">    +--------+---+-----------+</span>
+<span class="sd">    |        |   | Predicted |</span>
+<span class="sd">    +--------+---+---+---+---+</span>
+<span class="sd">    |        |   | A | B | C |</span>
+<span class="sd">    +--------+---+---+---+---+</span>
+<span class="sd">    | Actual | A | 1 | 2 | 3 |</span>
+<span class="sd">    |        +---+---+---+---+</span>
+<span class="sd">    |        | B | 4 | 5 | 6 |</span>
+<span class="sd">    |        +---+---+---+---+</span>
+<span class="sd">    |        | C | 7 | 8 | 9 |</span>
+<span class="sd">    +--------+---+---+---+---+</span>
+
+<span class="sd">    True negatives for class A are those where we predicted class B or C and the actual class was B or C. We can</span>
+<span class="sd">    computing the sum of the diagonal and subtracting the true positive for A, i.e., 1 + 5 + 9 - 1 = 14. Similarly,</span>
+<span class="sd">    for B we get 1 + 5 + 9 - 5 = 10, and for C we get 1 + 5 + 9 - 9 = 6.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cm : numpy.ndarray</span>
+<span class="sd">        Confusion matrix values</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Number of true negatives for each class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Components</span>
+    <span class="n">tp</span> <span class="o">=</span> <span class="n">_true_positives</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+
+    <span class="c1"># The number of true negatives is equal to true positives of other classes, i.e., sum(tp) - tp</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">tp</span><span class="p">)</span> <span class="o">-</span> <span class="n">tp</span>
+
+
+<span class="c1"># Compute true positives from the confusion matrix</span>
+<span class="k">def</span> <span class="nf">_true_positives</span><span class="p">(</span><span class="n">cm</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract true positives from the confusion matrix</span>
+
+<span class="sd">    As an example, consider the table below.</span>
+
+<span class="sd">    +--------+---+-----------+</span>
+<span class="sd">    |        |   | Predicted |</span>
+<span class="sd">    +--------+---+---+---+---+</span>
+<span class="sd">    |        |   | A | B | C |</span>
+<span class="sd">    +--------+---+---+---+---+</span>
+<span class="sd">    | Actual | A | 1 | 2 | 3 |</span>
+<span class="sd">    |        +---+---+---+---+</span>
+<span class="sd">    |        | B | 4 | 5 | 6 |</span>
+<span class="sd">    |        +---+---+---+---+</span>
+<span class="sd">    |        | C | 7 | 8 | 9 |</span>
+<span class="sd">    +--------+---+---+---+---+</span>
+
+<span class="sd">    True positives are those were we predict A and the actual class is A. We can compute this by simply looking at</span>
+<span class="sd">    the diagonal of the confusion matrix. For A, this is 1. For B and C, this is 5 and 9, respectively.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cm : numpy.ndarray</span>
+<span class="sd">        Confusion matrix values</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        Number of true positives for each class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># numpy.diag computes the # of true matches for individual classes</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
+
+
+
 <span class="c1"># Accuracy</span>
 <span class="c1"># TODO allow this to be conmputed for multiclass too</span>
 <div class="viewcode-block" id="accuracy"><a class="viewcode-back" href="../../../api/generated/izzy.classification.accuracy.html#izzy.classification.accuracy">[docs]</a><span class="k">def</span> <span class="nf">accuracy</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">sample_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -399,8 +399,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">thresholds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-    <span class="n">accuracies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">accuracy</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+    <span class="c1"># thresholds = np.linspace(0, 1, 0.1)</span>
+    <span class="c1"># accuracies = np.vectorize(accuracy(y__true, y_pred))</span>
+    <span class="k">pass</span>
 
 
 <span class="c1"># AIC</span>
@@ -667,10 +668,54 @@
     <span class="k">return</span> <span class="n">statistic</span></div>
 
 
+<span class="c1"># Compute the log-likelihood from y_true and y_prob</span>
+<span class="k">def</span> <span class="nf">log_likelihood</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the log likelihood from true and predicted outcomes</span>
+
+<span class="sd">    Mathematically, for a sample :math:`i`, we compute the likelihood :math:`L_i = p_i^{y_i} (1-p_i)^{1-y_i}.` Here,</span>
+<span class="sd">    we compute :math:`p` as the predicted probability and :math:`y` as the true outcome.</span>
+
+<span class="sd">    We can choose to `normalize` by the number of samples to get the average log likelihood per sample.</span>
+
+<span class="sd">    The procedure is to use `x` to get the predicted probabilities, and then compute :math:`L_i` above.</span>
+
+<span class="sd">    Note that the log likelihood depends on the specific variables in the model, i.e., cross-comparison of models is</span>
+<span class="sd">    with different features is technically incorrect.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : ArrayLike</span>
+<span class="sd">        True outcomes</span>
+<span class="sd">    y_prob : ArrayLike</span>
+<span class="sd">        Probabilistic outcomes</span>
+<span class="sd">    normalize : bool</span>
+<span class="sd">        Should we compute the average log likelihood per sample? (Default: True)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        log-likelihood</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Sanity checking</span>
+    <span class="n">n_classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y_true</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">n_classes</span> <span class="o">!=</span> <span class="n">y_prob</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;n_classes must match shape of y_prob&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Transform y_true into an expanded form</span>
+    <span class="n">y_true</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n_classes</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">y_true</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+
+    <span class="c1"># Return log likelihood</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span>
+    <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y_true</span> <span class="o">*</span> <span class="n">y_prob</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)))</span>
+
+
 <span class="c1"># Generate model performance report</span>
 <span class="c1"># Note: this is a function (not GenericModel method) for external use</span>
 <span class="c1"># TODO maybe sent x as argument, so log likelihood and degrees of freedom can be computed in function?</span>
-<div class="viewcode-block" id="performance_report"><a class="viewcode-back" href="../../../api/generated/izzy.classification.performance_report.html#izzy.classification.performance_report">[docs]</a><span class="k">def</span> <span class="nf">performance_report</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">log_likelihood</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">degrees_of_freedom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">sample_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="performance_report"><a class="viewcode-back" href="../../../api/generated/izzy.classification.performance_report.html#izzy.classification.performance_report">[docs]</a><span class="k">def</span> <span class="nf">performance_report</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">,</span> <span class="n">degrees_of_freedom</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">sample_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A performance report for a model.</span>
 
@@ -678,10 +723,8 @@
 <span class="sd">    ----------</span>
 <span class="sd">    y_true : ArrayLike</span>
 <span class="sd">        True outcomes</span>
-<span class="sd">    y_pred : ArrayLike</span>
-<span class="sd">        Predicted outcomes (probabilities)</span>
-<span class="sd">    log_likelihood : float</span>
-<span class="sd">        (Optional) The log-likelihood of the model</span>
+<span class="sd">    y_prob : ArrayLike</span>
+<span class="sd">        Probabilistic outcomes</span>
 <span class="sd">    degrees_of_freedom : float</span>
 <span class="sd">        (Optional) The number degrees of freedom</span>
 <span class="sd">    threshold : float</span>
@@ -698,6 +741,9 @@
     <span class="c1"># Empty report container</span>
     <span class="n">report</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">()</span>
 
+    <span class="c1"># Create y_pred</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">classify</span><span class="p">(</span><span class="n">y_prob</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+
     <span class="c1"># Accuracy, precision, recall, f1</span>
     <span class="n">cm</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">sample_weights</span><span class="o">=</span><span class="n">sample_weights</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
     <span class="n">report</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_accuracy</span><span class="p">(</span><span class="n">cm</span><span class="p">)</span>
@@ -707,17 +753,18 @@
 
     <span class="c1"># Log-likelihood?</span>
     <span class="k">if</span> <span class="n">log_likelihood</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">degrees_of_freedom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">report</span><span class="p">[</span><span class="s1">&#39;log-likelihood&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">log_likelihood</span>
-        <span class="n">report</span><span class="p">[</span><span class="s1">&#39;AIC&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aic</span><span class="p">(</span><span class="n">log_likelihood</span><span class="p">,</span> <span class="n">degrees_of_freedom</span><span class="p">)</span>
-        <span class="n">report</span><span class="p">[</span><span class="s1">&#39;BIC&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bic</span><span class="p">(</span><span class="n">log_likelihood</span><span class="p">,</span> <span class="n">degrees_of_freedom</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_true</span><span class="p">))</span>
+        <span class="n">log_likelihood_</span> <span class="o">=</span> <span class="n">log_likelihood</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">)</span>
+        <span class="n">report</span><span class="p">[</span><span class="s1">&#39;log-likelihood&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">log_likelihood_</span>
+        <span class="n">report</span><span class="p">[</span><span class="s1">&#39;AIC&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aic</span><span class="p">(</span><span class="n">log_likelihood_</span><span class="p">,</span> <span class="n">degrees_of_freedom</span><span class="p">)</span>
+        <span class="n">report</span><span class="p">[</span><span class="s1">&#39;BIC&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bic</span><span class="p">(</span><span class="n">log_likelihood_</span><span class="p">,</span> <span class="n">degrees_of_freedom</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_true</span><span class="p">))</span>
 
     <span class="c1"># KS statistic (only if n_classes = 2)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y_true</span><span class="p">))</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">report</span><span class="p">[</span><span class="s1">&#39;KS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ks</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">report</span><span class="p">[</span><span class="s1">&#39;KS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ks</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
 
     <span class="c1"># AUROC / GINI</span>
-    <span class="n">report</span><span class="p">[</span><span class="s1">&#39;AUROC&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">auroc</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-    <span class="n">report</span><span class="p">[</span><span class="s1">&#39;GINI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gini</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    <span class="n">report</span><span class="p">[</span><span class="s1">&#39;AUROC&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">roc_auc</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">sample_weights</span><span class="o">=</span><span class="n">sample_weights</span><span class="p">)</span>
+    <span class="n">report</span><span class="p">[</span><span class="s1">&#39;GINI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gini</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">sample_weights</span><span class="o">=</span><span class="n">sample_weights</span><span class="p">)</span>
 
     <span class="c1"># TODO slope</span>
 
@@ -730,7 +777,7 @@
 <span class="c1"># Compute the precision</span>
 <div class="viewcode-block" id="precision"><a class="viewcode-back" href="../../../api/generated/izzy.classification.precision.html#izzy.classification.precision">[docs]</a><span class="k">def</span> <span class="nf">precision</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">sample_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute the precision of the model</span>
+<span class="sd">    Compute the precision (synonym: positive predictive value)</span>
 
 <span class="sd">    .. math:: precision = /frac{TP}{TP + FP}</span>
 
@@ -750,6 +797,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y_true</span><span class="p">),</span> <span class="n">_precision</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">sample_weights</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">)))</span></div>
+
+
+<span class="c1"># Precision synonyms</span>
+<span class="n">positive_predictive_value</span> <span class="o">=</span> <span class="n">precision</span>
 
 
 <span class="c1"># Compute the recall</span>
@@ -982,7 +1033,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.32 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.33 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

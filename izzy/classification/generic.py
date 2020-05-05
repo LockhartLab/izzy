@@ -4,8 +4,8 @@ written in Python3
 author: C. Lockhart <chris@lockhartlab.org>
 """
 
-from .metrics import confusion_matrix, performance_report
-from ._utilities import _coerce_y_prob
+from .metrics import confusion_matrix, log_likelihood, performance_report
+from ._utilities import _coerce_y_prob, classify
 
 from izzy.misc import ArrayLike
 
@@ -42,16 +42,17 @@ class GenericModel(ABC):
         self.n_classes = None
 
     # Compute the log-likelihood from y_true and y_pred
+    # TODO is log-likelihood model specific? Why isn't this in metrics?
     def _log_likelihood(self, y_true, y_pred, normalize=True):
         """
-        Computes the log likelihood from true and predicted outcomes
+        Compute the log likelihood from true and predicted outcomes
 
         Parameters
         ----------
         y_true : ArrayLike
             True outcomes
         y_pred : ArrayLike
-            Predicted outcomes
+            Probabilistic outcomes
         normalize : bool
             Should we compute the average log likelihood per sample? (Default: True)
 
@@ -62,7 +63,8 @@ class GenericModel(ABC):
         """
 
         # Sanity checking
-        assert len(np.unique(y_true)) == self.n_classes == y_pred.shape[1]
+        if not (len(np.unique(y_true)) == self.n_classes == y_pred.shape[1]):
+            raise AttributeError('n_classes must match # unique values in y_true')
 
         # Transform y_true into an expanded form
         y_true = np.eye(self.n_classes)[np.array([y_true], dtype='int').reshape(-1)]
@@ -281,7 +283,7 @@ class GenericModel(ABC):
     # Log likelihood
     def log_likelihood(self, x, y, normalize=True):
         """
-        Computes the log-likelihood
+        Compute the log-likelihood
 
         Mathematically, for a sample :math:`i`, we compute the likelihood :math:`L_i = p_i^{y_i} (1-p_i)^{1-y_i}.` Here,
         we compute :math:`p` as the predicted probability and :math:`y` as the true outcome.
@@ -308,7 +310,7 @@ class GenericModel(ABC):
             log likelihood
         """
 
-        return self._log_likelihood(y, self.predict_proba(x), normalize=normalize)
+        return log_likelihood(y, self.predict_proba(x), normalize=normalize)
 
     # Log loss
     def log_loss(self, x, y):
@@ -351,14 +353,14 @@ class GenericModel(ABC):
         """
 
         # Get predicted y values from model
-        y_pred = self.predict_proba(x)
+        y_prob = self.predict_proba(x)
 
         # Get the log-likelihood and degrees of freedom
-        log_likelihood = self._log_likelihood(y, y_pred)
+        # log_likelihood = self._log_likelihood(y, y_pred)
         degrees_of_freedom = self.degrees_of_freedom(x)
 
         # Return performance report
-        return performance_report(y, y_pred, log_likelihood, degrees_of_freedom, threshold=threshold)
+        return performance_report(y, y_prob, degrees_of_freedom, threshold=threshold)
 
     # Predict outcome probability (NotImplemented)
     def predict_proba(self, x):
@@ -474,67 +476,6 @@ def _format_weight(weight, n=None):
 
     # Return
     return weight
-
-
-# Classify
-def classify(y_prob, classes=None, threshold=None):
-    """
-    Classifies predicted probabilistic outcomes
-
-    Parameters
-    ----------
-    y_prob : ArrayLike
-        Predicted outcomes expressed as probabilities. We call this ``y_prob`` instead of ``y_pred`` here to
-        emphasize this point
-    classes : ArrayLike
-        Names of classes (Default: integers from 1 to `n` classes)
-    threshold : float
-        Decision cutoff, only applied if the number of classes = 2; otherwise, the most likely class is chosen
-        (Default: 0.5)
-
-    Returns
-    -------
-    numpy.ndarray
-        classified outcomes
-    """
-
-    # Coerce y_prob into correct form
-    y_prob = _coerce_y_prob(y_prob)
-
-    # Now that's done, compute the number of classes
-    n_classes = y_prob.shape[1]
-
-    # If classes is not set, set to sequence
-    if classes is None:
-        classes = np.arange(n_classes, dtype='int')
-
-    # Otherwise, run sanity check AND ensure classes is numpy array
-    else:
-        if len(classes) != n_classes:
-            raise AttributeError('number of elements in classes ({0}) does not match y_pred shape ({1})'
-                                 .format(len(classes), n_classes))
-        classes = np.array(classes)
-
-    # If binomial, use the threshold
-    if n_classes == 2:
-        # If threshold isn't supplied, set to 0.5
-        if threshold is None:
-            threshold = 0.5
-
-        # Classify
-        y_pred = np.array(y_prob[:, 1] > threshold, dtype='int')
-
-    # Otherwise, the class is the one with the maximum probability
-    else:
-        # If threshold is not None, send a Warning to make sure user is making good choices
-        if threshold is not None:
-            Warning('threshold is only used with binomial classifiers')
-
-        # Classify
-        y_pred = np.argmax(y_prob, axis=1)
-
-    # Return class labels
-    return classes[y_pred]
 
 
 # Format x
