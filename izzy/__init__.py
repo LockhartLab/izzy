@@ -17,5 +17,5 @@ from .viz import *
 
 # TODO pandas.modin for speedup? Make this an option
 __all__ = []
-__all__.extend(datasets.__all__)
 __all__.extend(core.__all__)
+__all__.extend(datasets.__all__)
