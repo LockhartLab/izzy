@@ -1,8 +1,6 @@
 """
 test_metrics.py
-===============
 written in Python3
-
 author: C. Lockhart <chris@lockhartlab.org>
 """
 
@@ -29,8 +27,8 @@ class TestMetrics(unittest.TestCase):
     @settings(deadline=None)
     @given(st.floats(min_value=0.2, max_value=0.8))
     def test_confusion_matrix(self, threshold):
-        # Compute y_pred
-        y_true, y_pred = _get_model_data(threshold)
+        # Compute y_prob, y_pred
+        y_true, y_prob, y_pred = _get_model_data(threshold)
 
         # Compute confusion matrix
         fn1, fp1, tn1, tp1 = _get_fn_fp_tn_tp(y_true, y_pred, 2)
@@ -55,8 +53,13 @@ class TestMetrics(unittest.TestCase):
         # False positives
         np.testing.assert_equal(fp1, list(false_positives(y_true, y_pred).values()))
 
+        # Log-likelihood
+        self.assertIsInstance(log_likelihood(y_true, y_prob), float)
+        self.assertIsInstance(log_likelihood(y_true, y_prob, normalize=True), float)
+
         # Precision
         np.testing.assert_equal(tp1 / (tp1 + fp1), list(precision(y_true, y_pred).values()))
+        np.testing.assert_equal(tp1 / (tp1 + fp1), list(positive_predictive_value(y_true, y_pred).values()))
 
         # Recall
         np.testing.assert_equal(tp1 / (tp1 + fn1), list(recall(y_true, y_pred).values()))
@@ -135,7 +138,7 @@ class TestMetrics(unittest.TestCase):
     # Test GINI
     def test_gini(self):
         # Generate data
-        y_true, y_prob = _get_model_data()
+        y_true, y_prob, _ = _get_model_data()
         y_prob = y_prob[:, 1]
 
         # We can also test the AUC as a separate test
@@ -148,7 +151,7 @@ class TestMetrics(unittest.TestCase):
     # Test KS
     def test_ks(self):
         # Generate data
-        y_true, y_prob = _get_model_data()
+        y_true, y_prob, _ = _get_model_data()
         y_prob = y_prob[:, 1]
 
         # We can also test the AUC as a separate test
@@ -161,7 +164,7 @@ class TestMetrics(unittest.TestCase):
     # Test that we can compute ROC using a simple model
     def test_roc(self):
         # Generate data
-        y_true, y_prob = _get_model_data()
+        y_true, y_prob, _ = _get_model_data()
 
         # Test
         _test_roc(y_true, y_prob[:, 1])
@@ -180,7 +183,7 @@ class TestMetrics(unittest.TestCase):
     # Test that we can compute AUROC using a simple model
     def test_roc_auc(self):
         # Generate data
-        y_true, y_prob = _get_model_data()
+        y_true, y_prob, _ = _get_model_data()
 
         # Test
         _test_roc_auc(y_true, y_prob[:, 1])
@@ -198,7 +201,7 @@ class TestMetrics(unittest.TestCase):
 
 
 # Helper function to get model data
-def _get_model_data(threshold=None):
+def _get_model_data(threshold=0.5):
     # Import breast_cancer dataset
     data = load_breast_cancer()
     df = pd.DataFrame(data.data, columns=data.feature_names)
@@ -212,14 +215,10 @@ def _get_model_data(threshold=None):
 
     # We will return y and y_prob
     y_prob = model.evaluate(x)
-    result = [y, y_prob]
-
-    # If threshold is set, change y_prob to y_pred
-    if threshold is not None:
-        result[1] = model.classify(x, threshold=threshold)
+    y_pred = model.classify(x, threshold=threshold)
 
     # Return
-    return result
+    return y, y_prob, y_pred
 
 
 # Helper function to compute FN, FP, TN, TP

@@ -3,16 +3,16 @@ izzy
 ====
 a package for data science
 
-<nobr><img src="https://img.shields.io/pypi/v/izzy" alt="version"/></nobr>
+<span style="white-space: nowrap;">
+    <a href="https://travis-ci.com/github/LockhartLab/izzy"><img src="https://img.shields.io/pypi/v/izzy" /></a>
+    <a href="https://travis-ci.com/github/LockhartLab/izzy"><img src="https://img.shields.io/travis/com/lockhartlab/izzy/master" /></a>
+    <a href="https://codecov.io/gh/LockhartLab/izzy"><img src="https://img.shields.io/codecov/c/github/lockhartlab/izzy/master" /></a>
+</span>
 
-*master:*  
-<nobr><img src="https://img.shields.io/travis/com/lockhartlab/izzy/master"  alt="build-status-master"/></nobr>
-<nobr><img src="https://img.shields.io/codecov/c/github/lockhartlab/izzy/master" alt="coverage-master"/></nobr>
-
-*dev:*  
+<!--*dev:*  
 <nobr><img src="https://img.shields.io/travis/com/lockhartlab/izzy/dev"  alt="build-status-dev"/></nobr>
 <nobr><img src="https://img.shields.io/codecov/c/github/lockhartlab/izzy/dev" alt="coverage-dev"/></nobr>
-
+-->
 <hr>
 
 note that this package is **still in development**  
