@@ -31,6 +31,7 @@ setup(
     url="https://www.lockhartlab.org",
     packages=[
         'izzy',
+        'izzy.core',
         'izzy.datasets',
         'izzy.eda',
         'izzy.features',
