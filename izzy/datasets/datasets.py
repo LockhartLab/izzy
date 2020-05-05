@@ -5,7 +5,7 @@ datasets.py
 Datasets for testing / analysis.
 """
 
-from izzy.framework import sanitize_dataframe
+from izzy.core import sanitize_dataframe
 
 import numpy as np
 import pandas as pd
