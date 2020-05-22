@@ -1,0 +1,5 @@
+1. Sensitivity testing, i.e., if you take a parameter and set it at -infinity or +infinity, how does the score change?
+
+
+2. Naive Bayes <-> Logistic Regression
+https://multithreaded.stitchfix.com/blog/2015/08/13/weight-of-evidence/
