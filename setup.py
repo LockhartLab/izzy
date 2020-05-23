@@ -39,6 +39,7 @@ setup(
         'izzy.misc',
         'izzy.classification',
         'izzy.regression',
+        'izzy.statistics',
         'izzy.tests',
         'izzy.tests.classification',
         'izzy.viz',
