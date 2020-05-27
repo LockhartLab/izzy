@@ -1,6 +1,0 @@
-izzy.features.log
-=================
-
-.. currentmodule:: izzy.features
-
-.. autofunction:: log

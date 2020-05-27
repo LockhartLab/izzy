@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>izzy.features.transform &#8212; izzy 0.3.44 documentation</title>
+    <title>izzy.features.transform &#8212; izzy 0.3.45 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -22,7 +22,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.44 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.45 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -35,9 +35,8 @@
   <h1>Source code for izzy.features.transform</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">transform.py</span>
-<span class="sd">------------</span>
-
-
+<span class="sd">written in Python3</span>
+<span class="sd">author: C. Lockhart &lt;chris@lockhartlab.org&gt;</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">izzy.regression</span> <span class="kn">import</span> <span class="n">sigmoid_fit</span>
@@ -172,7 +171,7 @@
 
 <span class="c1"># Desigmoid</span>
 <span class="k">def</span> <span class="nf">desigmoid</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="c1">#     Get sigmoid optimized parameters</span>
+    <span class="c1">#  Get sigmoid optimized parameters</span>
     <span class="k">if</span> <span class="n">a</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">a</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">sigmoid_fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
@@ -242,85 +241,6 @@
 
     <span class="c1"># Return</span>
     <span class="k">return</span> <span class="n">x</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">retbins</span> <span class="k">else</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">bins</span><span class="p">)</span></div>
-
-
-<span class="c1"># Natural logarithm</span>
-<div class="viewcode-block" id="ln"><a class="viewcode-back" href="../../../api/generated/izzy.features.ln.html#izzy.features.ln">[docs]</a><span class="k">def</span> <span class="nf">ln</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes natural logarithm</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x : int, float, or ArrayLike</span>
-<span class="sd">        Value(s)</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    int, float, or ArrayLike</span>
-<span class="sd">        Natural logarithm of `x`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
-
-
-<span class="c1"># Logarithm for arbitrary base</span>
-<div class="viewcode-block" id="log"><a class="viewcode-back" href="../../../api/generated/izzy.features.log.html#izzy.features.log">[docs]</a><span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes logarithm for an arbitrary base</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x : int, float, or ArrayLike</span>
-<span class="sd">        Value(s)</span>
-<span class="sd">    base : int or float</span>
-<span class="sd">        Logarithmic base</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    int, float, or ArrayLike</span>
-<span class="sd">        Base `base` logarithm of `x`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">base</span><span class="p">)</span></div>
-
-
-<span class="c1"># Raise to arbitrary power</span>
-<div class="viewcode-block" id="power"><a class="viewcode-back" href="../../../api/generated/izzy.features.power.html#izzy.features.power">[docs]</a><span class="k">def</span> <span class="nf">power</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exponent</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Raises to an arbitrary exponent</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x : int, float, or ArrayLike</span>
-<span class="sd">        Value(s)</span>
-<span class="sd">    exponent : int or float</span>
-<span class="sd">        Exponent</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    int, float, or ArrayLike</span>
-<span class="sd">        Value(s) raised to `exponent`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exponent</span><span class="p">)</span></div>
-
-
-<span class="c1"># Square</span>
-<div class="viewcode-block" id="square"><a class="viewcode-back" href="../../../api/generated/izzy.features.square.html#izzy.features.square">[docs]</a><span class="k">def</span> <span class="nf">square</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Raises to a power of 2</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x : int, float, or ArrayLike</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    int, float, or ArrayLike</span>
-<span class="sd">        Value(s) raised to power of 2</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">return</span> <span class="n">power</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exponent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
 
 
 <span class="c1"># Compute the weight of evidence</span>
@@ -410,7 +330,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.44 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.45 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

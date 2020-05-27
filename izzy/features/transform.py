@@ -1,8 +1,7 @@
 """
 transform.py
-------------
-
-
+written in Python3
+author: C. Lockhart <chris@lockhartlab.org>
 """
 
 from izzy.regression import sigmoid_fit
@@ -137,7 +136,7 @@ def cube(x):
 
 # Desigmoid
 def desigmoid(x, y, a=None, n=None):
-#     Get sigmoid optimized parameters
+    #  Get sigmoid optimized parameters
     if a is None or n is None:
         a, n = sigmoid_fit(x, y)
 
@@ -207,85 +206,6 @@ def granulate(x, bins=None, mode=None, retbins=False):
 
     # Return
     return x if not retbins else (x, bins)
-
-
-# Natural logarithm
-def ln(x):
-    """
-    Computes natural logarithm
-
-    Parameters
-    ----------
-    x : int, float, or ArrayLike
-        Value(s)
-
-    Returns
-    -------
-    int, float, or ArrayLike
-        Natural logarithm of `x`
-    """
-
-    return np.log(x)
-
-
-# Logarithm for arbitrary base
-def log(x, base=10):
-    """
-    Computes logarithm for an arbitrary base
-
-    Parameters
-    ----------
-    x : int, float, or ArrayLike
-        Value(s)
-    base : int or float
-        Logarithmic base
-
-    Returns
-    -------
-    int, float, or ArrayLike
-        Base `base` logarithm of `x`
-    """
-
-    return np.log(x) / np.log(base)
-
-
-# Raise to arbitrary power
-def power(x, exponent):
-    """
-    Raises to an arbitrary exponent
-
-    Parameters
-    ----------
-    x : int, float, or ArrayLike
-        Value(s)
-    exponent : int or float
-        Exponent
-
-    Returns
-    -------
-    int, float, or ArrayLike
-        Value(s) raised to `exponent`
-    """
-
-    return np.power(x, exponent)
-
-
-# Square
-def square(x):
-    """
-    Raises to a power of 2
-
-    Parameters
-    ----------
-    x : int, float, or ArrayLike
-
-    Returns
-    -------
-    int, float, or ArrayLike
-        Value(s) raised to power of 2
-    """
-
-    return power(x, exponent=2)
 
 
 # Compute the weight of evidence

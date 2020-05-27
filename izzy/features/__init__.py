@@ -2,13 +2,10 @@
 from .transform import *
 
 __all__ = [
+    'bucket',
     'clip',
     'desigmoid',
     'granulate',
-    'ln',
-    'log',
-    'power',
-    'square',
     'weight_of_evidence'
 ]
 
