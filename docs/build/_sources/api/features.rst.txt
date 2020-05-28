@@ -12,12 +12,10 @@ Functions
 .. autosummary::
    :toctree: generated
 
+   bucket
    clip
    cube
    granulate
-   ln
-   log
-   power
-   square
+   mround
    weight_of_evidence
    woeify

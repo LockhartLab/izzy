@@ -6,6 +6,7 @@ __all__ = [
     'clip',
     'desigmoid',
     'granulate',
+    'mround',
     'weight_of_evidence'
 ]
 

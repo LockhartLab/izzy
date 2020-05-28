@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>izzy.features &#8212; izzy 0.3.45 documentation</title>
+    <title>izzy.features &#8212; izzy 0.3.46 documentation</title>
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -15,7 +15,7 @@
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="izzy.features.clip" href="generated/izzy.features.clip.html" />
+    <link rel="next" title="izzy.features.bucket" href="generated/izzy.features.bucket.html" />
     <link rel="prev" title="izzy.datasets.random_modeling_dataset" href="generated/izzy.datasets.random_modeling_dataset.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -25,12 +25,12 @@
           <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="generated/izzy.features.clip.html" title="izzy.features.clip"
+          <a href="generated/izzy.features.bucket.html" title="izzy.features.bucket"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="generated/izzy.datasets.random_modeling_dataset.html" title="izzy.datasets.random_modeling_dataset"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">izzy 0.3.45 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">izzy 0.3.46 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../api.html" accesskey="U">API Reference</a> &#187;</li> 
       </ul>
     </div>  
@@ -53,26 +53,20 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/izzy.features.clip.html#izzy.features.clip" title="izzy.features.clip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clip</span></code></a>(x[, left, right, cut])</p></td>
-<td><p>Clips an array</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/izzy.features.cube.html#izzy.features.cube" title="izzy.features.cube"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cube</span></code></a>(x)</p></td>
-<td><p>Raises to a power of 3</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/izzy.features.granulate.html#izzy.features.granulate" title="izzy.features.granulate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">granulate</span></code></a>(x[, bins, mode, retbins])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/izzy.features.bucket.html#izzy.features.bucket" title="izzy.features.bucket"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bucket</span></code></a>(x[, bins, mode, retbins])</p></td>
 <td><p>Transforms <cite>x</cite> into coarse bins</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ln</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/izzy.features.clip.html#izzy.features.clip" title="izzy.features.clip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clip</span></code></a>(x[, left, right, cut])</p></td>
+<td><p>Clips an array</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">log</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/izzy.features.cube.html#izzy.features.cube" title="izzy.features.cube"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cube</span></code></a>(x)</p></td>
+<td><p>Raises to a power of 3</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">power</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/izzy.features.granulate.html#izzy.features.granulate" title="izzy.features.granulate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">granulate</span></code></a>(x[, bins, mode, retbins])</p></td>
+<td><p>Transforms <cite>x</cite> into coarse bins</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">square</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/izzy.features.mround.html#izzy.features.mround" title="izzy.features.mround"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mround</span></code></a>(x[, m, mode])</p></td>
+<td><p>Round to the nearest <cite>m</cite>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/izzy.features.weight_of_evidence.html#izzy.features.weight_of_evidence" title="izzy.features.weight_of_evidence"><code class="xref py py-obj docutils literal notranslate"><span class="pre">weight_of_evidence</span></code></a>(y, total_miss, total_hit)</p></td>
 <td><p>Computes the weight of evidence</p></td>
@@ -104,8 +98,8 @@
   <p class="topless"><a href="generated/izzy.datasets.random_modeling_dataset.html"
                         title="previous chapter">izzy.datasets.random_modeling_dataset</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="generated/izzy.features.clip.html"
-                        title="next chapter">izzy.features.clip</a></p>
+  <p class="topless"><a href="generated/izzy.features.bucket.html"
+                        title="next chapter">izzy.features.bucket</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -134,12 +128,12 @@
           <a href="../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="generated/izzy.features.clip.html" title="izzy.features.clip"
+          <a href="generated/izzy.features.bucket.html" title="izzy.features.bucket"
              >next</a> |</li>
         <li class="right" >
           <a href="generated/izzy.datasets.random_modeling_dataset.html" title="izzy.datasets.random_modeling_dataset"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">izzy 0.3.45 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">izzy 0.3.46 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../api.html" >API Reference</a> &#187;</li> 
       </ul>
     </div>

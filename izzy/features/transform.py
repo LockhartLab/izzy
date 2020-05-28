@@ -208,6 +208,36 @@ def granulate(x, bins=None, mode=None, retbins=False):
     return x if not retbins else (x, bins)
 
 
+# mround as a simple binning method
+def mround(x, m=1, mode='nearest'):
+    """
+    Round to the nearest `m`.
+
+    Parameters
+    ----------
+    x : int, float, or ArrayLike
+        Value(s).
+    m : int or float
+        Coarseness for rounding.
+    mode : str
+        'floor', 'ceiling', or 'nearest'. Any substring will also work.
+
+    Returns
+    -------
+    float or np.ndarray
+        Value(s) rounded to `m`.
+    """
+
+    mode = str(mode).lower()
+    function = np.round
+    if mode in 'floor':
+        function = np.floor
+    elif mode in 'ceiling':
+        function = np.ceil
+
+    return function(x / m) * m
+
+
 # Compute the weight of evidence
 # TODO does this belong here or in metrics?
 def weight_of_evidence(y, total_miss, total_hit, hit_class=1., iv=False):
