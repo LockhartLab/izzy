@@ -16,7 +16,6 @@ from .classification import *
 from .defaults import *
 from .eda import *
 from .features import *
-from .io import *
 from .misc import *
 from .regression import *
 from .tests import *
