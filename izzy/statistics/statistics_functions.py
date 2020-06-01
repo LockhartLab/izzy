@@ -28,7 +28,8 @@ def cmf(a, bins=None):
     """
 
     if bins is None:
-        bins = np.sort(a)
+        a = np.array(a)
+        bins = np.sort(a[~np.isnan(a)])
 
     return pmf(a, bins, cumulative=True)
 
