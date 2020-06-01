@@ -9,7 +9,7 @@ import numpy as np
 
 # Compute cumulative mass function
 # TODO allow NO bins, i.e., each distinct value is its own bucket
-def cmf(a, bins=None):
+def cmf(a, bins=None, dropna=True):
     """
     Cumulative mass function.
 
@@ -20,6 +20,8 @@ def cmf(a, bins=None):
         Values.
     bins : int or ArrayLike
         Number of bins, or discrete bin values.
+    dropna : bool
+        Should NaN be dropped? (Default: True)
 
     Returns
     -------
@@ -27,10 +29,16 @@ def cmf(a, bins=None):
         Values, edges
     """
 
-    if bins is None:
+    # Throw out NaN
+    if dropna or bins is None:
         a = np.array(a)
-        bins = np.unique(a[~np.isnan(a)])
+        a = a[~np.isnan(a)]
 
+    # For bins = None, take unique values of a
+    if bins is None:
+        bins = np.unique(a)
+
+    # Return PMF
     return pmf(a, bins, cumulative=True)
 
 
