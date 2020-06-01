@@ -22,6 +22,9 @@ print('package version: {}\n'.format(version))
 # git.tag('v' + version)
 git.add('-A')
 git.commit(input('Commit message: '))
-git.tag('v' + version)
+response = input('Version (Y/N)? ')
+
+if response.lower() == 'y':
+    git.tag('v' + version)
 git.push(remote='origin', branch='master', options='--tags')
 
