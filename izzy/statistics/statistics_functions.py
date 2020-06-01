@@ -7,6 +7,30 @@ author: C. Lockhart <chris@lockhartlab.org>
 import numpy as np
 
 
+# Compute cumulative mass function
+def cmf(a, bins=10):
+    """
+    Cumulative mass function.
+
+
+    Parameters
+    ----------
+    a : ArrayLike
+        Values.
+    bins : int or ArrayLike
+        Number of bins, or discrete bin values.
+    cumulative : bool
+        Should the CMF actually be returned?
+
+    Returns
+    -------
+    (np.ndarray, np.ndarray)
+        Values, edges
+    """
+
+    return pmf(a, bins, cumulative=True)
+
+
 def histogram():
     """
     https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.stats.histogram.html
@@ -30,12 +54,16 @@ def pmf(a, bins=10, cumulative=False):
     Parameters
     ----------
     a : ArrayLike
+        Values.
     bins : int or ArrayLike
+        Number of bins, or discrete bin values.
     cumulative : bool
+        Should the CMF actually be returned?
 
     Returns
     -------
-
+    (np.ndarray, np.ndarray)
+        Values, edges
     """
 
     values, edges = np.histogram(a, bins=bins)
@@ -47,7 +75,7 @@ def pmf(a, bins=10, cumulative=False):
 
 def pdf(a, bins=10):
     """
-    Probability densitry function.
+    Probability density function.
 
     https://en.wikipedia.org/wiki/Probability_density_function
 
