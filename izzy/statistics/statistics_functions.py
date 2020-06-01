@@ -67,7 +67,7 @@ def pmf(a, bins=10, cumulative=False):
     """
 
     values, edges = np.histogram(a, bins=bins)
-    values /= len(a)
+    values = np.divide(values, len(a))
     if cumulative:
         values = np.cumsum(values)
     return values, edges
