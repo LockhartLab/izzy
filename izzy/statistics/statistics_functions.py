@@ -8,7 +8,8 @@ import numpy as np
 
 
 # Compute cumulative mass function
-def cmf(a, bins=10):
+# TODO allow NO bins, i.e., each distinct value is its own bucket
+def cmf(a, bins=None):
     """
     Cumulative mass function.
 
@@ -19,14 +20,15 @@ def cmf(a, bins=10):
         Values.
     bins : int or ArrayLike
         Number of bins, or discrete bin values.
-    cumulative : bool
-        Should the CMF actually be returned?
 
     Returns
     -------
     (np.ndarray, np.ndarray)
         Values, edges
     """
+
+    if bins is None:
+        bins = np.sort(a)
 
     return pmf(a, bins, cumulative=True)
 
@@ -94,7 +96,6 @@ def pdf(a, bins=10):
 
 _factor = 20. / np.log(2.)
 _offset = 600. - np.log(50.) * _factor
-
 
 
 def odds2prob(odds):
