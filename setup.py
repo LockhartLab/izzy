@@ -35,7 +35,6 @@ setup(
         'izzy.datasets',
         'izzy.eda',
         'izzy.features',
-        'izzy.io',
         'izzy.math',
         'izzy.misc',
         'izzy.classification',
