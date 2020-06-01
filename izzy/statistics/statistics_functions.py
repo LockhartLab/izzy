@@ -29,7 +29,7 @@ def cmf(a, bins=None):
 
     if bins is None:
         a = np.array(a)
-        bins = np.sort(a[~np.isnan(a)])
+        bins = np.unique(a[~np.isnan(a)])
 
     return pmf(a, bins, cumulative=True)
 
