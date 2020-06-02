@@ -8,7 +8,6 @@ import numpy as np
 
 
 # Compute cumulative mass function
-# TODO allow NO bins, i.e., each distinct value is its own bucket
 def cmf(a, bins=None, dropna=True):
     """
     Cumulative mass function.
