@@ -25,8 +25,8 @@ def cmf(a, bins=None, dropna=True):
 
     Returns
     -------
-    (np.ndarray, np.ndarray)
-        Values, edges
+    np.ndarray, np.ndarray
+        Edges, values
     """
 
     # Throw out NaN
@@ -73,15 +73,15 @@ def pmf(a, bins=10, cumulative=False):
 
     Returns
     -------
-    (np.ndarray, np.ndarray)
-        Values, edges
+    np.ndarray, np.ndarray
+        Edges, values
     """
 
     values, edges = np.histogram(a, bins=bins)
     values = np.divide(values, len(a))
     if cumulative:
         values = np.cumsum(values)
-    return values, edges
+    return edges[:-1], values
 
 
 def pdf(a, bins=10):
