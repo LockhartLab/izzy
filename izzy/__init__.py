@@ -15,7 +15,6 @@ from .eda import *
 from .features import *
 from .misc import *
 from .regression import *
-from .viz import *
 
 # TODO pandas.modin for speedup? Make this an option
 __all__ = ['__version__']

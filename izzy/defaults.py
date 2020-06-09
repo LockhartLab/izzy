@@ -7,6 +7,7 @@ Examples
 """
 
 import matplotlib.pyplot as plt
+import pandas as pd
 
 # Plot defaults
 plot_defaults = {
@@ -65,8 +66,10 @@ import plotnine
 from IPython.display import display, SVG
 
 
-def qplot(*args, **kwargs):
-    fig = plotnine.qplot(*args, **kwargs)
+def qplot(*args, xlab='', ylab='', **kwargs):
+    if len(args) > 0 and isinstance(args[0], pd.DataFrame):
+        args = args[0].reset_index().values.T.tolist()
+    fig = plotnine.qplot(*args, xlab=xlab, ylab=ylab, **kwargs)
     fig.save(filename='temp.svg', verbose=False)
     display(SVG('temp.svg'))
 
