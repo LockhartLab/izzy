@@ -8,7 +8,6 @@ Examples
 
 import matplotlib.pyplot as plt
 
-
 # Plot defaults
 plot_defaults = {
     'add': False,
@@ -61,3 +60,15 @@ def set_theme(theme='light', font_size=18):
 # By default, set the theme to light
 # TODO how to get latex axes and fonts?
 set_theme('light')
+
+import plotnine
+from IPython.display import display, SVG
+
+
+def qplot(*args, **kwargs):
+    fig = plotnine.qplot(*args, **kwargs)
+    fig.save(filename='temp.svg', verbose=False)
+    display(SVG('temp.svg'))
+
+
+plotnine.themes.theme_set(plotnine.themes.theme_bw())
