@@ -4,6 +4,7 @@ Written in Python3
 author: C. Lockhart <chris@lockhartlab.org>
 """
 
+from izzy.defaults import *
 
 from IPython.display import display, SVG
 import pandas as pd
@@ -12,7 +13,30 @@ from typelike import ArrayLike
 
 
 # Plot
-def plot(x, y, xlab='', ylab='', geom='line', **kwargs):
+def plot(x, y=None, xlab='', ylab='', geom='line', **kwargs):
+    """
+    https://matplotlib.org/tutorials/colors/colormaps.html
+    https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf
+    Parameters
+    ----------
+    x
+    y
+    xlab
+    ylab
+    geom
+    kwargs
+
+    Returns
+    -------
+
+    """
+
+    # If x is a DataFrame, split into columns
+    if isinstance(x, pd.DataFrame):
+        df = x
+        x = df.index.values
+        y = df.values
+
     # y must be ArrayLike
     if not isinstance(y, ArrayLike):
         raise AttributeError('y must be ArrayLike')
