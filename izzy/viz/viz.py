@@ -82,7 +82,7 @@ class Figure:
 
 
 # Simple x vs y plot
-# TODO should this be called quickplot? What if we want to do multiple lines? Matplotlib is the right library there.
+# TODO should this be called qplot? What if we want to do multiple lines? Matplotlib is the right library there.
 def plot(x, y, **kwargs):
     # Get x and y name if necessary
     kwargs['xlabel'] = kwargs.get('xlabel', get_name(x, 'x'))

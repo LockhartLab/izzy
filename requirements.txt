@@ -3,6 +3,7 @@ coverage
 gitpipe
 hypothesis
 iox
+IPython
 matplotlib
 numpy
 openpyxl
