@@ -35,6 +35,8 @@ def plot(x, y=None, xlab='', ylab='', geom='line', output='auto', **kwargs):
 
     """
 
+    output = str(output).lower()
+
     # If x is a DataFrame, split into columns
     if isinstance(x, pd.DataFrame):
         df = x
@@ -75,10 +77,11 @@ def plot(x, y=None, xlab='', ylab='', geom='line', output='auto', **kwargs):
     fig += p9.theme(axis_text_x=p9.element_text(rotation=45))
 
     # Return
-    if output == 'auto' and get_ipython():
-        tempfile = NamedTemporaryFile(delete=False)
-        fig.save(filename=tempfile.name, verbose=False)
-        display(SVG(tempfile.name))
-        os.remove(tempfile)
+    if output in ['auto', 'ipython'] and get_ipython():
+        with NamedTemporaryFile(delete=False) as tempfile:
+            filename = str(tempfile.name) + '.svg'
+        fig.save(filename=filename, verbose=False)
+        display(SVG(filename))
+        os.remove(filename)
     else:
         return fig
