@@ -1,5 +1,5 @@
 
-from .viz0 import *
+from .viz import *
 
 __all__ = [
     'plot'

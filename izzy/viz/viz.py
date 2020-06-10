@@ -8,6 +8,7 @@ from izzy.defaults import *
 
 from IPython.display import display, SVG
 import pandas as pd
+from patsy.eval import EvalEnvironment
 import plotnine as p9
 from typelike import ArrayLike
 
@@ -67,8 +68,7 @@ def plot(x, y=None, xlab='', ylab='', geom='line', **kwargs):
     if 'point' in geom:
         for i, y_label in enumerate(y_labels):
             fig += p9.geom_point(p9.aes('x', y_label, group=1), color=p9.scale_color_cmap('Set1').palette(i))
-    fig += p9.xlab(xlab)
-    fig += p9.ylab(ylab)
+    fig += p9.labs(x=xlab, y=ylab)
     fig += p9.theme(axis_text_x=p9.element_text(rotation=45))
 
     # Return
