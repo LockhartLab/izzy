@@ -6,15 +6,17 @@ author: C. Lockhart <chris@lockhartlab.org>
 
 from izzy.defaults import *
 
+from IPython import get_ipython
 from IPython.display import display, SVG
+import os
 import pandas as pd
-from patsy.eval import EvalEnvironment
 import plotnine as p9
+from tempfile import NamedTemporaryFile
 from typelike import ArrayLike
 
 
 # Plot
-def plot(x, y=None, xlab='', ylab='', geom='line', **kwargs):
+def plot(x, y=None, xlab='', ylab='', geom='line', output='auto', **kwargs):
     """
     https://matplotlib.org/tutorials/colors/colormaps.html
     https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf
@@ -25,6 +27,7 @@ def plot(x, y=None, xlab='', ylab='', geom='line', **kwargs):
     xlab
     ylab
     geom
+    output
     kwargs
 
     Returns
@@ -72,4 +75,10 @@ def plot(x, y=None, xlab='', ylab='', geom='line', **kwargs):
     fig += p9.theme(axis_text_x=p9.element_text(rotation=45))
 
     # Return
-    return fig
+    if output == 'auto' and get_ipython():
+        tempfile = NamedTemporaryFile(delete=False)
+        fig.save(filename=tempfile.name, verbose=False)
+        display(SVG(tempfile.name))
+        os.remove(tempfile)
+    else:
+        return fig
