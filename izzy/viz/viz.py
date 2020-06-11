@@ -47,9 +47,9 @@ def plot(x, y=None, xlab=None, ylab=None, geom=('line', 'point'), na_rm=True, le
 
     # Process miscellaneous input arguments
     if xlab is None:
-        xlab = p9.element_blank()
+        xlab = ''
     if ylab is None:
-        ylab = p9.element_blank()
+        ylab = ''
     output = str(output).lower()
 
     # If x is a DataFrame, x is the index and y are columns
