@@ -17,25 +17,37 @@ from typelike import ArrayLike
 
 
 # Plot
-def plot(x, y=None, xlab='', ylab='', geom=('line', 'point'), output='auto', **kwargs):
+def plot(x, y=None, xlab=None, ylab=None, geom=('line', 'point'), na_rm=True, output='auto', **kwargs):
     """
     https://matplotlib.org/tutorials/colors/colormaps.html
     https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf
+
     Parameters
     ----------
-    x
-    y
-    xlab
-    ylab
-    geom
-    output
-    kwargs
+    x : pd.DataFrame or ArrayLike
+        DataFrame to plot, or the `x` dimension for plotting.
+    y : ArrayLike or None
+        If present, `y` dimension for plotting. If this is an array of arrays, every interior array will be treated
+        as a dependent variable to `x`.
+    xlab : str or None
+        Title of the `x` axis.
+    ylab : str or None
+        Title of the `y` axis.
+    geom : str or list
+    na_rm : bool
+        Should nulls or missing values be removed? (Default: True)
+    output : string
 
     Returns
     -------
 
     """
 
+    # Process miscellaneous input arguments
+    if xlab is None:
+        xlab = p9.element_blank()
+    if ylab is None:
+        ylab = p9.element_blank()
     output = str(output).lower()
 
     # If x is a DataFrame, x is the index and y are columns
@@ -71,13 +83,14 @@ def plot(x, y=None, xlab='', ylab='', geom=('line', 'point'), output='auto', **k
     # Start building the figure
     fig = p9.ggplot(df, p9.aes(x=x, y='value', color='variable', group='variable'))
     if 'line' in geom:
-        fig += p9.geom_line()
+        fig += p9.geom_line(na_rm=na_rm)
     if 'point' in geom:
-        fig += p9.geom_point()
+        fig += p9.geom_point(na_rm=na_rm)
     fig += p9.labs(x=xlab, y=ylab)
     fig += p9.theme(axis_text_x=p9.element_text(rotation=45), legend_key=p9.element_blank())
     if len(y) > 1:
-        fig += p9.scale_color_manual(name=' ', values=[p9.scale_color_cmap('Set1').palette(i) for i in range(len(y))])
+        fig += p9.scale_color_manual(name=p9.element_blank(),
+                                     values=[p9.scale_color_cmap('Set1').palette(i) for i in range(len(y))])
 
     # Return
     if output in ['auto', 'ipython'] and get_ipython():
