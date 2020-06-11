@@ -91,10 +91,10 @@ def plot(x, y=None, xlab=None, ylab=None, geom=('line', 'point'), na_rm=True, le
     if 'point' in geom:
         fig += p9.geom_point(na_rm=na_rm)
     fig += p9.labs(x=xlab, y=ylab)
-    fig += p9.theme(axis_text_x=p9.element_text(rotation=45), legend_key=p9.element_blank())
+    fig += p9.theme(axis_text_x=p9.element_text(rotation=45),
+                    legend_title=p9.element_blank(), legend_key=p9.element_blank())
     if len(y) > 1 and legend:
-        fig += p9.scale_color_manual(name=p9.element_blank(),
-                                     values=[p9.scale_color_cmap('Set1').palette(i) for i in range(len(y))])
+        fig += p9.scale_color_manual(values=[p9.scale_color_cmap('Set1').palette(i) for i in range(len(y))])
 
     # Return
     if output in ['auto', 'ipython'] and get_ipython():
