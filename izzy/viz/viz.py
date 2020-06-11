@@ -17,7 +17,7 @@ from typelike import ArrayLike
 
 
 # Plot
-def plot(x, y=None, xlab=None, ylab=None, geom=('line', 'point'), na_rm=True, output='auto', **kwargs):
+def plot(x, y=None, xlab=None, ylab=None, geom=('line', 'point'), na_rm=True, legend=True, output='auto', **kwargs):
     """
     https://matplotlib.org/tutorials/colors/colormaps.html
     https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf
@@ -36,6 +36,8 @@ def plot(x, y=None, xlab=None, ylab=None, geom=('line', 'point'), na_rm=True, ou
     geom : str or list
     na_rm : bool
         Should nulls or missing values be removed? (Default: True)
+    legend : bool or ArrayLike
+        If bool, yes or no if the legend should be display. If this is ArrayLike, then these are the legend titles.
     output : string
 
     Returns
@@ -70,8 +72,10 @@ def plot(x, y=None, xlab=None, ylab=None, geom=('line', 'point'), na_rm=True, ou
             for i, y_i in enumerate(y):
                 df['y' + str(i)] = y_i
 
-    # Name df.index.name as x for convenience
+    # Name df.index.name as x for convenience. Rename y columns for legend if necessary. Melt DataFrame.
     x = df.index.name
+    if isinstance(legend, ArrayLike):
+        df.rename(columns=dict(zip(df.columns, legend)), inplace=True)
     y = df.columns
     df = df.reset_index().melt(id_vars=x)
 
@@ -88,7 +92,7 @@ def plot(x, y=None, xlab=None, ylab=None, geom=('line', 'point'), na_rm=True, ou
         fig += p9.geom_point(na_rm=na_rm)
     fig += p9.labs(x=xlab, y=ylab)
     fig += p9.theme(axis_text_x=p9.element_text(rotation=45), legend_key=p9.element_blank())
-    if len(y) > 1:
+    if len(y) > 1 and legend:
         fig += p9.scale_color_manual(name=p9.element_blank(),
                                      values=[p9.scale_color_cmap('Set1').palette(i) for i in range(len(y))])
 
