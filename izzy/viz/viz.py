@@ -75,7 +75,7 @@ def plot(x, y=None, xlab=None, ylab=None, geom=('line', 'point'), na_rm=True, le
     # Name df.index.name as x for convenience. Rename y columns for legend if necessary. Melt DataFrame.
     x = df.index.name
     if isinstance(legend, ArrayLike):
-        df.rename(columns=dict(zip(df.columns, legend)), inplace=True)
+        df = df.rename(columns=dict(zip(df.columns, legend)))
     y = df.columns
     df = df.reset_index().melt(id_vars=x)
 
