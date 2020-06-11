@@ -16,6 +16,15 @@ from tempfile import NamedTemporaryFile
 from typelike import ArrayLike
 
 
+# Display SVG in IPython
+def display_svg(fig):
+    with NamedTemporaryFile(delete=False) as tempfile:
+        filename = str(tempfile.name) + '.svg'
+    fig.save(filename=filename, verbose=False)
+    display(SVG(filename))
+    os.remove(filename)
+
+
 # Plot
 def plot(x, y=None, xlab=None, ylab=None, geom=('line', 'point'), na_rm=True, legend=True, output='auto', **kwargs):
     """
@@ -73,6 +82,7 @@ def plot(x, y=None, xlab=None, ylab=None, geom=('line', 'point'), na_rm=True, le
                 df['y' + str(i)] = y_i
 
     # Name df.index.name as x for convenience. Rename y columns for legend if necessary. Melt DataFrame.
+    # TODO downside of this legend approach is that it's dependent on order of columns in DataFrame. Maybe remove?
     x = df.index.name
     if isinstance(legend, ArrayLike):
         df = df.rename(columns=dict(zip(df.columns, legend)))
@@ -98,10 +108,6 @@ def plot(x, y=None, xlab=None, ylab=None, geom=('line', 'point'), na_rm=True, le
 
     # Return
     if output in ['auto', 'ipython'] and get_ipython():
-        with NamedTemporaryFile(delete=False) as tempfile:
-            filename = str(tempfile.name) + '.svg'
-        fig.save(filename=filename, verbose=False)
-        display(SVG(filename))
-        os.remove(filename)
+        display_svg(fig)
     else:
         return fig
