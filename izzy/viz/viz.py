@@ -9,6 +9,7 @@ from izzy.defaults import *
 from IPython import get_ipython
 from IPython.display import display, SVG
 import os
+import numpy as np
 import pandas as pd
 import plotnine as p9
 from tempfile import NamedTemporaryFile
@@ -63,9 +64,8 @@ def plot(x, y=None, xlab='', ylab='', geom=('line', 'point'), output='auto', **k
     df = df.reset_index().melt(id_vars=x)
 
     # Make geom an array if it's not one already; convert all elements to lowercase
-    if not isinstance(geom, ArrayLike):
-        geom = [geom]
-    for i, geom_i in enumerate(list(geom)):
+    geom = np.array(geom).reshape(-1)
+    for i, geom_i in enumerate(geom):
         geom[i] = geom_i.lower()
 
     # Start building the figure
