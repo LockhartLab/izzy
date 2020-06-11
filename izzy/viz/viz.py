@@ -65,7 +65,7 @@ def plot(x, y=None, xlab='', ylab='', geom=('line', 'point'), output='auto', **k
     # Make geom an array if it's not one already; convert all elements to lowercase
     if not isinstance(geom, ArrayLike):
         geom = [geom]
-    for i, geom_i in enumerate(geom):
+    for i, geom_i in enumerate(list(geom)):
         geom[i] = geom_i.lower()
 
     # Start building the figure
