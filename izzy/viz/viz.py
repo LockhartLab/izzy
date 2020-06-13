@@ -59,7 +59,8 @@ def plot(x, y=None, xlab=None, ylab=None, geom=('line', 'point'), na_rm=True, le
         xlab = ''
     if ylab is None:
         ylab = ''
-    output = str(output).lower()
+    if isinstance(output, str):
+        output = output.lower()
 
     # If x is a DataFrame, x is the index and y are columns
     if isinstance(x, pd.DataFrame):

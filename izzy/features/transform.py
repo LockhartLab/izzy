@@ -12,22 +12,20 @@ from typelike import ArrayLike
 
 
 # Bucket
-def bucket(x, bins=10, mode='equal', retbins=False):
+def bucket(a, bins=10, mode='equal'):
     """
     Transforms `x` into coarse bins
 
     Parameters
     ----------
-    x : ArrayLike
-       Array to granulate
+    a : ArrayLike
+       Array to bucket.
     bins : int or ArrayLike
         If int, produce that many bins according to `mode`; otherwise, use bins
     mode : str
         Options include 'quantile', 'equal', 'left-equal', 'right-equal', 'binary', or 'distinct'. Note that 'equal'
         and 'left-equal' are synonyms. If mode = 'distinct', no transformation is performed. The mode = 'binary' is the
         same as 'distinct', except that we check that there are only two types of observations.
-    retbins : bool
-        Should the bins be returned?
 
     Returns
     -------
@@ -40,8 +38,8 @@ def bucket(x, bins=10, mode='equal', retbins=False):
         mode = 'left-equal'
 
     # Minimum and maximum of array
-    array_min = np.min(x)
-    array_max = np.max(x)
+    array_min = np.min(a)
+    array_max = np.max(a)
 
     # Assign labels for equal bin sizes using numpy.digitize
     if mode in ('left-equal', 'right-equal'):
@@ -60,18 +58,21 @@ def bucket(x, bins=10, mode='equal', retbins=False):
         right = False if mode == 'left-equal' else True
 
         # Transform array
-        x = np.digitize(x, bins=bins, right=right)
+        a = np.digitize(a, bins=bins, right=right)
 
     # Assign labels for quantiles
     elif mode == 'quantile':
-        x, _ = pd.qcut(x=x, q=bins, labels=False, retbins=True, duplicates='drop')
+        a, _ = pd.qcut(x=a, q=bins, labels=False, retbins=True, duplicates='drop')
 
     # If binary, check that there are only two types of observations
     elif mode == 'binary':
-        assert len(np.unique(x)) == 2, 'expecting only two types of observations'
+        assert len(np.unique(a)) == 2, 'expecting only two types of observations'
 
     # Return
-    return x if not retbins else (x, bins)
+    is_oob = (a == 0) | (a == len(bins))
+    bins = np.array(bins, dtype='float')[a - 1]
+    bins[is_oob] = np.nan
+    return bins
 
 
 # Clip

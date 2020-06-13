@@ -6,7 +6,7 @@ written in Python3
 author: C. Lockhart
 """
 
-from .types import ArrayLike
+from izzy.features import bucket
 
 import numpy as np
 import pandas as pd
@@ -117,15 +117,38 @@ def get_name(array, default=None):
     return name
 
 
-#
-def pivot(*args, **kwargs):
+# Pivot table
+def pivot(df, index=None, columns=None, values=None, aggfunc='mean', bins=None):
+    """
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+    index
+    columns
+    values
+    aggfunc
+    bins
+
+    Returns
+    -------
+
+    """
+
+    # Copy DataFrame for safety
+    df = df.copy()
+
     # Create custom aggfuncs
-    if 'aggfunc' in kwargs.keys():
-        if kwargs['aggfunc'] == 'woe':
-            kwargs['aggfunc'] = None  # just a placeholder for now -- will need to fix
+    if aggfunc.lower() == 'woe':
+        # TODO
+        pass
+
+    # Should we bin the index?
+    if bins is not None:
+        df[index] = bucket(df[index], bins=bins)
 
     # Return pivot table
-    return pd.pivot_table(*args, **kwargs)
+    return df.pivot_table(index=index, columns=columns, values=values, aggfunc=aggfunc)
 
 
 # Is it safe to convert this value to a float?

@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>izzy.misc.functions &#8212; izzy 0.3.77 documentation</title>
+    <title>izzy.misc.functions &#8212; izzy 0.3.78 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -22,7 +22,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.77 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.78 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -41,7 +41,7 @@
 <span class="sd">author: C. Lockhart</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">.types</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
+<span class="kn">from</span> <span class="nn">izzy.features</span> <span class="kn">import</span> <span class="n">bucket</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -152,15 +152,38 @@
     <span class="k">return</span> <span class="n">name</span>
 
 
-<span class="c1">#</span>
-<span class="k">def</span> <span class="nf">pivot</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="c1"># Pivot table</span>
+<span class="k">def</span> <span class="nf">pivot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pd.DataFrame</span>
+<span class="sd">    index</span>
+<span class="sd">    columns</span>
+<span class="sd">    values</span>
+<span class="sd">    aggfunc</span>
+<span class="sd">    bins</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Copy DataFrame for safety</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
     <span class="c1"># Create custom aggfuncs</span>
-    <span class="k">if</span> <span class="s1">&#39;aggfunc&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;aggfunc&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;woe&#39;</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;aggfunc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># just a placeholder for now -- will need to fix</span>
+    <span class="k">if</span> <span class="n">aggfunc</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;woe&#39;</span><span class="p">:</span>
+        <span class="c1"># TODO</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Should we bin the index?</span>
+    <span class="k">if</span> <span class="n">bins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">bucket</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)</span>
 
     <span class="c1"># Return pivot table</span>
-    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="n">aggfunc</span><span class="p">)</span>
 
 
 <span class="c1"># Is it safe to convert this value to a float?</span>
@@ -216,7 +239,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.77 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.78 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
