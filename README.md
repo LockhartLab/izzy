@@ -1,6 +1,6 @@
 
-izzy
-====
+<img src="izzy.svg" alt="izzy" height="200px">
+
 a package for data science
 
 <span style="white-space: nowrap;">
