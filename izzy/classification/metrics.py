@@ -728,8 +728,8 @@ def performance_report(y_true, y_prob, degrees_of_freedom=None, threshold=0.5, s
         report['KS'] = ks(y_true, y_pred)
 
     # AUROC / GINI
-    report['AUROC'] = roc_auc(y_true, y_pred, sample_weights=sample_weights)
-    report['GINI'] = gini(y_true, y_pred, sample_weights=sample_weights)
+    report['AUROC'] = roc_auc(y_true, y_prob, sample_weights=sample_weights)
+    report['GINI'] = gini(y_true, y_prob, sample_weights=sample_weights)
 
     # TODO slope
 
