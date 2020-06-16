@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>izzy.classification.logistic &#8212; izzy 0.3.80 documentation</title>
+    <title>izzy.classification.logistic &#8212; izzy 0.3.82 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -22,7 +22,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.80 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.82 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -221,15 +221,16 @@
         <span class="n">coefficients</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span>
 
         <span class="c1"># Is there an intercept? If so, add to x, features, and coefficients</span>
+        <span class="n">xd</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span><span class="p">:</span>
             <span class="c1"># TODO with we use R method of standard errors, we need line below. Fix this!!</span>
-            <span class="c1"># x = np.hstack((np.ones((x.shape[0], 1)), x))  # add 1s for intercept</span>
+            <span class="n">xd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">x</span><span class="p">))</span>  <span class="c1"># add 1s for intercept</span>
             <span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;(intercept)&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">features</span>
             <span class="n">coefficients</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">coefficients</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span><span class="p">)</span>
 
         <span class="c1"># Compute standard errors</span>
         <span class="c1"># We need to add 1s to x for the intercept, but the Hessian function does this for us.</span>
-        <span class="n">ste</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">standard_errors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">ste</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">standard_errors</span><span class="p">(</span><span class="n">xd</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
         <span class="c1"># Compute t-values</span>
         <span class="n">t_values</span> <span class="o">=</span> <span class="n">coefficients</span> <span class="o">/</span> <span class="n">ste</span>
@@ -477,7 +478,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.80 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.82 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

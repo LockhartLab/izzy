@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>izzy.classification.GenericModel &#8212; izzy 0.3.80 documentation</title>
+    <title>izzy.classification.GenericModel &#8212; izzy 0.3.82 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="../classification.html" title="izzy.classification"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.3.80 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.3.82 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../api.html" >API Reference</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="../classification.html" accesskey="U">izzy.classification</a> &#187;</li> 
       </ul>
@@ -284,7 +284,7 @@ with different features is technically incorrect.</p>
 
 <dl class="method">
 <dt id="izzy.classification.GenericModel.standard_errors">
-<code class="sig-name descname">standard_errors</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">mode='R'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.standard_errors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.standard_errors" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">standard_errors</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">method='R'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.standard_errors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.standard_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the standard errors of parameters</p>
 <div class="math notranslate nohighlight">
 \[standard errors = \sqrt{diag(covariance matrix)}\]</div>
@@ -293,7 +293,7 @@ with different features is technically incorrect.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<a class="reference internal" href="izzy.misc.ArrayLike.html#izzy.misc.ArrayLike" title="izzy.misc.ArrayLike"><em>ArrayLike</em></a>) – Independent variable(s)</p></li>
 <li><p><strong>y</strong> (<a class="reference internal" href="izzy.misc.ArrayLike.html#izzy.misc.ArrayLike" title="izzy.misc.ArrayLike"><em>ArrayLike</em></a>) – Dependent variable(s)</p></li>
-<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – See <cite>mode</cite> in <a class="reference internal" href="#izzy.classification.GenericModel.variance_covariance_matrix" title="izzy.classification.GenericModel.variance_covariance_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">variance_covariance_matrix()</span></code></a></p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – See <cite>method</cite> in <a class="reference internal" href="#izzy.classification.GenericModel.variance_covariance_matrix" title="izzy.classification.GenericModel.variance_covariance_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">variance_covariance_matrix()</span></code></a></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -307,7 +307,7 @@ with different features is technically incorrect.</p>
 
 <dl class="method">
 <dt id="izzy.classification.GenericModel.variance_covariance_matrix">
-<code class="sig-name descname">variance_covariance_matrix</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">mode='R'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.variance_covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.variance_covariance_matrix" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">variance_covariance_matrix</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">method='R'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.variance_covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.variance_covariance_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the variance-covariance matrix</p>
 <dl class="simple">
 <dt>The covariance matrix can be calculated in two ways.</dt><dd><ol class="arabic simple">
@@ -328,7 +328,7 @@ covariance. This method, which relies on LAPACK, is <em>significantly</em> more 
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<a class="reference internal" href="izzy.misc.ArrayLike.html#izzy.misc.ArrayLike" title="izzy.misc.ArrayLike"><em>ArrayLike</em></a>) – Independent variable(s)</p></li>
 <li><p><strong>y</strong> (<a class="reference internal" href="izzy.misc.ArrayLike.html#izzy.misc.ArrayLike" title="izzy.misc.ArrayLike"><em>ArrayLike</em></a>) – Dependent variable(s)</p></li>
-<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – ‘statsmodels’ for covariance computed from the Hessian or ‘R’ for the Cholesky method (Default: ‘R’)</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – ‘statsmodels’ for covariance computed from the Hessian or ‘R’ for the Cholesky method (Default: ‘R’)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -389,7 +389,7 @@ covariance. This method, which relies on LAPACK, is <em>significantly</em> more 
         <li class="right" >
           <a href="../classification.html" title="izzy.classification"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.3.80 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.3.82 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../api.html" >API Reference</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="../classification.html" >izzy.classification</a> &#187;</li> 
       </ul>

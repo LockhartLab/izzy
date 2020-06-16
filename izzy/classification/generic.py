@@ -372,7 +372,7 @@ class GenericModel(ABC):
 
     # Standard errors of parameters
     # TODO validate standard errors for multiclass?
-    def standard_errors(self, x, y, mode='R'):
+    def standard_errors(self, x, y, method='R'):
         """
         Computes the standard errors of parameters
 
@@ -384,8 +384,8 @@ class GenericModel(ABC):
             Independent variable(s)
         y : ArrayLike
             Dependent variable(s)
-        mode : str
-            See `mode` in :func:`~variance_covariance_matrix`
+        method : str
+            See `method` in :func:`~variance_covariance_matrix`
 
         Returns
         -------
@@ -393,11 +393,11 @@ class GenericModel(ABC):
             standard errors
         """
 
-        return np.sqrt(np.diag(self.variance_covariance_matrix(x, y, mode=mode)))
+        return np.sqrt(np.diag(self.variance_covariance_matrix(x, y, method=method)))
 
     # Compute the variance-covariance matrix
     # TODO exclude variables with coefficient = 0
-    def variance_covariance_matrix(self, x, y, mode='R'):
+    def variance_covariance_matrix(self, x, y, method='R'):
         r"""
         Computes the variance-covariance matrix
 
@@ -419,7 +419,7 @@ class GenericModel(ABC):
             Independent variable(s)
         y : ArrayLike
             Dependent variable(s)
-        mode : str
+        method : str
             'statsmodels' for covariance computed from the Hessian or 'R' for the Cholesky method (Default: 'R')
 
         Returns
@@ -432,16 +432,16 @@ class GenericModel(ABC):
         if self.n_classes > 2:
             raise AttributeError('can only solve if binomial')
 
-        # If mode = 'statsmodels'
-        if mode == 'statsmodels':
+        # If method = 'statsmodels'
+        if method == 'statsmodels':
             # Compute Fisher information matrix (FIM)
             fim = self.fisher_information_matrix(x, y)
 
             # Compute covariance as the inverse of FIM
             cov = np.linalg.pinv(fim)
 
-        # Elif mode = 'R'
-        elif mode == 'R':
+        # Elif method = 'R'
+        elif method == 'R':
             # Compute y_prime = p * (1 - p)
             y_prime = np.prod(self.predict_proba(x), axis=1).reshape(-1, 1)
 
@@ -455,7 +455,7 @@ class GenericModel(ABC):
 
         # If we get here, we have a problem
         else:
-            raise AttributeError('unknown mode')
+            raise AttributeError('unknown method')
 
         # Return covariance
         return cov

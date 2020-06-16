@@ -186,15 +186,16 @@ class LogisticRegression(_LogisticRegression, GenericModel):
         coefficients = self.coefficients
 
         # Is there an intercept? If so, add to x, features, and coefficients
+        xd = x.copy()
         if self.fit_intercept:
             # TODO with we use R method of standard errors, we need line below. Fix this!!
-            # x = np.hstack((np.ones((x.shape[0], 1)), x))  # add 1s for intercept
+            xd = np.hstack((np.ones((x.shape[0], 1)), x))  # add 1s for intercept
             features = ['(intercept)'] + features
             coefficients = np.insert(coefficients, 0, self.intercept)
 
         # Compute standard errors
         # We need to add 1s to x for the intercept, but the Hessian function does this for us.
-        ste = self.standard_errors(x, y)
+        ste = self.standard_errors(xd, y)
 
         # Compute t-values
         t_values = coefficients / ste

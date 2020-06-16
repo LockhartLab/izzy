@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>izzy.classification.generic &#8212; izzy 0.3.80 documentation</title>
+    <title>izzy.classification.generic &#8212; izzy 0.3.82 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -22,7 +22,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.80 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.82 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -407,7 +407,7 @@
 
     <span class="c1"># Standard errors of parameters</span>
     <span class="c1"># TODO validate standard errors for multiclass?</span>
-<div class="viewcode-block" id="GenericModel.standard_errors"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.standard_errors">[docs]</a>    <span class="k">def</span> <span class="nf">standard_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericModel.standard_errors"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.standard_errors">[docs]</a>    <span class="k">def</span> <span class="nf">standard_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the standard errors of parameters</span>
 
@@ -419,8 +419,8 @@
 <span class="sd">            Independent variable(s)</span>
 <span class="sd">        y : ArrayLike</span>
 <span class="sd">            Dependent variable(s)</span>
-<span class="sd">        mode : str</span>
-<span class="sd">            See `mode` in :func:`~variance_covariance_matrix`</span>
+<span class="sd">        method : str</span>
+<span class="sd">            See `method` in :func:`~variance_covariance_matrix`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -428,11 +428,11 @@
 <span class="sd">            standard errors</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variance_covariance_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)))</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variance_covariance_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)))</span></div>
 
     <span class="c1"># Compute the variance-covariance matrix</span>
     <span class="c1"># TODO exclude variables with coefficient = 0</span>
-<div class="viewcode-block" id="GenericModel.variance_covariance_matrix"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.variance_covariance_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">variance_covariance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericModel.variance_covariance_matrix"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.variance_covariance_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">variance_covariance_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the variance-covariance matrix</span>
 
@@ -454,7 +454,7 @@
 <span class="sd">            Independent variable(s)</span>
 <span class="sd">        y : ArrayLike</span>
 <span class="sd">            Dependent variable(s)</span>
-<span class="sd">        mode : str</span>
+<span class="sd">        method : str</span>
 <span class="sd">            &#39;statsmodels&#39; for covariance computed from the Hessian or &#39;R&#39; for the Cholesky method (Default: &#39;R&#39;)</span>
 
 <span class="sd">        Returns</span>
@@ -467,16 +467,16 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;can only solve if binomial&#39;</span><span class="p">)</span>
 
-        <span class="c1"># If mode = &#39;statsmodels&#39;</span>
-        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;statsmodels&#39;</span><span class="p">:</span>
+        <span class="c1"># If method = &#39;statsmodels&#39;</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;statsmodels&#39;</span><span class="p">:</span>
             <span class="c1"># Compute Fisher information matrix (FIM)</span>
             <span class="n">fim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fisher_information_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
             <span class="c1"># Compute covariance as the inverse of FIM</span>
             <span class="n">cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">fim</span><span class="p">)</span>
 
-        <span class="c1"># Elif mode = &#39;R&#39;</span>
-        <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;R&#39;</span><span class="p">:</span>
+        <span class="c1"># Elif method = &#39;R&#39;</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;R&#39;</span><span class="p">:</span>
             <span class="c1"># Compute y_prime = p * (1 - p)</span>
             <span class="n">y_prime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
@@ -490,7 +490,7 @@
 
         <span class="c1"># If we get here, we have a problem</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;unknown mode&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;unknown method&#39;</span><span class="p">)</span>
 
         <span class="c1"># Return covariance</span>
         <span class="k">return</span> <span class="n">cov</span></div></div>
@@ -585,7 +585,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.80 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.82 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
