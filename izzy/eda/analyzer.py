@@ -2,7 +2,7 @@
 analyzer.py
 """
 
-from izzy.viz import plot
+# from izzy.viz import plot
 
 from izzy.features import granulate
 from izzy.misc import flag_numeric, Refunction, get_name, pivot
@@ -319,7 +319,8 @@ def fviz(**kwargs):
 
     # Build plot
     if len(table.columns) == 1:
-        plot(table.index, table.iloc[:, 0])
+        # plot(table.index, table.iloc[:, 0])
+        pass
     else:
         pass
 

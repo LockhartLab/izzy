@@ -61,17 +61,17 @@ def set_theme(theme='light', font_size=18):
 # By default, set the theme to light
 # TODO how to get latex axes and fonts?
 set_theme('light')
-
-import plotnine
-from IPython.display import display, SVG
-
-
-def qplot(*args, xlab='', ylab='', **kwargs):
-    if len(args) > 0 and isinstance(args[0], pd.DataFrame):
-        args = args[0].reset_index().values.T.tolist()
-    fig = plotnine.qplot(*args, xlab=xlab, ylab=ylab, **kwargs)
-    fig.save(filename='temp.svg', verbose=False)
-    display(SVG('temp.svg'))
-
-
-plotnine.themes.theme_set(plotnine.themes.theme_bw())
+#
+# import plotnine
+# from IPython.display import display, SVG
+#
+#
+# def qplot(*args, xlab='', ylab='', **kwargs):
+#     if len(args) > 0 and isinstance(args[0], pd.DataFrame):
+#         args = args[0].reset_index().values.T.tolist()
+#     fig = plotnine.qplot(*args, xlab=xlab, ylab=ylab, **kwargs)
+#     fig.save(filename='temp.svg', verbose=False)
+#     display(SVG('temp.svg'))
+#
+#
+# plotnine.themes.theme_set(plotnine.themes.theme_bw())

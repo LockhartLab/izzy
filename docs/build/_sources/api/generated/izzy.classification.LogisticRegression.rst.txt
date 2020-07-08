@@ -5,3 +5,7 @@ izzy.classification.LogisticRegression
 
 .. autoclass:: LogisticRegression
    :members:
+   :no-undoc-members:
+
+   .. rubric:: Methods:
+   .. automethod:: __init__

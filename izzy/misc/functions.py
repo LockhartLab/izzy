@@ -120,6 +120,12 @@ def get_name(array, default=None):
 # Pivot table
 def pivot(df, index=None, columns=None, values=None, aggfunc='mean', bins=None):
     """
+    Pivot groups `values` by `index` and `columns` using `aggfunc`.
+
+    Largely, this follows the ~pandas.pivot_table.
+
+    New `aggfunc`:
+        - **pmf** computes sum for each group and then divides by the column total
 
     Parameters
     ----------
@@ -132,23 +138,35 @@ def pivot(df, index=None, columns=None, values=None, aggfunc='mean', bins=None):
 
     Returns
     -------
-
+    pandas.DataFrame
+        Pivot table.
     """
 
     # Copy DataFrame for safety
     df = df.copy()
 
-    # Create custom aggfuncs
+    divide_by_sum = False
+
+    # Custom aggfunc
     if aggfunc.lower() == 'woe':
         # TODO
         pass
+
+    elif aggfunc.lower() == 'pmf':
+        aggfunc = 'sum'
+        divide_by_sum = True
 
     # Should we bin the index?
     if bins is not None:
         df[index] = bucket(df[index], bins=bins)
 
-    # Return pivot table
-    return df.pivot_table(index=index, columns=columns, values=values, aggfunc=aggfunc)
+    # Compute pivot table
+    result = df.pivot_table(index=index, columns=columns, values=values, aggfunc=aggfunc)
+    if divide_by_sum:
+        result /= result.sum()
+
+    # Return
+    return result
 
 
 # Is it safe to convert this value to a float?

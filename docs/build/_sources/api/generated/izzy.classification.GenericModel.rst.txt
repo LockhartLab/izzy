@@ -5,3 +5,7 @@ izzy.classification.GenericModel
 
 .. autoclass:: GenericModel
    :members:
+   :no-undoc-members:
+
+   .. rubric:: Methods:
+   .. automethod:: __init__

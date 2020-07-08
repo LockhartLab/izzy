@@ -1,18 +1,18 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>izzy.classification.generic &#8212; izzy 0.3.82 documentation</title>
+    <title>izzy.classification.generic &#8212; izzy 0.3.83 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
   </head><body>
@@ -22,7 +22,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.82 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.83 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -50,7 +50,8 @@
 <span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">lapack</span>
 
 
-<span class="c1"># TODO model preparation workflow? For instance, if regularized, check that variables are standardized (https://www.quora.com/Why-do-we-normalize-the-data?share=1)</span>
+<span class="c1"># TODO model preparation workflow? For instance, if regularized, check that variables are standardized</span>
+<span class="c1"># (https://www.quora.com/Why-do-we-normalize-the-data?share=1)</span>
 
 
 <span class="c1"># GenericModel class</span>
@@ -60,7 +61,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Initialize instance of class</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GenericModel.__init__"><a class="viewcode-back" href="../../../api/generated/izzy.classification.GenericModel.html#izzy.classification.GenericModel.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize instance of the GenericModel class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -74,7 +75,7 @@
 
         <span class="c1"># Class information</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span> <span class="o">=</span> <span class="kc">None</span></div>
 
     <span class="c1"># Compute the log-likelihood from y_true and y_pred</span>
     <span class="c1"># TODO is log-likelihood model specific? Why isn&#39;t this in metrics?</span>
@@ -182,7 +183,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Format x</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">format_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_format_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
         <span class="c1"># Return</span>
         <span class="k">return</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
@@ -513,9 +514,8 @@
     <span class="k">return</span> <span class="n">weight</span>
 
 
-<span class="c1"># Format x</span>
-<span class="c1"># TODO why is this a public function?</span>
-<span class="k">def</span> <span class="nf">format_x</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="c1"># Format x so its right shape and type</span>
+<span class="k">def</span> <span class="nf">_format_x</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="c1"># If list or tuple, convert to numpy array</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -556,8 +556,6 @@
 
     <span class="c1"># Result True if engine is an object that is linked to izzy package</span>
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="nb">object</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="s1">&#39;_package&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;izzy&#39;</span><span class="p">)</span>
-
-
 </pre></div>
 
           </div>
@@ -574,7 +572,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -585,13 +583,13 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.82 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.83 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, Lockhart Lab.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

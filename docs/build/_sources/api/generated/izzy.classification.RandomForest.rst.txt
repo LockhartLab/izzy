@@ -5,3 +5,7 @@ izzy.classification.RandomForest
 
 .. autoclass:: RandomForest
    :members:
+   :no-undoc-members:
+
+   .. rubric:: Methods:
+   .. automethod:: __init__

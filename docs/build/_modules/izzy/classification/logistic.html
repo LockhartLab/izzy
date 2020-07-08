@@ -1,18 +1,18 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>izzy.classification.logistic &#8212; izzy 0.3.82 documentation</title>
+    <title>izzy.classification.logistic &#8212; izzy 0.3.83 documentation</title>
     <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
   </head><body>
@@ -22,7 +22,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.82 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.83 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -39,7 +39,7 @@
 <span class="sd">author: C. Lockhart &lt;chris@lockhartlab.org&gt;</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">.generic</span> <span class="kn">import</span> <span class="n">format_x</span><span class="p">,</span> <span class="n">GenericModel</span>
+<span class="kn">from</span> <span class="nn">.generic</span> <span class="kn">import</span> <span class="n">_format_x</span><span class="p">,</span> <span class="n">GenericModel</span>
 <span class="kn">from</span> <span class="nn">._utilities</span> <span class="kn">import</span> <span class="n">_coerce_sample_weights</span>
 
 <span class="kn">from</span> <span class="nn">izzy.misc</span> <span class="kn">import</span> <span class="n">equal</span>
@@ -64,7 +64,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Initialize class instance</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;lbfgs&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="LogisticRegression.__init__"><a class="viewcode-back" href="../../../api/generated/izzy.classification.LogisticRegression.html#izzy.classification.LogisticRegression.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;lbfgs&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize an instance of LogisticRegression</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -80,7 +80,7 @@
         <span class="c1"># Class variables</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_fitted</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_fitted</span> <span class="o">=</span> <span class="kc">False</span></div>
 
     <span class="c1"># Add intercept to x</span>
     <span class="k">def</span> <span class="nf">_add_intercept_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
@@ -162,7 +162,7 @@
     <span class="c1"># Fit</span>
 <div class="viewcode-block" id="LogisticRegression.fit"><a class="viewcode-back" href="../../../api/generated/izzy.classification.LogisticRegression.html#izzy.classification.LogisticRegression.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># Format x</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">format_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_format_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
         <span class="c1"># Store number of observations / features</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_obs</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -209,7 +209,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Input check</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">format_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_format_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
         <span class="c1"># Get feature names</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
@@ -221,16 +221,15 @@
         <span class="n">coefficients</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span>
 
         <span class="c1"># Is there an intercept? If so, add to x, features, and coefficients</span>
-        <span class="n">xd</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span><span class="p">:</span>
             <span class="c1"># TODO with we use R method of standard errors, we need line below. Fix this!!</span>
-            <span class="n">xd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">x</span><span class="p">))</span>  <span class="c1"># add 1s for intercept</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">x</span><span class="p">))</span>  <span class="c1"># add 1s for intercept</span>
             <span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;(intercept)&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">features</span>
             <span class="n">coefficients</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">coefficients</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span><span class="p">)</span>
 
         <span class="c1"># Compute standard errors</span>
         <span class="c1"># We need to add 1s to x for the intercept, but the Hessian function does this for us.</span>
-        <span class="n">ste</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">standard_errors</span><span class="p">(</span><span class="n">xd</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">ste</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">standard_errors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
         <span class="c1"># Compute t-values</span>
         <span class="n">t_values</span> <span class="o">=</span> <span class="n">coefficients</span> <span class="o">/</span> <span class="n">ste</span>
@@ -345,7 +344,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Format x</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">format_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_format_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
         <span class="c1"># We only know how to compute this in 2D, right?</span>
 
@@ -387,7 +386,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Convert x to numpy array, reshaping if necessary</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">format_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">_format_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
     <span class="c1"># Number of columns in x</span>
     <span class="n">n_columns</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -467,7 +466,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -478,13 +477,13 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.82 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.83 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, Lockhart Lab.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

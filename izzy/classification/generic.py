@@ -15,7 +15,8 @@ import pandas as pd
 from scipy.linalg import lapack
 
 
-# TODO model preparation workflow? For instance, if regularized, check that variables are standardized (https://www.quora.com/Why-do-we-normalize-the-data?share=1)
+# TODO model preparation workflow? For instance, if regularized, check that variables are standardized
+# (https://www.quora.com/Why-do-we-normalize-the-data?share=1)
 
 
 # GenericModel class
@@ -147,7 +148,7 @@ class GenericModel(ABC):
         """
 
         # Format x
-        x = format_x(x)
+        x = _format_x(x)
 
         # Return
         return confusion_matrix(y, self.predict_proba(x))
@@ -478,9 +479,8 @@ def _format_weight(weight, n=None):
     return weight
 
 
-# Format x
-# TODO why is this a public function?
-def format_x(x):
+# Format x so its right shape and type
+def _format_x(x):
     # If list or tuple, convert to numpy array
     if isinstance(x, (list, tuple)):
         x = np.array(x)
@@ -521,5 +521,3 @@ def is_model_instance(engine):
 
     # Result True if engine is an object that is linked to izzy package
     return isinstance(engine, object) & (getattr(engine, '_package', None) == 'izzy')
-
-

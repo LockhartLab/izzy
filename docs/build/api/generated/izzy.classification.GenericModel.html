@@ -1,18 +1,18 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>izzy.classification.GenericModel &#8212; izzy 0.3.82 documentation</title>
+    <title>izzy.classification.GenericModel &#8212; izzy 0.3.83 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="izzy.classification.LogisticRegression" href="izzy.classification.LogisticRegression.html" />
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="../classification.html" title="izzy.classification"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.3.82 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.3.83 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../api.html" >API Reference</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="../classification.html" accesskey="U">izzy.classification</a> &#187;</li> 
       </ul>
@@ -43,13 +43,20 @@
             
   <div class="section" id="izzy-classification-genericmodel">
 <h1>izzy.classification.GenericModel<a class="headerlink" href="#izzy-classification-genericmodel" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="izzy.classification.GenericModel">
 <em class="property">class </em><code class="sig-prename descclassname">izzy.classification.</code><code class="sig-name descname">GenericModel</code><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>GenericModel class. Note that this is an abstract class.</p>
-<dl class="method">
+<p class="rubric">Methods:</p>
+<dl class="py method">
+<dt id="izzy.classification.GenericModel.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize instance of the GenericModel class</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.classify">
-<code class="sig-name descname">classify</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">classes=None</em>, <em class="sig-param">threshold=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.classify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.classify" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">classify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">classes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.classify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.classify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Evaluate at <code class="docutils literal notranslate"><span class="pre">x</span></code> and then classify</p>
 <p>If the problem is binomial, <code class="docutils literal notranslate"><span class="pre">threshold</span></code> is used to perform classification. Otherwise, the class with greatest
 probability is chosen.</p>
@@ -66,14 +73,14 @@ probability is chosen.</p>
 <dd class="field-even"><p>Predicted classes of each observation</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.confusion_matrix">
-<code class="sig-name descname">confusion_matrix</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.confusion_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.confusion_matrix" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">confusion_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.confusion_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.confusion_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the confusion matrix for the model instance</p>
 <p>See <a class="reference internal" href="izzy.classification.confusion_matrix.html#izzy.classification.confusion_matrix" title="izzy.classification.confusion_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">izzy.classification.confusion_matrix()</span></code></a></p>
 <dl class="field-list simple">
@@ -87,20 +94,20 @@ probability is chosen.</p>
 <dd class="field-even"><p>confusion matrix</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.0.4)">pandas.DataFrame</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.0.5)">pandas.DataFrame</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.degrees_of_freedom">
-<code class="sig-name descname">degrees_of_freedom</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.degrees_of_freedom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.degrees_of_freedom" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">degrees_of_freedom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.degrees_of_freedom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.degrees_of_freedom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implemented in children classes</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.dof">
-<code class="sig-name descname">dof</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.dof"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.dof" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dof</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.dof"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.dof" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias to <a class="reference internal" href="#izzy.classification.GenericModel.degrees_of_freedom" title="izzy.classification.GenericModel.degrees_of_freedom"><code class="xref py py-func docutils literal notranslate"><span class="pre">degrees_of_freedom()</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -115,9 +122,9 @@ probability is chosen.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.fim">
-<code class="sig-name descname">fim</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.fim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.fim" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fim</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.fim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.fim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias of <a class="reference internal" href="#izzy.classification.GenericModel.fisher_information_matrix" title="izzy.classification.GenericModel.fisher_information_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">fisher_information_matrix()</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -130,14 +137,14 @@ probability is chosen.</p>
 <dd class="field-even"><p>Fisher information matrix</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.fisher">
-<code class="sig-name descname">fisher</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.fisher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.fisher" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fisher</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.fisher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.fisher" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias of <a class="reference internal" href="#izzy.classification.GenericModel.fisher_information_matrix" title="izzy.classification.GenericModel.fisher_information_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">fisher_information_matrix()</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -150,14 +157,14 @@ probability is chosen.</p>
 <dd class="field-even"><p>Fisher information matrix</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.fisher_information_matrix">
-<code class="sig-name descname">fisher_information_matrix</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.fisher_information_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.fisher_information_matrix" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fisher_information_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.fisher_information_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.fisher_information_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the Fisher information matrix (FIM)</p>
 <p>FIM is the negative Hessian</p>
 <dl class="field-list simple">
@@ -171,26 +178,26 @@ probability is chosen.</p>
 <dd class="field-even"><p>Fisher information matrix</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.fit">
-<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.fit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implemented in children classes.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.hessian">
-<code class="sig-name descname">hessian</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.hessian" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">hessian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.hessian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implemented in children classes</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.information">
-<code class="sig-name descname">information</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.information" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">information</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.information"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.information" title="Permalink to this definition">¶</a></dt>
 <dd><p>Alias of <a class="reference internal" href="#izzy.classification.GenericModel.fisher_information_matrix" title="izzy.classification.GenericModel.fisher_information_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">fisher_information_matrix()</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -203,14 +210,14 @@ probability is chosen.</p>
 <dd class="field-even"><p>Fisher information matrix</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.log_likelihood">
-<code class="sig-name descname">log_likelihood</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">normalize=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.log_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.log_likelihood" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">log_likelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.log_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.log_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the log-likelihood</p>
 <p>Mathematically, for a sample <span class="math notranslate nohighlight">\(i\)</span>, we compute the likelihood <span class="math notranslate nohighlight">\(L_i = p_i^{y_i} (1-p_i)^{1-y_i}.\)</span> Here,
 we compute <span class="math notranslate nohighlight">\(p\)</span> as the predicted probability and <span class="math notranslate nohighlight">\(y\)</span> as the true outcome.</p>
@@ -235,9 +242,9 @@ with different features is technically incorrect.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.log_loss">
-<code class="sig-name descname">log_loss</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.log_loss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.log_loss" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">log_loss</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.log_loss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.log_loss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the log loss. This is the negative log likelihood. See <a class="reference internal" href="#izzy.classification.GenericModel.log_likelihood" title="izzy.classification.GenericModel.log_likelihood"><code class="xref py py-func docutils literal notranslate"><span class="pre">log_likelihood()</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -255,9 +262,9 @@ with different features is technically incorrect.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.performance_report">
-<code class="sig-name descname">performance_report</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">threshold=0.5</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.performance_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.performance_report" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">performance_report</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">0.5</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.performance_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.performance_report" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a performance report for the model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -271,20 +278,20 @@ with different features is technically incorrect.</p>
 <dd class="field-even"><p>performance report</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.0.4)">pandas.DataFrame</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.0.5)">pandas.DataFrame</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.predict_proba">
-<code class="sig-name descname">predict_proba</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.predict_proba"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.predict_proba" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">predict_proba</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.predict_proba"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.predict_proba" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implemented in children classes.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.standard_errors">
-<code class="sig-name descname">standard_errors</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">method='R'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.standard_errors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.standard_errors" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">standard_errors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'R'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.standard_errors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.standard_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the standard errors of parameters</p>
 <div class="math notranslate nohighlight">
 \[standard errors = \sqrt{diag(covariance matrix)}\]</div>
@@ -300,14 +307,14 @@ with different features is technically incorrect.</p>
 <dd class="field-even"><p>standard errors</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.GenericModel.variance_covariance_matrix">
-<code class="sig-name descname">variance_covariance_matrix</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">method='R'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.variance_covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.variance_covariance_matrix" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">variance_covariance_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'R'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/generic.html#GenericModel.variance_covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.GenericModel.variance_covariance_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the variance-covariance matrix</p>
 <dl class="simple">
 <dt>The covariance matrix can be calculated in two ways.</dt><dd><ol class="arabic simple">
@@ -335,7 +342,7 @@ covariance. This method, which relies on LAPACK, is <em>significantly</em> more 
 <dd class="field-even"><p>variance-covariance matrix</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -372,7 +379,7 @@ covariance. This method, which relies on LAPACK, is <em>significantly</em> more 
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -389,14 +396,14 @@ covariance. This method, which relies on LAPACK, is <em>significantly</em> more 
         <li class="right" >
           <a href="../classification.html" title="izzy.classification"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.3.82 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.3.83 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../api.html" >API Reference</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="../classification.html" >izzy.classification</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, Lockhart Lab.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

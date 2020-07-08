@@ -104,10 +104,13 @@ def plot(x, y=None, xlab=None, ylab=None, geom=('line', 'point'), na_rm=True, le
     fig += p9.labs(x=xlab, y=ylab)
     fig += p9.theme(axis_text_x=p9.element_text(rotation=45),
                     legend_title=p9.element_blank(), legend_key=p9.element_blank())
-    if len(y) > 1 and legend:
+    if legend:
         fig += p9.scale_color_manual(values=[p9.scale_color_cmap('Set1').palette(i) for i in range(len(y))])
+    else:
+        fig += p9.theme(legend_position='none')
 
     # Return
+    # TODO ipython might fail here
     if output in ['auto', 'ipython'] and get_ipython():
         display_svg(fig)
     else:

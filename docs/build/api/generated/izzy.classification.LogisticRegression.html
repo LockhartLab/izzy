@@ -1,18 +1,18 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>izzy.classification.LogisticRegression &#8212; izzy 0.3.82 documentation</title>
+    <title>izzy.classification.LogisticRegression &#8212; izzy 0.3.83 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="../../_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="izzy.classification.RandomForest" href="izzy.classification.RandomForest.html" />
@@ -30,7 +30,7 @@
         <li class="right" >
           <a href="izzy.classification.GenericModel.html" title="izzy.classification.GenericModel"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.3.82 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.3.83 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../api.html" >API Reference</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="../classification.html" accesskey="U">izzy.classification</a> &#187;</li> 
       </ul>
@@ -43,15 +43,22 @@
             
   <div class="section" id="izzy-classification-logisticregression">
 <h1>izzy.classification.LogisticRegression<a class="headerlink" href="#izzy-classification-logisticregression" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="izzy.classification.LogisticRegression">
-<em class="property">class </em><code class="sig-prename descclassname">izzy.classification.</code><code class="sig-name descname">LogisticRegression</code><span class="sig-paren">(</span><em class="sig-param">solver='lbfgs'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">izzy.classification.</code><code class="sig-name descname">LogisticRegression</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">solver</span><span class="o">=</span><span class="default_value">'lbfgs'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression" title="Permalink to this definition">¶</a></dt>
 <dd><p>The class <code class="docutils literal notranslate"><span class="pre">LogisticRegression</span></code> fits a logistic regression model</p>
 <p>The general scope is to provide independent variables <cite>x</cite> with labels <cite>y</cite>, which will be used to fit the model.</p>
 <p>Then, <cite>predict_proba</cite> can be used to solve using the fitted coefficients for new samples.</p>
-<dl class="method">
+<p class="rubric">Methods:</p>
+<dl class="py method">
+<dt id="izzy.classification.LogisticRegression.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">solver</span><span class="o">=</span><span class="default_value">'lbfgs'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize an instance of LogisticRegression</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="izzy.classification.LogisticRegression.degrees_of_freedom">
-<code class="sig-name descname">degrees_of_freedom</code><span class="sig-paren">(</span><em class="sig-param">sample_weights=None</em>, <em class="sig-param">axis=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression.degrees_of_freedom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression.degrees_of_freedom" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">degrees_of_freedom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sample_weights</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression.degrees_of_freedom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression.degrees_of_freedom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the degrees of freedom</p>
 <p>If axis = 0, this is the degrees of freedom <span class="math notranslate nohighlight">\(D\)</span> of the samples.</p>
 <div class="math notranslate nohighlight">
@@ -75,9 +82,9 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.LogisticRegression.feature_importance">
-<code class="sig-name descname">feature_importance</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression.feature_importance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression.feature_importance" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">feature_importance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression.feature_importance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression.feature_importance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Outputs coefficients of the model, their standard errors, and significance</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -90,22 +97,22 @@
 <dd class="field-even"><p>feature importance report</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.0.4)">pandas.DataFrame</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.0.5)">pandas.DataFrame</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.LogisticRegression.fit">
-<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression.fit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit the model according to the given training data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix}</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Training vector, where n_samples is the number of samples and
+<li><p><strong>X</strong> (<em>{array-like</em><em>, </em><em>sparse matrix} of shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Training vector, where n_samples is the number of samples and
 n_features is the number of features.</p></li>
-<li><p><strong>y</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – Target vector relative to X.</p></li>
-<li><p><strong>sample_weight</strong> (<em>array-like</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>) </em><em>optional</em>) – <p>Array of weights that are assigned to individual samples.
+<li><p><strong>y</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – Target vector relative to X.</p></li>
+<li><p><strong>sample_weight</strong> (<em>array-like of shape</em><em> (</em><em>n_samples</em><em>,</em><em>) </em><em>default=None</em>) – <p>Array of weights that are assigned to individual samples.
 If not provided, then each sample is given unit weight.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.17: </span><em>sample_weight</em> support to LogisticRegression.</p>
@@ -124,9 +131,9 @@ If not provided, then each sample is given unit weight.</p>
 <p>The SAGA solver supports both float64 and float32 bit arrays.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="izzy.classification.LogisticRegression.hessian">
-<code class="sig-name descname">hessian</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression.hessian" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">hessian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/izzy/classification/logistic.html#LogisticRegression.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#izzy.classification.LogisticRegression.hessian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the Hessian matrix.</p>
 <p>The Hessian is the second-order derivative of the loss function evaluated at the maximum likelihood estimate.</p>
 <p>Let’s take this generally from the position of a loss function <span class="math notranslate nohighlight">\(L\)</span>, which is the negative log likelihood
@@ -178,7 +185,7 @@ ddJ = p - 2p - 2yp + 2p^2</p>
 <dd class="field-even"><p>Hessian matrix</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)">numpy.ndarray</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -215,7 +222,7 @@ ddJ = p - 2p - 2yp + 2p^2</p>
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -232,14 +239,14 @@ ddJ = p - 2p - 2yp + 2p^2</p>
         <li class="right" >
           <a href="izzy.classification.GenericModel.html" title="izzy.classification.GenericModel"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.3.82 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">izzy 0.3.83 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../api.html" >API Reference</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="../classification.html" >izzy.classification</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, Lockhart Lab.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

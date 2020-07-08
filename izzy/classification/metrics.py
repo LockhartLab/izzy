@@ -399,6 +399,7 @@ def aic(log_likelihood, degrees_of_freedom):
 # TODO give banana plot a better name
 # TODO Sorted score vs recall is the official plot
 # TODO you can generalize this and apply it to precision, f1, etc.
+# TODO pandas.DataFrame.rank
 def banana_plot():
     pass
 

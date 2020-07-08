@@ -4,7 +4,7 @@ written in Python3
 author: C. Lockhart <chris@lockhartlab.org>
 """
 
-from .generic import format_x, GenericModel
+from .generic import _format_x, GenericModel
 from ._utilities import _coerce_sample_weights
 
 from izzy.misc import equal
@@ -127,7 +127,7 @@ class LogisticRegression(_LogisticRegression, GenericModel):
     # Fit
     def fit(self, x, y, **kwargs):
         # Format x
-        x = format_x(x)
+        x = _format_x(x)
 
         # Store number of observations / features
         self.n_obs = x.shape[0]
@@ -174,7 +174,7 @@ class LogisticRegression(_LogisticRegression, GenericModel):
         """
 
         # Input check
-        x = format_x(x)
+        x = _format_x(x)
 
         # Get feature names
         if isinstance(x, pd.DataFrame):
@@ -186,16 +186,15 @@ class LogisticRegression(_LogisticRegression, GenericModel):
         coefficients = self.coefficients
 
         # Is there an intercept? If so, add to x, features, and coefficients
-        xd = x.copy()
         if self.fit_intercept:
             # TODO with we use R method of standard errors, we need line below. Fix this!!
-            xd = np.hstack((np.ones((x.shape[0], 1)), x))  # add 1s for intercept
+            x = np.hstack((np.ones((x.shape[0], 1)), x))  # add 1s for intercept
             features = ['(intercept)'] + features
             coefficients = np.insert(coefficients, 0, self.intercept)
 
         # Compute standard errors
         # We need to add 1s to x for the intercept, but the Hessian function does this for us.
-        ste = self.standard_errors(xd, y)
+        ste = self.standard_errors(x, y)
 
         # Compute t-values
         t_values = coefficients / ste
@@ -310,7 +309,7 @@ class LogisticRegression(_LogisticRegression, GenericModel):
         """
 
         # Format x
-        x = format_x(x)
+        x = _format_x(x)
 
         # We only know how to compute this in 2D, right?
 
@@ -352,7 +351,7 @@ def logistic(x, beta=1.):
     """
 
     # Convert x to numpy array, reshaping if necessary
-    x = format_x(x)
+    x = _format_x(x)
 
     # Number of columns in x
     n_columns = x.shape[1]
