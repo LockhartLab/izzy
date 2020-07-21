@@ -7,8 +7,9 @@ Examples
 """
 
 from izzy.defaults import *
-from izzy.misc import get_name, Refunction
+from izzy.misc import get_name
 
+from functools import partial
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -89,7 +90,7 @@ def plot(x, y, **kwargs):
     kwargs['ylabel'] = kwargs.get('ylabel', get_name(y, 'y'))
 
     # Define plotters
-    plotters = [Refunction(plt.plot, x, y)]
+    plotters = [partial(plt.plot, x, y)]
 
     # Call _plot helper function
     _plot(plotters, **kwargs)

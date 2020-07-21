@@ -163,7 +163,7 @@ def pivot(df, index=None, columns=None, values=None, aggfunc='mean', bins=None):
     # Compute pivot table
     result = df.pivot_table(index=index, columns=columns, values=values, aggfunc=aggfunc)
     if divide_by_sum:
-        result /= result.sum()
+        result = result.div(result.sum(axis=1), axis=0)
 
     # Return
     return result

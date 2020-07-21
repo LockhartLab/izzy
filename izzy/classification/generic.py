@@ -15,7 +15,7 @@ import pandas as pd
 from scipy.linalg import lapack
 
 
-# TODO model preparation workflow? For instance, if regularized, check that variables are standardized
+# TODO model preparation workflow? For instance, if regularized, check that variables are standardized, etc.
 # (https://www.quora.com/Why-do-we-normalize-the-data?share=1)
 
 

@@ -1,6 +1,5 @@
 
-from izzy.misc import Refunction
-
+from functools import partial
 import numpy as np
 from scipy.optimize import curve_fit
 
@@ -39,7 +38,7 @@ def sigmoid(x, a=1., n=1., inverse=False):
 # Fit a sigmoid function
 def sigmoid_fit(x, y, a=1., n=1., inverse=False):
     # Fit curve
-    f = Refunction(sigmoid, inverse=inverse)
+    f = partial(sigmoid, inverse=inverse)
     p, _ = curve_fit(f, x, y, p0=[a, n])
 
     # Return parameters

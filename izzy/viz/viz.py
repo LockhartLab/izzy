@@ -12,6 +12,7 @@ import os
 import numpy as np
 import pandas as pd
 import plotnine as p9
+import sys
 from tempfile import NamedTemporaryFile
 from typelike import ArrayLike
 
@@ -111,7 +112,7 @@ def plot(x, y=None, xlab=None, ylab=None, geom=('line', 'point'), na_rm=True, le
 
     # Return
     # TODO ipython might fail here
-    if output in ['auto', 'ipython'] and get_ipython():
+    if output in ['auto', 'ipython'] and get_ipython() and 'qtconsole' not in sys.modules:
         display_svg(fig)
     else:
         return fig

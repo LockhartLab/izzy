@@ -5,8 +5,10 @@ analyzer.py
 # from izzy.viz import plot
 
 from izzy.features import granulate
-from izzy.misc import flag_numeric, Refunction, get_name, pivot
+from izzy.misc import flag_numeric, get_name, pivot
 from izzy.classification import create_engine_from_string, is_model_instance
+
+from functools import partial
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -53,7 +55,7 @@ class FeatureAnalyzer:
                                   self.columns[1]: x}, columns=self.columns)
 
         # Define bins
-        self.bins = {self.columns[1]: Refunction(granulate, bins=10, mode='equal')}
+        self.bins = {self.columns[1]: partial(granulate, bins=10, mode='equal')}
 
         # Add interaction z if necessary
         if z is not None:
@@ -64,7 +66,7 @@ class FeatureAnalyzer:
             self.data[self.columns[2]] = z
 
             # Add bin for z
-            self.bins[self.columns[2]] = Refunction(granulate, bins=10, mode='equal')
+            self.bins[self.columns[2]] = partial(granulate, bins=10, mode='equal')
 
         # Verbose flag
         self.verbose = verbose
@@ -253,7 +255,7 @@ def fan1d(x, y, clean=True, xlower=None, xupper=None, xcut=False, xbins=10, xmod
 
     # Set bins (otherwise FeatureAnalyzer automatically does this)
     if xbins is not None:
-        fan.bins[fan.columns[1]] = Refunction(granulate, bins=xbins, mode=xmode)
+        fan.bins[fan.columns[1]] = partial(granulate, bins=xbins, mode=xmode)
 
     # Return
     return fan
@@ -274,9 +276,9 @@ def fan2d(x, z, y,
 
     # Set bins
     if xbins is not None:
-        fan.bins[fan.columns[1]] = Refunction(granulate, bins=xbins, mode=xmode)
+        fan.bins[fan.columns[1]] = partial(granulate, bins=xbins, mode=xmode)
     if zbins is not None:
-        fan.bins[fan.columns[2]] = Refunction(granulate, bins=zbins, mode=zmode)
+        fan.bins[fan.columns[2]] = partial(granulate, bins=zbins, mode=zmode)
 
     # Return
     return fan

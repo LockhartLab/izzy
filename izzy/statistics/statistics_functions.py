@@ -55,6 +55,10 @@ def histogram():
     pass
 
 
+def normalize(a):
+    pass
+
+
 def pmf(a, bins=10, cumulative=False):
     """
     Probability mass function.

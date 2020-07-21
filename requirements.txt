@@ -6,6 +6,7 @@ iox
 IPython
 matplotlib
 numpy
+numpy_financial
 openpyxl
 pandas
 plotnine

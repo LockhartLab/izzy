@@ -1,7 +1,6 @@
 
 from .assertions import *
 from .functions import *
-from .Refunction import *
 from .types import *
 
 __all__ = [
@@ -12,7 +11,6 @@ __all__ = [
     'equal',
     'flag_numeric',
     'NoneType',
-    'Refunction',
     'get_name',
     'pivot',
     'safe_as_float'

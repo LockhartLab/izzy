@@ -41,3 +41,8 @@ def feature_analyzer(df):
 @add_to_pandas
 def granulate(df):
     pass
+
+
+def normalize(df):
+    # ss.div(ss.sum(axis=1), axis=0).fillna(0)
+    pass

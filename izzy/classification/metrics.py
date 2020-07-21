@@ -312,7 +312,6 @@ def _true_positives(cm):
     return np.diag(cm)
 
 
-
 # Accuracy
 # TODO allow this to be conmputed for multiclass too
 def accuracy(y_true, y_pred, sample_weights=None):
