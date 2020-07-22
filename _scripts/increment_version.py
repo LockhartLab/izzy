@@ -22,7 +22,7 @@ with open('version.yml', 'w') as f:
 version = '.'.join([str(version[key]) for key in ['major', 'minor', 'patch']])
 
 # Write version string to izzy/_version.py
-with open('izzy/version.py', 'w') as f:
+with open('izzy/_version.py', 'w') as f:
     f.write("__version__ = '{}'\n".format(version))
 
 # Return
