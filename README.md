@@ -4,7 +4,7 @@
 a package for data science
 
 <span style="white-space: nowrap;">
-    <a href="https://travis-ci.com/github/LockhartLab/izzy"><img src="https://img.shields.io/pypi/v/izzy" /></a>
+    <a href="https://pypi.org/project/izzy/"><img src="https://img.shields.io/pypi/v/izzy" /></a>
     <a href="https://travis-ci.com/github/LockhartLab/izzy"><img src="https://img.shields.io/travis/com/lockhartlab/izzy/master" /></a>
     <a href="https://codecov.io/gh/LockhartLab/izzy"><img src="https://img.shields.io/codecov/c/github/lockhartlab/izzy/master" /></a>
 </span>
