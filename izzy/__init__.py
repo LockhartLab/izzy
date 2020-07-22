@@ -10,7 +10,6 @@ from .statistics import *
 
 from ._version import __version__
 from .classification import *
-from .defaults import *
 from .eda import *
 from .features import *
 from .misc import *
