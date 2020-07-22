@@ -17,7 +17,7 @@ Imput
 
 # TODO create mechanism to log imputation (verbose? plot?)
 
-from izzy.classification import format_x
+from izzy.classification.generic import _format_x
 from izzy.features import granulate, weight_of_evidence
 from izzy.misc import pivot
 
@@ -356,7 +356,7 @@ def impute_by_woe(x, y, missing_values=None, target_class=1, bins=20, mode='quan
     x = x.copy()
 
     # Format x like we do for modeling
-    x = format_x(x)
+    x = _format_x(x)
 
     # If missing_values is None, the default is np.nan
     if missing_values is None:
