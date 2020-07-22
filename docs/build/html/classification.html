@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classification &#8212; izzy 0.3.88 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="izzy.misc.equal" href="api/generated/izzy.misc.equal.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="api/generated/izzy.misc.equal.html" title="izzy.misc.equal"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">izzy 0.3.88 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Classification</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="classification">
+<h1>Classification<a class="headerlink" href="#classification" title="Permalink to this headline">¶</a></h1>
+<p>The goal of classification algorithms is to label data. Traditionally, this is
+done by training the algorithm on historic data with known labels.</p>
+<div class="section" id="generic">
+<h2>Generic<a class="headerlink" href="#generic" title="Permalink to this headline">¶</a></h2>
+<p>These are functions, metrics, and plots that pertain to all classification
+algorithms.</p>
+<div class="section" id="metrics">
+<h3>Metrics<a class="headerlink" href="#metrics" title="Permalink to this headline">¶</a></h3>
+<p>These are metrics for assessing the performance of classification algorithms.</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/generated/izzy.classification.accuracy.html#izzy.classification.accuracy" title="izzy.classification.accuracy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">accuracy</span></code></a>(y_true, y_pred[, sample_weights])</p></td>
+<td><p>Compute the accuracy of the model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/generated/izzy.classification.aic.html#izzy.classification.aic" title="izzy.classification.aic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aic</span></code></a>(log_likelihood, degrees_of_freedom)</p></td>
+<td><p>Compute the Akaike Information Criteria (AIC)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/generated/izzy.classification.bic.html#izzy.classification.bic" title="izzy.classification.bic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bic</span></code></a>(log_likelihood, degrees_of_freedom, …)</p></td>
+<td><p>Compute the Bayesian Information Criteria (BIC)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/generated/izzy.classification.confusion_matrix.html#izzy.classification.confusion_matrix" title="izzy.classification.confusion_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">confusion_matrix</span></code></a>(y_true, y_pred[, …])</p></td>
+<td><p>Compute the confusion matrix</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/generated/izzy.classification.f1.html#izzy.classification.f1" title="izzy.classification.f1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">f1</span></code></a>(y_true, y_pred[, sample_weights])</p></td>
+<td><p>Compute the f1 score</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/generated/izzy.classification.gini.html#izzy.classification.gini" title="izzy.classification.gini"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gini</span></code></a>(y_true, y_prob[, sample_weights])</p></td>
+<td><p>Compute the Gini coefficient</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/generated/izzy.classification.ks.html#izzy.classification.ks" title="izzy.classification.ks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ks</span></code></a>(y_true, y_prob[, sample_weights])</p></td>
+<td><p>Compute the Kolmogorov-Smirnov (KS) test statistic to evaluate model performance</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/generated/izzy.classification.performance_report.html#izzy.classification.performance_report" title="izzy.classification.performance_report"><code class="xref py py-obj docutils literal notranslate"><span class="pre">performance_report</span></code></a>(y_true, y_prob[, …])</p></td>
+<td><p>A performance report for a model.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/generated/izzy.classification.precision.html#izzy.classification.precision" title="izzy.classification.precision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">precision</span></code></a>(y_true, y_pred[, sample_weights])</p></td>
+<td><p>Compute the precision (synonym: positive predictive value)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/generated/izzy.classification.recall.html#izzy.classification.recall" title="izzy.classification.recall"><code class="xref py py-obj docutils literal notranslate"><span class="pre">recall</span></code></a>(y_true, y_pred[, sample_weights])</p></td>
+<td><p>Compute the recall (synonyms: sensitivity, hit rate, true positive rate)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/generated/izzy.classification.roc.html#izzy.classification.roc" title="izzy.classification.roc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">roc</span></code></a>(y_true, y_prob[, sample_weights])</p></td>
+<td><p>Compute false positive rates and true positives rates for the receiver operating characteristic</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="plots">
+<h3>Plots<a class="headerlink" href="#plots" title="Permalink to this headline">¶</a></h3>
+<p>Plots specific to classification problems.</p>
+<p>roc</p>
+</div>
+<div class="section" id="class">
+<h3>Class<a class="headerlink" href="#class" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">GenericModel</span></code>()</p></td>
+<td><p>GenericModel class.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="logistic-regression">
+<h2>Logistic Regression<a class="headerlink" href="#logistic-regression" title="Permalink to this headline">¶</a></h2>
+<p>Logistic regression is a classification algorithm that solves for the function
+<span class="math notranslate nohighlight">\(y(x) = \frac{1}{1+e^{-\beta x}}\)</span>, where <span class="math notranslate nohighlight">\(y\)</span> is the outcome,
+<span class="math notranslate nohighlight">\(\beta\)</span> is a set of coefficients, and <span class="math notranslate nohighlight">\(x\)</span> are predictor variables.</p>
+<p>An example of the function <span class="math notranslate nohighlight">\(y(x)\)</span> is presented below. Note that this
+function is particularly suited for classification, since two states,
+<span class="math notranslate nohighlight">\(y(x) = 0\)</span> and <span class="math notranslate nohighlight">\(y(x) = 1\)</span> are separated by a sharp transition, the
+decision boundary.</p>
+<a class="reference internal image-reference" href="_images/logistic_function.png"><img alt="_images/logistic_function.png" src="_images/logistic_function.png" style="width: 100%;" /></a>
+<div class="section" id="fitting-the-model">
+<h3>Fitting the Model<a class="headerlink" href="#fitting-the-model" title="Permalink to this headline">¶</a></h3>
+<p>The coefficients <span class="math notranslate nohighlight">\(\beta\)</span> are chosen such that the log likelihood is
+maximized. The likelihood function is the joint probability distribution of
+coefficients <span class="math notranslate nohighlight">\(\beta\)</span> with each outcome. Intuitively, the maximization of
+this function is equivalent to saying that we want to choose <span class="math notranslate nohighlight">\(\beta\)</span> such
+that the predicted probability of success is highest when samples are actually
+successfully <strong>and</strong> the predicted probability of failure is highest when samples
+are actually failures.</p>
+<p>For the case where we have a logistic function with only 1 variable (and no
+intercept), we can visualize the coefficient versus the log likelihood on a 2D
+plane. The maximum of the function, as depicted with the dashed black line, is
+the most suitable for the modeled data.</p>
+<a class="reference internal image-reference" href="_images/log_likelihood.png"><img alt="_images/log_likelihood.png" src="_images/log_likelihood.png" style="width: 100%;" /></a>
+<p>Although it looks easy to identify the coefficients from maximum log likelihood
+as above, in practice the number of predictive variables can be high leading to
+a complicated likelihood function. Therefore, the best bet is to use
+optimization algorithms to solve for the coefficients.</p>
+<p>Note that the cost function <span class="math notranslate nohighlight">\(J = \frac{1}{2}(y - \hat{y})^2\)</span>, where
+<span class="math notranslate nohighlight">\(y\)</span> is the predicted outcome and <span class="math notranslate nohighlight">\(\hat{y}\)</span> is the true outcome,
+presents an equivalent way of expressing how coefficients <span class="math notranslate nohighlight">\(\beta\)</span> are
+selected.</p>
+</div>
+<div class="section" id="id1">
+<h3>Class<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">LogisticRegression</span></code>([solver])</p></td>
+<td><p>The class <code class="docutils literal notranslate"><span class="pre">LogisticRegression</span></code> fits a logistic regression model</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="random-forest">
+<h2>Random Forest<a class="headerlink" href="#random-forest" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3>Class<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">RandomForest</span></code>(*args, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Classification</a><ul>
+<li><a class="reference internal" href="#generic">Generic</a><ul>
+<li><a class="reference internal" href="#metrics">Metrics</a></li>
+<li><a class="reference internal" href="#plots">Plots</a></li>
+<li><a class="reference internal" href="#class">Class</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#logistic-regression">Logistic Regression</a><ul>
+<li><a class="reference internal" href="#fitting-the-model">Fitting the Model</a></li>
+<li><a class="reference internal" href="#id1">Class</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#random-forest">Random Forest</a><ul>
+<li><a class="reference internal" href="#id2">Class</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="api/generated/izzy.misc.equal.html"
+                        title="previous chapter">izzy.misc.equal</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/classification.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="api/generated/izzy.misc.equal.html" title="izzy.misc.equal"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">izzy 0.3.88 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Classification</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Lockhart Lab.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

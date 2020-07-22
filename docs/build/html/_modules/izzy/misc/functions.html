@@ -1,0 +1,273 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>izzy.misc.functions &#8212; izzy 0.3.88 documentation</title>
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.88 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">izzy.misc.functions</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for izzy.misc.functions</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">functions.py</span>
+<span class="sd">------------</span>
+<span class="sd">written in Python3</span>
+
+<span class="sd">author: C. Lockhart</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">izzy.features</span> <span class="kn">import</span> <span class="n">bucket</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+
+<span class="c1"># Convert an array-like construct to a pandas Series</span>
+<span class="k">def</span> <span class="nf">array_to_series</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper function to convert an array to pandas Series.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ==========</span>
+<span class="sd">    arr : array-like</span>
+<span class="sd">        The array to convert.</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the Series (if not already known).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># If list, convert to numpy array</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+
+    <span class="c1"># If numpy array, convert to Series</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+
+    <span class="c1"># At this point, arr must be a Series</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">),</span> <span class="s1">&#39;array is not a series&#39;</span>
+
+    <span class="c1"># Set name</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">arr</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">arr</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="c1"># Return</span>
+    <span class="k">return</span> <span class="n">arr</span>
+
+
+<span class="c1"># Flag if numeric</span>
+<span class="k">def</span> <span class="nf">_flag_numeric</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+    <span class="c1"># Do I need to type check arr?</span>
+
+    <span class="c1"># Convert safe_as_float function to functional vector</span>
+    <span class="n">is_numeric</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">safe_as_float</span><span class="p">)(</span><span class="n">array</span><span class="p">)</span>
+
+    <span class="c1"># Return boolean vector is_numeric</span>
+    <span class="k">return</span> <span class="n">is_numeric</span>
+
+
+<span class="c1">#</span>
+<div class="viewcode-block" id="equal"><a class="viewcode-back" href="../../../api/generated/izzy.misc.equal.html#izzy.misc.equal">[docs]</a><span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># Get epsilon</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">spacing</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Is equal?</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">eps</span></div>
+
+
+<span class="k">def</span> <span class="nf">flag_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">logical_and</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="c1"># Array of False to store if data is numeric</span>
+    <span class="n">is_numeric</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;bool&#39;</span><span class="p">)</span>
+
+    <span class="c1"># If DataFrame, we return rows</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">function</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span> <span class="k">if</span> <span class="n">logical_and</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span>
+            <span class="n">is_numeric</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">is_numeric</span><span class="p">,</span> <span class="n">_flag_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]))</span>
+
+    <span class="c1"># Otherwise, treat as array</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">is_numeric</span> <span class="o">=</span> <span class="n">_flag_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="c1"># Return</span>
+    <span class="k">return</span> <span class="n">is_numeric</span>
+
+
+<span class="k">def</span> <span class="nf">get_column</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Series do not have multiple columns&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)[:,</span> <span class="n">column</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    array</span>
+<span class="sd">    default</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># By default, set `name` to `default`</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">default</span>
+
+    <span class="c1"># If array is an object with name attribute, set to array.name</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="nb">object</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="c1"># Return</span>
+    <span class="k">return</span> <span class="n">name</span>
+
+
+<span class="c1"># Pivot table</span>
+<span class="k">def</span> <span class="nf">pivot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pivot groups `values` by `index` and `columns` using `aggfunc`.</span>
+
+<span class="sd">    Largely, this follows the ~pandas.pivot_table.</span>
+
+<span class="sd">    New `aggfunc`:</span>
+<span class="sd">        - **pmf** computes sum for each group and then divides by the column total</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pd.DataFrame</span>
+<span class="sd">    index</span>
+<span class="sd">    columns</span>
+<span class="sd">    values</span>
+<span class="sd">    aggfunc</span>
+<span class="sd">    bins</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Pivot table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Copy DataFrame for safety</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="n">divide_by_sum</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Custom aggfunc</span>
+    <span class="k">if</span> <span class="n">aggfunc</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;woe&#39;</span><span class="p">:</span>
+        <span class="c1"># TODO</span>
+        <span class="k">pass</span>
+
+    <span class="k">elif</span> <span class="n">aggfunc</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;pmf&#39;</span><span class="p">:</span>
+        <span class="n">aggfunc</span> <span class="o">=</span> <span class="s1">&#39;sum&#39;</span>
+        <span class="n">divide_by_sum</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Should we bin the index?</span>
+    <span class="k">if</span> <span class="n">bins</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">bucket</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">)</span>
+
+    <span class="c1"># Compute pivot table</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="n">aggfunc</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">divide_by_sum</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Return</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="c1"># Is it safe to convert this value to a float?</span>
+<span class="k">def</span> <span class="nf">safe_as_float</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="c1"># Is the conversion safe?</span>
+    <span class="n">safe</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Try to convert value to float</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="c1"># We raised an exception, so we&#39;re not safe</span>
+        <span class="n">safe</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Return if safe or not</span>
+    <span class="k">return</span> <span class="n">safe</span>
+
+
+<span class="k">def</span> <span class="nf">set_column</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Series do not have multiple column&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[:,</span> <span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+
+    <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.88 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">izzy.misc.functions</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Lockhart Lab.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

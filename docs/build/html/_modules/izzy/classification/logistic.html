@@ -1,0 +1,493 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>izzy.classification.logistic &#8212; izzy 0.3.88 documentation</title>
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.88 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">izzy.classification.logistic</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for izzy.classification.logistic</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">LogisticRegression.py</span>
+<span class="sd">written in Python3</span>
+<span class="sd">author: C. Lockhart &lt;chris@lockhartlab.org&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.generic</span> <span class="kn">import</span> <span class="n">_format_x</span><span class="p">,</span> <span class="n">GenericModel</span>
+<span class="kn">from</span> <span class="nn">._utilities</span> <span class="kn">import</span> <span class="n">_coerce_sample_weights</span>
+
+<span class="kn">from</span> <span class="nn">izzy.misc</span> <span class="kn">import</span> <span class="n">equal</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span> <span class="k">as</span> <span class="n">_LogisticRegression</span>
+
+
+<span class="c1"># LogisticRegression class</span>
+<span class="c1"># TODO OVR vs. multiclass</span>
+<span class="c1"># TODO devise LogisticRegression that does not penalize the intercept</span>
+<div class="viewcode-block" id="LogisticRegression"><a class="viewcode-back" href="../../../api/generated/izzy.classification.LogisticRegression.html#izzy.classification.LogisticRegression">[docs]</a><span class="k">class</span> <span class="nc">LogisticRegression</span><span class="p">(</span><span class="n">_LogisticRegression</span><span class="p">,</span> <span class="n">GenericModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The class ``LogisticRegression`` fits a logistic regression model</span>
+
+<span class="sd">    The general scope is to provide independent variables `x` with labels `y`, which will be used to fit the model.</span>
+
+<span class="sd">    Then, `predict_proba` can be used to solve using the fitted coefficients for new samples.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Initialize class instance</span>
+<div class="viewcode-block" id="LogisticRegression.__init__"><a class="viewcode-back" href="../../../api/generated/izzy.classification.LogisticRegression.html#izzy.classification.LogisticRegression.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;lbfgs&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize an instance of LogisticRegression</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Call parent class</span>
+        <span class="n">_LogisticRegression</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># If solver is izzy, we need to trick sklearn</span>
+        <span class="c1"># TODO at some point in time, we can do a more elegant solution. This way, we still initialize class from ext</span>
+        <span class="k">if</span> <span class="n">solver</span> <span class="o">==</span> <span class="s1">&#39;izzy&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="s1">&#39;izzy&#39;</span>
+
+        <span class="c1"># Class variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_fitted</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+    <span class="c1"># Add intercept to x</span>
+    <span class="k">def</span> <span class="nf">_add_intercept_to_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># If there&#39;s an intercept, add to x</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_obs</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">x</span><span class="p">))</span>
+
+        <span class="c1"># Return x</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+    <span class="c1"># Fit function for izzy solver</span>
+    <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="c1"># Initialize coefficients for features (+ intercept)</span>
+        <span class="n">coefficients</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span><span class="p">)</span>
+
+        <span class="c1"># If necessary, add intercept to x</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_intercept_to_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Minimize</span>
+        <span class="n">coefficients</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="n">_cost</span><span class="p">,</span> <span class="n">coefficients</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span><span class="o">.</span><span class="n">x</span>
+
+        <span class="c1"># Set intercept</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span> <span class="o">=</span> <span class="n">coefficients</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">coefficients</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">coefficients</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Set coefficients</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">=</span> <span class="n">coefficients</span>
+
+    <span class="c1"># Solve the logistic function</span>
+    <span class="k">def</span> <span class="nf">_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">*</span> <span class="n">x</span><span class="p">))</span>
+
+    <span class="c1"># Degrees of freedom</span>
+<div class="viewcode-block" id="LogisticRegression.degrees_of_freedom"><a class="viewcode-back" href="../../../api/generated/izzy.classification.LogisticRegression.html#izzy.classification.LogisticRegression.degrees_of_freedom">[docs]</a>    <span class="k">def</span> <span class="nf">degrees_of_freedom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample_weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the degrees of freedom</span>
+
+<span class="sd">        If axis = 0, this is the degrees of freedom :math:`D` of the samples.</span>
+
+<span class="sd">        .. math:: D = N_{obs,weight &gt; 0} - N_{features + intercept}</span>
+
+<span class="sd">        If axis = 1, :math:`D` is computed   in feature space.</span>
+
+<span class="sd">        .. math:: D = N_{features + intercept,coefficient&gt;0}</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sample_weights : ArrayLike</span>
+<span class="sd">            Weights for each observation</span>
+<span class="sd">        axis : int</span>
+<span class="sd">            If 0, observations; if 1, features + intercept</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            degrees of freedom</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Coerce sample_weights into correct form</span>
+        <span class="n">sample_weights</span> <span class="o">=</span> <span class="n">_coerce_sample_weights</span><span class="p">(</span><span class="n">sample_weights</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_obs</span><span class="p">)</span>
+
+        <span class="c1"># If axis = 0, DOF = # obs - # obs with 0 weight - # features (including intercept if present)</span>
+        <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_obs</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">equal</span><span class="p">(</span><span class="n">sample_weights</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span>
+
+        <span class="c1"># If axis = 1, DOF = # features - # features with 0 coefficient + 1 (if intercept present)</span>
+        <span class="k">elif</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">coefficients</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">,</span> <span class="mf">0.</span><span class="p">))</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span>
+
+        <span class="c1"># If we get here, there&#39;s a problem</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;axis can only be 0 or 1&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Return</span>
+        <span class="k">return</span> <span class="n">d</span></div>
+
+    <span class="c1"># Fit</span>
+<div class="viewcode-block" id="LogisticRegression.fit"><a class="viewcode-back" href="../../../api/generated/izzy.classification.LogisticRegression.html#izzy.classification.LogisticRegression.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># Format x</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_format_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Store number of observations / features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_obs</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_features</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># Store classes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classes</span><span class="p">)</span>
+
+        <span class="c1"># We don&#39;t know how to deal with multi_class = &#39;ovr&#39; and n_classes &gt; 2</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_class</span> <span class="o">==</span> <span class="s1">&#39;ovr&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_classes</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;multi_class must be set to multinomial&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">multi_class</span> <span class="o">=</span> <span class="s1">&#39;multinomial&#39;</span>
+
+        <span class="c1"># Fit</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">==</span> <span class="s1">&#39;izzy&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_LogisticRegression</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">intercept_</span>
+
+        <span class="c1"># Mark as fitted</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_fitted</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+    <span class="c1"># Feature importance</span>
+<div class="viewcode-block" id="LogisticRegression.feature_importance"><a class="viewcode-back" href="../../../api/generated/izzy.classification.LogisticRegression.html#izzy.classification.LogisticRegression.feature_importance">[docs]</a>    <span class="k">def</span> <span class="nf">feature_importance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Outputs coefficients of the model, their standard errors, and significance</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ArrayLike</span>
+<span class="sd">            Independent variable(s)</span>
+<span class="sd">        y : ArrayLike</span>
+<span class="sd">            Dependent variable(s)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            feature importance report</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Input check</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_format_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Get feature names</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+
+        <span class="c1"># Get coefficients</span>
+        <span class="n">coefficients</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span>
+
+        <span class="c1"># Is there an intercept? If so, add to x, features, and coefficients</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit_intercept</span><span class="p">:</span>
+            <span class="c1"># TODO with we use R method of standard errors, we need line below. Fix this!!</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">x</span><span class="p">))</span>  <span class="c1"># add 1s for intercept</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;(intercept)&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">features</span>
+            <span class="n">coefficients</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">coefficients</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span><span class="p">)</span>
+
+        <span class="c1"># Compute standard errors</span>
+        <span class="c1"># We need to add 1s to x for the intercept, but the Hessian function does this for us.</span>
+        <span class="n">ste</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">standard_errors</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="c1"># Compute t-values</span>
+        <span class="n">t_values</span> <span class="o">=</span> <span class="n">coefficients</span> <span class="o">/</span> <span class="n">ste</span>
+
+        <span class="c1"># Compute p-values from t-values</span>
+        <span class="n">p_values</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">norm</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">t_values</span><span class="p">))</span>
+
+        <span class="c1"># Compute normed coefficients and weight</span>
+        <span class="c1"># normed_coefficients = np.array(self.coefficients * np.std(x, axis=0))</span>
+        <span class="c1"># abs_normed_coefficients = np.abs(normed_coefficients)</span>
+        <span class="c1"># weight = abs_normed_coefficients / np.sum(abs_normed_coefficients)</span>
+        <span class="n">weight</span> <span class="o">=</span> <span class="n">coefficients</span>
+
+        <span class="c1"># Add stars for significance</span>
+        <span class="k">def</span> <span class="nf">add_stars</span><span class="p">(</span><span class="n">p_value</span><span class="p">):</span>
+            <span class="n">stars</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">if</span> <span class="mf">0.</span> <span class="o">&lt;=</span> <span class="n">p_value</span> <span class="o">&lt;</span> <span class="mf">0.001</span><span class="p">:</span>
+                <span class="n">stars</span> <span class="o">=</span> <span class="s1">&#39;***&#39;</span>
+            <span class="k">elif</span> <span class="mf">0.001</span> <span class="o">&lt;=</span> <span class="n">p_value</span> <span class="o">&lt;</span> <span class="mf">0.01</span><span class="p">:</span>
+                <span class="n">stars</span> <span class="o">=</span> <span class="s1">&#39;**&#39;</span>
+            <span class="k">elif</span> <span class="mf">0.01</span> <span class="o">&lt;=</span> <span class="n">p_value</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">:</span>
+                <span class="n">stars</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+            <span class="k">elif</span> <span class="mf">0.05</span> <span class="o">&lt;=</span> <span class="n">p_value</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
+                <span class="n">stars</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span>
+            <span class="k">return</span> <span class="n">stars</span>
+
+        <span class="n">significance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">add_stars</span><span class="p">)(</span><span class="n">p_values</span><span class="p">)</span>
+
+        <span class="c1"># Construct report</span>
+        <span class="n">report</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;feature&#39;</span><span class="p">:</span> <span class="n">features</span><span class="p">,</span>
+            <span class="s1">&#39;coefficient&#39;</span><span class="p">:</span> <span class="n">coefficients</span><span class="p">,</span>
+            <span class="c1"># &#39;normed_coefficient&#39;: normed_coefficients,</span>
+            <span class="c1"># &#39;weight&#39;: weight,</span>
+            <span class="s1">&#39;standard_error&#39;</span><span class="p">:</span> <span class="n">ste</span><span class="p">,</span>
+            <span class="s1">&#39;p_value&#39;</span><span class="p">:</span> <span class="n">p_values</span><span class="p">,</span>
+            <span class="s1">&#39;significance&#39;</span><span class="p">:</span> <span class="n">significance</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Return as pandas DataFrame</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">report</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;weight&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+    <span class="c1"># Hessian</span>
+<div class="viewcode-block" id="LogisticRegression.hessian"><a class="viewcode-back" href="../../../api/generated/izzy.classification.LogisticRegression.html#izzy.classification.LogisticRegression.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the Hessian matrix.</span>
+
+<span class="sd">        The Hessian is the second-order derivative of the loss function evaluated at the maximum likelihood estimate.</span>
+
+<span class="sd">        Let&#39;s take this generally from the position of a loss function :math:`L`, which is the negative log likelihood</span>
+<span class="sd">        (i.e., joint probability distribution of classes predicted by the model.</span>
+
+<span class="sd">        .. math:: L = p^y(1-p)^{1-y}</span>
+
+<span class="sd">        Here, :math:`p` is the outcome from solving the logistic function, and :math:`y` is the true outcome. We can</span>
+<span class="sd">        also compute the log loss,</span>
+
+<span class="sd">        .. math:: log(L) = ylog(p) + (1-y)log(1-p)</span>
+
+<span class="sd">        Computing the derivative of :math:`log(L)`,</span>
+
+<span class="sd">        .. math:: \frac{\delta log(L)}{\delta p} = \frac{y}{p}\delta p - \frac{1-y}{1-p}\delta p</span>
+
+<span class="sd">        Remember that :math:`p(\beta |x) = \frac{1}{1+e^{-\beta^Tx}`. The derivative of :math:`p(\beta |x)` is,</span>
+
+<span class="sd">        .. math:: \frac{\delta p}{\delta \beta} = \frac{\delta}{\delta w} (\frac{1}{1+e^{-\beta x}})</span>
+
+<span class="sd">        .. math:: \frac{\delta p}{\delta \beta} = -(1+e^{-\beta x})^{-2}  (-xe^{-\beta x})</span>
+
+<span class="sd">        .. math:: \frac{\delta p}{\delta \beta} = xp(1-p)</span>
+
+<span class="sd">        Going back to the derivative of :math:`log(L)`, we can now fill in :math:`delta p`,</span>
+
+<span class="sd">        .. math:: \frac{\delta log(L)}{\delta \beta^T} = \frac{y}{p}xp(1-p) - \frac{1-y}{1-p}xp(1-p)</span>
+
+<span class="sd">        .. math:: \frac{\delta log(L)}{\delta \beta^T} = xy(1-p) - x(1-y)p  = xy - xyp - x + xyp = x(y-1)</span>
+
+<span class="sd">        .. math:: \frac{\delta log(L)}{\delta \beta^T} = x(p-y)</span>
+
+
+<span class="sd">        In this equation, :math:`\hat{y}` is the true outcome, where :math:`y(w|x) = \frac{1}{1+e^{-w^Tx}}` is the</span>
+<span class="sd">        logistic function. Then, we can compute the first derivative of :math:`J`. We take the derivative with respect</span>
+<span class="sd">        to parameters :math:`w^T`, leaving the observations :math:`x` as constants.</span>
+
+<span class="sd">        .. math:: \frac{\delta J(w)}{\delta w^T} = xy(w|x)(\hat{y} - y(w|x))(1-y(w|x))</span>
+
+<span class="sd">        dy = (1+e^{-wx})^-1 = -1(1+e^{-wx})^{-1}*(1+e^{-wx})^{-1}*-xe^{wx}</span>
+<span class="sd">                            = x*y*(1-y)</span>
+
+<span class="sd">        dp = p(1-p)</span>
+
+
+
+
+<span class="sd">        dJ = (y-p) * dy = (y-p) * (p) * (1-p) = (yp - p^2) * (1-p) = (yp - p^2 - yp^2 + p^3)</span>
+<span class="sd">        ddJ = p - 2p - 2yp + 2p^2</span>
+
+
+<span class="sd">        https://stats.stackexchange.com/questions/68391/hessian-of-logistic-function</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : ArrayLike</span>
+<span class="sd">            Independent variable(s)</span>
+<span class="sd">        y : ArrayLike</span>
+<span class="sd">            Dependent variable(s)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Hessian matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Format x</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">_format_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># We only know how to compute this in 2D, right?</span>
+
+        <span class="c1"># Make sure model is fitted (only valid at maximum likelihood estimate)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_fitted</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;model must be fit first&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Compute the logistic derivative y&#39; = p * (1-p)</span>
+        <span class="c1"># TODO eliminate observations with 0 weight</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">logistic_derivative</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">)</span>  <span class="c1"># np.prod(self.predict_proba(x), axis=1)</span>
+
+        <span class="c1"># If there is an intercept, add to x</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_intercept_to_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Return the Hessian</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># Solve the logistic function</span>
+<span class="c1"># TODO evaluate if logistic function should be placed into sigmoid with mode = &#39;logistic&#39;?</span>
+<span class="k">def</span> <span class="nf">logistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">1.</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Solves the logistic function.</span>
+
+<span class="sd">    This function has the form :math:`y(x) = \frac{1}{1+e^{-\beta x}}`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : ArrayLike</span>
+<span class="sd">        Independent variable(s)</span>
+<span class="sd">    beta : ArrayLike, int, or float</span>
+<span class="sd">        If ArrayLike, the coefficients for the logistic function. If singular, all coefficients set to that value.</span>
+<span class="sd">        (Default: 1.)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        `y`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Convert x to numpy array, reshaping if necessary</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">_format_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="c1"># Number of columns in x</span>
+    <span class="n">n_columns</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Fix beta</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">beta</span><span class="p">,</span> <span class="n">n_columns</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
+
+    <span class="c1"># Return evaluation of logistic function</span>
+    <span class="k">return</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">beta</span> <span class="o">*</span> <span class="n">x</span><span class="p">))</span>
+
+
+<span class="c1"># The derivative of the logistic function</span>
+<span class="k">def</span> <span class="nf">logistic_derivative</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">1.</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Solves the first derivative of the logistic function</span>
+
+<span class="sd">    We can simplify the logistic function :math:`y(x) = \frac{1}{1+e^{-\beta x}}` by setting :math:`z = -\beta x`.</span>
+
+<span class="sd">    Formal definition of the derivative:</span>
+
+<span class="sd">    .. math:: \frac{\delta y}{\delta z} = \frac{\delta}{\delta z} \frac{1}{1+e^{-z}}</span>
+
+<span class="sd">    Using the chain rule,</span>
+
+<span class="sd">    .. math:: \frac{\delta y}{\delta z} = \frac{1}{1+e^{-z}}\frac{e^{-z}}{1+e^{-z}}</span>
+
+<span class="sd">    This simplifies to,</span>
+
+<span class="sd">    .. math:: \frac{\delta y}{\delta z} = y(1-y)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : ArrayLike</span>
+<span class="sd">        Independent variable(s)</span>
+<span class="sd">    beta : ArrayLike, int, or float</span>
+<span class="sd">        If ArrayLike, the coefficients for the logistic function. If singular, all coefficients are set to that value.</span>
+<span class="sd">        (Default: 1.)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">        first derivative of `y`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Solve the logistic function</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">logistic</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+
+    <span class="c1"># Return the derivative</span>
+    <span class="k">return</span> <span class="n">y</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span>
+
+
+<span class="c1"># Cost function</span>
+<span class="k">def</span> <span class="nf">_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coefficients</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">_function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">coefficients</span><span class="p">)))</span>
+
+
+<span class="c1"># Solve the logistic function</span>
+<span class="k">def</span> <span class="nf">_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">coefficients</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">coefficients</span> <span class="o">*</span> <span class="n">x</span><span class="p">)))</span>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.88 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">izzy.classification.logistic</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Lockhart Lab.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

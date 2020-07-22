@@ -1,0 +1,6 @@
+izzy.classification.false\_negatives
+====================================
+
+.. currentmodule:: izzy.classification
+
+.. autofunction:: false_negatives

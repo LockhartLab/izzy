@@ -1,0 +1,6 @@
+izzy.classification.recall
+==========================
+
+.. currentmodule:: izzy.classification
+
+.. autofunction:: recall

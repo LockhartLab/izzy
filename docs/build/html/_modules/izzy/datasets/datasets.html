@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>izzy.datasets.datasets &#8212; izzy 0.3.88 documentation</title>
+    <link rel="stylesheet" href="../../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.88 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">izzy.datasets.datasets</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for izzy.datasets.datasets</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">datasets.py</span>
+<span class="sd">-----------</span>
+
+<span class="sd">Datasets for testing / analysis.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">izzy.core</span> <span class="kn">import</span> <span class="n">sanitize_dataframe</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">privatize</span> <span class="kn">import</span> <span class="n">privatize</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">load_breast_cancer</span>
+
+
+<span class="c1"># Breast cancer dataset</span>
+<span class="k">def</span> <span class="nf">breast_cancer_dataset</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load breast cancer dataset from Sci-kit Learn</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Breast cancer dataset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">load_breast_cancer</span><span class="p">()</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">feature_names</span><span class="p">)</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">sanitize_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+
+<span class="c1"># Random dataset</span>
+<div class="viewcode-block" id="random_dataset"><a class="viewcode-back" href="../../../api/generated/izzy.datasets.random_dataset.html#izzy.datasets.random_dataset">[docs]</a><span class="k">def</span> <span class="nf">random_dataset</span><span class="p">(</span><span class="n">n_rows</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">n_columns</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">null_proportion</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a dataset full of random numbers between 0 and 1</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_rows : int</span>
+<span class="sd">        Number of observations</span>
+<span class="sd">    n_columns : int</span>
+<span class="sd">        Number of features</span>
+<span class="sd">    null_proportion : float</span>
+<span class="sd">        Percent (per column) of observations that will be randomly converted to null values</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Random dataset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Generate random data</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_columns</span><span class="p">))</span>
+
+    <span class="c1"># Insert nulls?</span>
+    <span class="k">if</span> <span class="n">null_proportion</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="c1"># Number of nulls</span>
+        <span class="n">n_nulls</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_rows</span> <span class="o">*</span> <span class="n">null_proportion</span><span class="p">)</span>
+
+        <span class="c1"># Nullify on a per column basis</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_columns</span><span class="p">):</span>
+            <span class="c1"># Rows to nullify</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">low</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_nulls</span><span class="p">)</span>
+
+            <span class="c1"># Nullify</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="c1"># Return</span>
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<span class="c1"># noinspection PyDunderSlots,PyUnresolvedReferences</span>
+<div class="viewcode-block" id="RandomModelingDataset"><a class="viewcode-back" href="../../../api/generated/izzy.datasets.RandomModelingDataset.html#izzy.datasets.RandomModelingDataset">[docs]</a><span class="k">class</span> <span class="nc">RandomModelingDataset</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a random dataset with a binary outcome for modeling tests</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">&#39;_class_balance&#39;</span><span class="p">,</span> <span class="s1">&#39;_data&#39;</span><span class="p">,</span> <span class="s1">&#39;_n_observations&#39;</span><span class="p">,</span> <span class="s1">&#39;_n_predictors&#39;</span>
+
+    <span class="n">n_observations</span> <span class="o">=</span> <span class="n">privatize</span><span class="p">(</span><span class="s1">&#39;_n_observations&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+    <span class="n">n_predictors</span> <span class="o">=</span> <span class="n">privatize</span><span class="p">(</span><span class="s1">&#39;_n_predictors&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+    <span class="n">class_balance</span> <span class="o">=</span> <span class="n">privatize</span><span class="p">(</span><span class="s1">&#39;_class_balance&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Initialize class instance</span>
+<div class="viewcode-block" id="RandomModelingDataset.__init__"><a class="viewcode-back" href="../../../api/generated/izzy.datasets.RandomModelingDataset.html#izzy.datasets.RandomModelingDataset.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_observations</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">n_predictors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">class_balance</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Initialize instance of `RandomModelingDataset`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_observations : int</span>
+<span class="sd">            Number of observations in dataset.</span>
+<span class="sd">        n_predictors : int</span>
+<span class="sd">            Number of predictors to the outcome. (Default: 5)</span>
+<span class="sd">        class_balance : float</span>
+<span class="sd">            Percentage to skew the outcome (Default: 0.5, i.e., not skewed).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Save parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_observations</span> <span class="o">=</span> <span class="n">n_observations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_predictors</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_balance</span> <span class="o">=</span> <span class="n">class_balance</span>
+
+        <span class="c1"># Define outcome</span>
+        <span class="n">outcome</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_observations</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;outcome&#39;</span><span class="p">:</span> <span class="n">outcome</span> <span class="o">&lt;</span> <span class="n">class_balance</span><span class="p">})</span>
+
+        <span class="c1"># Add predictors</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_predictors</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_predictor</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span></div>
+
+    <span class="c1"># Get item</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+    <span class="c1"># Add predictor</span>
+<div class="viewcode-block" id="RandomModelingDataset.add_predictor"><a class="viewcode-back" href="../../../api/generated/izzy.datasets.RandomModelingDataset.html#izzy.datasets.RandomModelingDataset.add_predictor">[docs]</a>    <span class="k">def</span> <span class="nf">add_predictor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1000000</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a predictor to the random modeling dataset</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        scale : Number</span>
+<span class="sd">            Variance</span>
+<span class="sd">        size : Number</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Outcomes</span>
+        <span class="n">outcomes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;outcome&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="c1"># Create two histograms that contain possible values for this new feature</span>
+        <span class="n">values_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+        <span class="n">values_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+
+        <span class="c1"># Sample from the histograms because on the known outcome</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">outcomes</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">condition</span> <span class="o">=</span> <span class="n">outcomes</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">condition</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">values_0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">condition</span><span class="p">))</span>
+        <span class="n">condition</span> <span class="o">=</span> <span class="n">outcomes</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">condition</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">values_1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">condition</span><span class="p">))</span>
+
+        <span class="c1"># Save</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_predictors</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s1">&#39;feature&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_predictors</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">result</span></div></div>
+
+
+<span class="c1"># Wrapper function for RandomModelingDataset</span>
+<div class="viewcode-block" id="random_modeling_dataset"><a class="viewcode-back" href="../../../api/generated/izzy.datasets.random_modeling_dataset.html#izzy.datasets.random_modeling_dataset">[docs]</a><span class="k">def</span> <span class="nf">random_modeling_dataset</span><span class="p">(</span><span class="n">n_observations</span><span class="o">=</span><span class="mi">1000000</span><span class="p">,</span> <span class="n">n_predictors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">class_balance</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper function to initialize an instance of :class:`izzy.datasets.RandomModelingDataset`</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_observations : int</span>
+<span class="sd">        Number of observations (Default: 1000000).</span>
+<span class="sd">    n_predictors : int</span>
+<span class="sd">        Number of predictors (Default: 5).</span>
+<span class="sd">    class_balance : float</span>
+<span class="sd">        How should the class be balanced? (Default: 0.5)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Random modeling dataset</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">RandomModelingDataset</span><span class="p">(</span><span class="n">n_observations</span><span class="p">,</span> <span class="n">n_predictors</span><span class="p">,</span> <span class="n">class_balance</span><span class="p">)[:]</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">izzy 0.3.88 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">izzy.datasets.datasets</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Lockhart Lab.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>
