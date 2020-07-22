@@ -47,7 +47,6 @@ setup(
         'izzy.statistics',
         'izzy.tests',
         'izzy.tests.classification',
-        'izzy.viz',
     ],
     install_requires=requirements,
     include_package_data=True,
